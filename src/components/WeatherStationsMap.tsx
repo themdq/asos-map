@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Station } from '../types/station';
+import type { WeatherPoint } from '../types/weather';
 import { fetchStations } from '../api/stations';
+import { fetchHistoricalWeather } from '../api/weather';
 import Sidebar from './Sidebar';
 import MapContainer, { type MapRef } from './MapContainer';
+import WeatherCard from './WeatherCard';
 
 export default function WeatherStationsMap() {
   const mapRef = useRef<MapRef>(null);
@@ -13,6 +16,8 @@ export default function WeatherStationsMap() {
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [mapboxToken, setMapboxToken] = useState('');
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [weatherData, setWeatherData] = useState<WeatherPoint[]>([]);
+  const [weatherLoading, setWeatherLoading] = useState(false);
 
   useEffect(() => {
     setMapboxToken('pk.eyJ1IjoidGhlbWRxIiwiYSI6ImNta2tkeXJzdDFkNjYzZ29tMmp4NTF1ejUifQ.fctCq2IYRLfdCr8W1b5Kew');
@@ -58,10 +63,22 @@ export default function WeatherStationsMap() {
     }
   };
 
-  const handleStationClick = (station: Station) => {
+  const handleStationClick = async (station: Station) => {
     setSelectedStation(station);
     if (mapRef.current?.flyToStation) {
       mapRef.current.flyToStation(station);
+    }
+
+    // Загружаем погодные данные для выбранной станции
+    try {
+      setWeatherLoading(true);
+      const data = await fetchHistoricalWeather(station.station_id);
+      setWeatherData(data.points);
+    } catch (error) {
+      console.error('Error loading weather data:', error);
+      setWeatherData([]);
+    } finally {
+      setWeatherLoading(false);
     }
   };
 
@@ -86,8 +103,15 @@ export default function WeatherStationsMap() {
         stations={stations}
         mapboxToken={mapboxToken}
         scriptLoaded={scriptLoaded}
-        onStationSelect={setSelectedStation}
+        onStationSelect={handleStationClick}
       />
+      {selectedStation && (
+        <WeatherCard
+          stationName={selectedStation.station_name}
+          weatherData={weatherData}
+          loading={weatherLoading}
+        />
+      )}
     </div>
   );
 }
