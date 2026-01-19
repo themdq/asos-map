@@ -133,8 +133,7 @@ export default function WeatherStationsMap() {
       <div style={{
         flex: 1,
         position: 'relative',
-        overflow: 'hidden',
-        height: '100vh'
+        overflow: 'hidden'
       }}>
         {/* Top Bar with Controls */}
         <div style={{

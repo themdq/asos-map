@@ -1,5 +1,8 @@
 ---
+import MainLayout from '../layouts/main.astro';
 import WeatherStationsMap from '../components/WeatherStationsMap';
 ---
 
-<WeatherStationsMap client:load />
+<MainLayout content={{ title: 'ASOS Map' }}>
+  <WeatherStationsMap client:load />
+</MainLayout>
