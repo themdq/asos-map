@@ -26,9 +26,11 @@ export default function Sidebar({
   return (
     <div style={{
       width: '400px',
-      backgroundColor: '#1a1a1a',
+      backgroundColor: 'white',
       overflowY: 'auto',
-      borderRight: '1px solid #333'
+      borderRight: '1px solid #e5e7eb',
+      height: '100%',
+      boxShadow: '2px 0 8px rgba(0, 0, 0, 0.1)'
     }}>
       <div style={{ padding: '20px' }}>
         <div style={{
@@ -39,7 +41,7 @@ export default function Sidebar({
         }}>
           <span style={{ fontSize: '24px' }}>📍</span>
           <h1 style={{
-            color: 'white',
+            color: '#1f2937',
             fontSize: '20px',
             fontWeight: 'bold',
             margin: 0
@@ -64,12 +66,13 @@ export default function Sidebar({
             style={{
               width: '100%',
               padding: '10px 10px 10px 35px',
-              backgroundColor: '#2a2a2a',
-              border: '1px solid #444',
-              borderRadius: '6px',
-              color: 'white',
+              backgroundColor: '#f9fafb',
+              border: '1px solid #d1d5db',
+              borderRadius: '8px',
+              color: '#1f2937',
               fontSize: '14px',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              outline: 'none'
             }}
           />
         </div>
@@ -78,14 +81,14 @@ export default function Sidebar({
           <div style={{
             textAlign: 'center',
             padding: '40px',
-            color: '#9ca3af'
+            color: '#6b7280'
           }}>
             ⏳ Загрузка...
           </div>
         ) : (
           <>
             <p style={{
-              color: '#9ca3af',
+              color: '#6b7280',
               fontSize: '13px',
               marginBottom: '10px'
             }}>
@@ -104,20 +107,24 @@ export default function Sidebar({
                     padding: '15px',
                     backgroundColor: selectedStation?.station_id === station.station_id
                       ? '#3b82f6'
-                      : '#2a2a2a',
+                      : '#f9fafb',
                     borderRadius: '8px',
                     marginBottom: '8px',
                     cursor: 'pointer',
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
+                    border: '1px solid',
+                    borderColor: selectedStation?.station_id === station.station_id
+                      ? '#3b82f6'
+                      : '#e5e7eb'
                   }}
                   onMouseEnter={(e) => {
                     if (selectedStation?.station_id !== station.station_id) {
-                      e.currentTarget.style.backgroundColor = '#333';
+                      e.currentTarget.style.backgroundColor = '#f3f4f6';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedStation?.station_id !== station.station_id) {
-                      e.currentTarget.style.backgroundColor = '#2a2a2a';
+                      e.currentTarget.style.backgroundColor = '#f9fafb';
                     }
                   }}
                 >
@@ -128,7 +135,7 @@ export default function Sidebar({
                   }}>
                     <div style={{ flex: 1 }}>
                       <h3 style={{
-                        color: 'white',
+                        color: selectedStation?.station_id === station.station_id ? 'white' : '#1f2937',
                         fontSize: '14px',
                         fontWeight: '600',
                         margin: '0 0 8px 0'
@@ -136,21 +143,21 @@ export default function Sidebar({
                         {station.station_name}
                       </h3>
                       <p style={{
-                        color: '#d1d5db',
+                        color: selectedStation?.station_id === station.station_id ? 'rgba(255,255,255,0.9)' : '#6b7280',
                         fontSize: '12px',
                         margin: '3px 0'
                       }}>
                         ID: {station.station_id}
                       </p>
                       <p style={{
-                        color: '#d1d5db',
+                        color: selectedStation?.station_id === station.station_id ? 'rgba(255,255,255,0.9)' : '#6b7280',
                         fontSize: '12px',
                         margin: '3px 0'
                       }}>
                         📍 {station.latitude.toFixed(4)}, {station.longitude.toFixed(4)}
                       </p>
                       <p style={{
-                        color: '#d1d5db',
+                        color: selectedStation?.station_id === station.station_id ? 'rgba(255,255,255,0.9)' : '#6b7280',
                         fontSize: '12px',
                         margin: '3px 0'
                       }}>
@@ -158,8 +165,8 @@ export default function Sidebar({
                       </p>
                     </div>
                     <span style={{
-                      backgroundColor: '#444',
-                      color: 'white',
+                      backgroundColor: selectedStation?.station_id === station.station_id ? 'rgba(255,255,255,0.2)' : '#e5e7eb',
+                      color: selectedStation?.station_id === station.station_id ? 'white' : '#4b5563',
                       padding: '4px 8px',
                       borderRadius: '4px',
                       fontSize: '11px',
