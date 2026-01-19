@@ -1,9 +1,9 @@
-import { Menu, Settings } from "lucide-react";
+import { Menu, PanelLeft, Settings } from "lucide-react";
 
 interface MenuButtonProps {
   onClick: () => void;
   darkMode?: boolean;
-  icon?: 'menu' | 'settings';
+  icon?: 'menu' | 'settings' | 'panel_left';
 }
 
 export default function MenuButton({
@@ -17,6 +17,9 @@ export default function MenuButton({
     ),
     settings: (
       <Settings />
+    ),
+    panel_left: (
+      <PanelLeft />
     )
   };
 
@@ -24,7 +27,7 @@ export default function MenuButton({
     <button
       onClick={onClick}
       className={`
-        flex items-center justify-center rounded-lg px-3 py-2.5
+        flex items-center justify-center rounded-sm px-3 py-2.5
         border shadow-md transition-all duration-200
         ${darkMode
           ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'

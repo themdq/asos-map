@@ -9,7 +9,7 @@ export default function SearchBar({
   value,
   onChange,
   darkMode = false,
-  placeholder = "Stations Search..."
+  placeholder = "Search"
 }: SearchBarProps) {
   return (
     <div className="relative">
@@ -22,7 +22,7 @@ export default function SearchBar({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={`
-          w-[300px] py-2.5 pl-9 pr-2.5 rounded-lg text-sm outline-none shadow-md
+          w-[300px] py-3 pl-9 pr-2.5 rounded-sm text-sm outline-none shadow-md
           transition-colors
           ${darkMode
             ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400'

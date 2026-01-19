@@ -138,7 +138,7 @@ export default function WeatherStationsMap() {
               <MenuButton
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 darkMode={darkMode}
-                icon="menu"
+                icon="panel_left"
               />
               <SearchBar
                 value={searchQuery}
