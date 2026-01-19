@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
@@ -28,7 +26,7 @@ export default function SearchBar({
           transition-colors
           ${darkMode
             ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400'
-            : 'bg-white border-gray-300 text-gray-800 placeholder:text-gray-500'
+            : 'bg-primary border-gray-300 text-gray-800 placeholder:text-gray-500'
           }
           border focus:ring-2 focus:ring-blue-500
         `}

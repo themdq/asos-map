@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Station } from '../types/station';
 
 interface SidebarProps {
@@ -24,7 +23,7 @@ export default function Sidebar({
   );
 
   return (
-    <div className="w-[400px] bg-white overflow-y-auto border-r border-gray-200 h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)]">
+    <div className="w-[400px] bg-primary overflow-y-auto border-r border-gray-200 h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)]">
       <div className="p-5">
         <div className="flex items-center gap-2.5 mb-5 flex-col">
           <div className="flex">
@@ -46,7 +45,7 @@ export default function Sidebar({
               Found: {filteredStations.length} stations
             </p>
 
-            <div className="max-h-[calc(100vh-320px)] overflow-y-auto">
+            <div className=" overflow-y-auto">
               {filteredStations.map((station) => {
                 const isSelected = selectedStation?.station_id === station.station_id;
 
@@ -58,7 +57,7 @@ export default function Sidebar({
                       p-[15px] rounded-lg mb-2 cursor-pointer transition-all duration-200 border
                       ${isSelected
                         ? 'bg-blue-500 border-blue-500'
-                        : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                        : 'bg-primary-foreground border-gray-200 hover:bg-gray-100'
                       }
                     `}
                   >

@@ -10,9 +10,9 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
   if (loading) {
     return (
       <div className="w-full max-w-[400px]">
-        <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-lg">
+        <div className="bg-brand-50 border border-gray-200 rounded-xl p-8 shadow-lg">
           <div className="flex items-center justify-center text-gray-500">
-            Загрузка данных...
+            Data Loading...
           </div>
         </div>
       </div>
@@ -51,13 +51,13 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
 
   return (
     <div className="w-full max-w-[400px] max-h-[70vh] overflow-y-auto">
-      <div className="bg-white border border-gray-200 rounded-2xl shadow-lg text-gray-800 p-6">
+      <div className="bg-primary border border-gray-200 rounded-2xl shadow-lg text-gray-800 p-6">
         {/* Заголовок */}
         <h2 className="text-xl font-semibold text-gray-800 mb-1">
           {stationName}
         </h2>
         <p className="text-gray-500 text-[13px] mb-5">
-          {new Date(latestData.timestamp).toLocaleString('ru-RU', {
+          {new Date(latestData.timestamp).toLocaleString('en-US', {
             day: 'numeric',
             month: 'long',
             hour: '2-digit',
@@ -78,7 +78,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
         {/* Сетка с деталями */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           {/* Ветер */}
-          <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200">
+          <div className="rounded-xl bg-secondary-foreground p-3.5 border border-gray-200">
             <div className="flex items-start justify-between mb-2">
               <svg className="w-[18px] h-[18px] text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -99,7 +99,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
           </div>
 
           {/* Точка росы */}
-          <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200">
+          <div className="rounded-xl bg-secondary-foreground p-3.5 border border-gray-200">
             <div className="mb-2">
               <svg className="w-[18px] h-[18px] text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -115,7 +115,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
 
           {/* Давление */}
           {avgPressure > 0 && (
-            <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200">
+            <div className="rounded-xl bg-secondary-foreground p-3.5 border border-gray-200">
               <div className="mb-2">
                 <svg className="w-[18px] h-[18px] text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -134,7 +134,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
           )}
 
           {/* Осадки */}
-          <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200">
+          <div className="rounded-xl bg-secondary-foreground p-3.5 border border-gray-200">
             <div className="mb-2">
               <svg className="w-[18px] h-[18px] text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -153,7 +153,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
         </div>
 
         {/* Временная шкала */}
-        <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200 mb-3">
+        <div className="rounded-xl bg-secondary-foreground p-3.5 border border-gray-200 mb-3">
           <div className="text-gray-500 text-[11px] mb-3 font-medium">
             Recent Measurements
           </div>

@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface SettingsMenuProps {
   darkMode: boolean;
   temperatureUnit: 'C' | 'F';
@@ -24,7 +22,7 @@ export default function SettingsMenu({
         border
         ${darkMode
           ? 'bg-gray-700 border-gray-600'
-          : 'bg-white border-gray-200'
+          : 'bg-primary border-gray-200'
         }
       `}
     >
