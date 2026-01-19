@@ -36,8 +36,8 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/standard',
-        center: [30, 50],
-        zoom: 3,
+        center: [-122.2, 37.43],
+        zoom: 10,
         projection: 'mercator',
       });
 

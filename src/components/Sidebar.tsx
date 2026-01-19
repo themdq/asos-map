@@ -37,8 +37,10 @@ export default function Sidebar({
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-          marginBottom: '20px'
+          marginBottom: '20px',
+          flexDirection: 'column'
         }}>
+          <div style={{display: 'flex'}}>
           <span style={{ fontSize: '24px' }}>📍</span>
           <h1 style={{
             color: '#1f2937',
@@ -46,36 +48,12 @@ export default function Sidebar({
             fontWeight: 'bold',
             margin: 0
           }}>
-            Weather Stations
+            ASOS Stations
           </h1>
+          </div>
+          <h2>WindBorne Systems</h2>
         </div>
 
-        <div style={{ position: 'relative', marginBottom: '15px' }}>
-          <span style={{
-            position: 'absolute',
-            left: '12px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            fontSize: '16px'
-          }}>🔍</span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Поиск станций..."
-            style={{
-              width: '100%',
-              padding: '10px 10px 10px 35px',
-              backgroundColor: '#f9fafb',
-              border: '1px solid #d1d5db',
-              borderRadius: '8px',
-              color: '#1f2937',
-              fontSize: '14px',
-              boxSizing: 'border-box',
-              outline: 'none'
-            }}
-          />
-        </div>
 
         {loading ? (
           <div style={{
@@ -83,7 +61,7 @@ export default function Sidebar({
             padding: '40px',
             color: '#6b7280'
           }}>
-            ⏳ Загрузка...
+            ⏳ Loading...
           </div>
         ) : (
           <>
@@ -92,7 +70,7 @@ export default function Sidebar({
               fontSize: '13px',
               marginBottom: '10px'
             }}>
-              Найдено: {filteredStations.length} станций
+              Found: {filteredStations.length} stations
             </p>
 
             <div style={{

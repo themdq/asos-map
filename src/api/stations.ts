@@ -1,9 +1,10 @@
 import type { Station } from '../types/station';
 
+const API_BASE_URL = 'https://sfc.windbornesystems.com';
+
 export async function fetchStations(): Promise<Station[]> {
   try {
-    // Замените на ваш API
-      const response = await fetch('https://sfc.windbornesystems.com/stations');
+      const response = await fetch(`${API_BASE_URL}/stations`);
       const data = await response.json();
     return data;
   } catch (error) {
