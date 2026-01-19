@@ -241,7 +241,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   }));
 
   return (
-    <div style={{ flex: 1, position: 'relative' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       {!mapboxToken ? (
         <div style={{
           position: 'absolute',
@@ -249,7 +249,8 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#111'
+          backgroundColor: '#111',
+          zIndex: 2
         }}>
         </div>
       ) : !scriptLoaded ? (
@@ -259,7 +260,8 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#111'
+          backgroundColor: '#111',
+          zIndex: 2
         }}>
           <div style={{ textAlign: 'center', color: 'white' }}>
             <div style={{ fontSize: '32px', marginBottom: '10px' }}>⏳</div>

@@ -154,7 +154,7 @@ export default function Sidebar({
                         fontSize: '12px',
                         margin: '3px 0'
                       }}>
-                        📍 {station.latitude.toFixed(4)}, {station.longitude.toFixed(4)}
+                      📍{station.latitude.toFixed(4)}, {station.longitude.toFixed(4)}
                       </p>
                       <p style={{
                         color: selectedStation?.station_id === station.station_id ? 'rgba(255,255,255,0.9)' : '#6b7280',
