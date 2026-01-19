@@ -9,23 +9,9 @@ interface WeatherCardProps {
 export default function WeatherCard({ stationName, weatherData, loading }: WeatherCardProps) {
   if (loading) {
     return (
-      <div style={{
-        width: '100%',
-        maxWidth: '400px'
-      }}>
-        <div style={{
-          backgroundColor: 'white',
-          border: '1px solid #e5e7eb',
-          borderRadius: '12px',
-          padding: '32px',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#6b7280'
-          }}>
+      <div className="w-full max-w-[400px]">
+        <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-lg">
+          <div className="flex items-center justify-center text-gray-500">
             Загрузка данных...
           </div>
         </div>
@@ -64,34 +50,13 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
     .reduce((sum, d, _, arr) => sum + (d.pressure || 0) / arr.length, 0);
 
   return (
-    <div style={{
-      width: '100%',
-      maxWidth: '400px',
-      maxHeight: '70vh',
-      overflowY: 'auto'
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        border: '1px solid #e5e7eb',
-        borderRadius: '16px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-        color: '#1f2937',
-        padding: '24px'
-      }}>
+    <div className="w-full max-w-[400px] max-h-[70vh] overflow-y-auto">
+      <div className="bg-white border border-gray-200 rounded-2xl shadow-lg text-gray-800 p-6">
         {/* Заголовок */}
-        <h2 style={{
-          fontSize: '20px',
-          fontWeight: '600',
-          color: '#1f2937',
-          marginBottom: '4px'
-        }}>
+        <h2 className="text-xl font-semibold text-gray-800 mb-1">
           {stationName}
         </h2>
-        <p style={{
-          color: '#6b7280',
-          fontSize: '13px',
-          marginBottom: '20px'
-        }}>
+        <p className="text-gray-500 text-[13px] mb-5">
           {new Date(latestData.timestamp).toLocaleString('ru-RU', {
             day: 'numeric',
             month: 'long',
@@ -101,170 +66,117 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
         </p>
 
         {/* Основная температура */}
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <div style={{
-            fontSize: '64px',
-            fontWeight: '200',
-            color: '#1f2937'
-          }}>
+        <div className="text-center py-5">
+          <div className="text-[64px] font-extralight text-gray-800">
             {Math.round(latestData.temperature)}&deg;
           </div>
-          <div style={{
-            color: '#6b7280',
-            fontSize: '16px',
-            marginTop: '8px'
-          }}>
+          <div className="text-gray-500 text-base mt-2">
             Max: {Math.round(maxTemp)}&deg; Min: {Math.round(minTemp)}&deg;
           </div>
         </div>
 
         {/* Сетка с деталями */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '12px',
-          marginBottom: '16px'
-        }}>
+        <div className="grid grid-cols-2 gap-3 mb-4">
           {/* Ветер */}
-          <div style={{
-            borderRadius: '12px',
-            backgroundColor: '#f9fafb',
-            padding: '14px',
-            border: '1px solid #e5e7eb'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'start',
-              justifyContent: 'space-between',
-              marginBottom: '8px'
-            }}>
-              <svg style={{ width: '18px', height: '18px', color: '#6b7280' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200">
+            <div className="flex items-start justify-between mb-2">
+              <svg className="w-[18px] h-[18px] text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
-              <span style={{
-                fontSize: '11px',
-                backgroundColor: '#3b82f6',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '4px',
-                fontWeight: '500'
-              }}>
+              <span className="text-[11px] bg-blue-500 text-white px-2 py-0.5 rounded font-medium">
                 {getWindDirectionLabel(windDirection)}
               </span>
             </div>
-            <div style={{ color: '#6b7280', fontSize: '11px', marginBottom: '4px' }}>
+            <div className="text-gray-500 text-[11px] mb-1">
               Wind
             </div>
-            <div style={{ color: '#1f2937', fontSize: '22px', fontWeight: '600' }}>
+            <div className="text-gray-800 text-[22px] font-semibold">
               {windSpeed.toFixed(1)}
             </div>
-            <div style={{ color: '#9ca3af', fontSize: '11px' }}>
+            <div className="text-gray-400 text-[11px]">
               m/s
             </div>
           </div>
 
           {/* Точка росы */}
-          <div style={{
-            borderRadius: '12px',
-            backgroundColor: '#f9fafb',
-            padding: '14px',
-            border: '1px solid #e5e7eb'
-          }}>
-            <div style={{ marginBottom: '8px' }}>
-              <svg style={{ width: '18px', height: '18px', color: '#6b7280' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200">
+            <div className="mb-2">
+              <svg className="w-[18px] h-[18px] text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
             </div>
-            <div style={{ color: '#6b7280', fontSize: '11px', marginBottom: '4px' }}>
+            <div className="text-gray-500 text-[11px] mb-1">
               Dew Point
             </div>
-            <div style={{ color: '#1f2937', fontSize: '22px', fontWeight: '600' }}>
+            <div className="text-gray-800 text-[22px] font-semibold">
               {Math.round(latestData.dewpoint)}&deg;
             </div>
           </div>
 
           {/* Давление */}
           {avgPressure > 0 && (
-            <div style={{
-              borderRadius: '12px',
-              backgroundColor: '#f9fafb',
-              padding: '14px',
-              border: '1px solid #e5e7eb'
-            }}>
-              <div style={{ marginBottom: '8px' }}>
-                <svg style={{ width: '18px', height: '18px', color: '#6b7280' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200">
+              <div className="mb-2">
+                <svg className="w-[18px] h-[18px] text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <div style={{ color: '#6b7280', fontSize: '11px', marginBottom: '4px' }}>
+              <div className="text-gray-500 text-[11px] mb-1">
                 Pressure
               </div>
-              <div style={{ color: '#1f2937', fontSize: '22px', fontWeight: '600' }}>
+              <div className="text-gray-800 text-[22px] font-semibold">
                 {Math.round(avgPressure)}
               </div>
-              <div style={{ color: '#9ca3af', fontSize: '11px' }}>
+              <div className="text-gray-400 text-[11px]">
                 hPa
               </div>
             </div>
           )}
 
           {/* Осадки */}
-          <div style={{
-            borderRadius: '12px',
-            backgroundColor: '#f9fafb',
-            padding: '14px',
-            border: '1px solid #e5e7eb'
-          }}>
-            <div style={{ marginBottom: '8px' }}>
-              <svg style={{ width: '18px', height: '18px', color: '#6b7280' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200">
+            <div className="mb-2">
+              <svg className="w-[18px] h-[18px] text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
               </svg>
             </div>
-            <div style={{ color: '#6b7280', fontSize: '11px', marginBottom: '4px' }}>
+            <div className="text-gray-500 text-[11px] mb-1">
               Precipitation
             </div>
-            <div style={{ color: '#1f2937', fontSize: '22px', fontWeight: '600' }}>
+            <div className="text-gray-800 text-[22px] font-semibold">
               {latestData.precip.toFixed(1)}
             </div>
-            <div style={{ color: '#9ca3af', fontSize: '11px' }}>
+            <div className="text-gray-400 text-[11px]">
               mm
             </div>
           </div>
         </div>
 
         {/* Временная шкала */}
-        <div style={{
-          borderRadius: '12px',
-          backgroundColor: '#f9fafb',
-          padding: '14px',
-          border: '1px solid #e5e7eb',
-          marginBottom: '12px'
-        }}>
-          <div style={{ color: '#6b7280', fontSize: '11px', marginBottom: '12px', fontWeight: '500' }}>
+        <div className="rounded-xl bg-gray-50 p-3.5 border border-gray-200 mb-3">
+          <div className="text-gray-500 text-[11px] mb-3 font-medium">
             Recent Measurements
           </div>
-          <div style={{ maxHeight: '180px', overflowY: 'auto' }}>
+          <div className="max-h-[180px] overflow-y-auto">
             {weatherData.slice(-8).reverse().map((point, index) => (
-              <div key={index} style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                fontSize: '13px',
-                marginBottom: index < 7 ? '8px' : '0',
-                paddingBottom: index < 7 ? '8px' : '0',
-                borderBottom: index < 7 ? '1px solid #e5e7eb' : 'none'
-              }}>
-                <span style={{ color: '#6b7280', fontSize: '12px' }}>
+              <div
+                key={index}
+                className={`
+                  flex items-center justify-between text-[13px]
+                  ${index < 7 ? 'mb-2 pb-2 border-b border-gray-200' : ''}
+                `}
+              >
+                <span className="text-gray-500 text-xs">
                   {new Date(point.timestamp).toLocaleTimeString('ru-RU', {
                     hour: '2-digit',
                     minute: '2-digit'
                   })}
                 </span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <span style={{ color: '#1f2937', fontWeight: '600' }}>
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-800 font-semibold">
                     {Math.round(point.temperature)}&deg;
                   </span>
-                  <span style={{ color: '#6b7280', fontSize: '12px', width: '60px', textAlign: 'right' }}>
+                  <span className="text-gray-500 text-xs w-[60px] text-right">
                     {Math.sqrt(point.wind_x ** 2 + point.wind_y ** 2).toFixed(1)} m/s
                   </span>
                 </div>
@@ -274,12 +186,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
         </div>
 
         {/* Информация о данных */}
-        <div style={{
-          textAlign: 'center',
-          color: '#9ca3af',
-          fontSize: '11px',
-          paddingTop: '4px'
-        }}>
+        <div className="text-center text-gray-400 text-[11px] pt-1">
           Total data points: {weatherData.length}
         </div>
       </div>

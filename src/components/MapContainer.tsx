@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import type { Station } from '../types/station';
+import LoadingOverlay from './LoadingOverlay';
 
 interface MapContainerProps {
   stations: Station[];
@@ -241,35 +242,9 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   }));
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-      {!mapboxToken ? (
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#111',
-          zIndex: 2
-        }}>
-        </div>
-      ) : !scriptLoaded ? (
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#111',
-          zIndex: 2
-        }}>
-          <div style={{ textAlign: 'center', color: 'white' }}>
-            <div style={{ fontSize: '32px', marginBottom: '10px' }}>⏳</div>
-            <p>Загрузка карты...</p>
-          </div>
-        </div>
-      ) : null}
-      <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
+    <div className="w-full h-full relative">
+      {!scriptLoaded && <LoadingOverlay />}
+      <div ref={mapContainer} className="w-full h-full" />
     </div>
   );
 });
