@@ -4,9 +4,21 @@ interface WeatherCardProps {
   stationName: string;
   weatherData: WeatherPoint[];
   loading?: boolean;
+  temperatureUnit?: 'C' | 'F';
+  windSpeedUnit?: 'kmh' | 'mph';
+  pressureUnit?: 'mb' | 'hPa';
+  precipitationUnit?: 'mm' | 'in';
 }
 
-export default function WeatherCard({ stationName, weatherData, loading }: WeatherCardProps) {
+export default function WeatherCard({
+  stationName,
+  weatherData,
+  loading,
+  temperatureUnit = 'C',
+  windSpeedUnit = 'kmh',
+  pressureUnit = 'mb',
+  precipitationUnit = 'mm'
+}: WeatherCardProps) {
   if (loading) {
     return (
       <div className="w-full">
@@ -23,11 +35,35 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
     return null;
   }
 
+  // Функции конвертации
+  const convertTemp = (tempC: number) => {
+    return temperatureUnit === 'F' ? (tempC * 9/5) + 32 : tempC;
+  };
+
+  const convertWindSpeed = (speedMs: number) => {
+    // Исходная скорость в m/s, конвертируем в km/h или mph
+    if (windSpeedUnit === 'kmh') {
+      return speedMs * 3.6; // m/s -> km/h
+    } else {
+      return speedMs * 2.237; // m/s -> mph
+    }
+  };
+
+  const convertPressure = (pressureHPa: number) => {
+    // Давление приходит в hPa, mb = hPa (они равны)
+    return pressureHPa;
+  };
+
+  const convertPrecipitation = (precipMm: number) => {
+    return precipitationUnit === 'in' ? precipMm / 25.4 : precipMm;
+  };
+
   // Берем последнюю точку данных для основной информации
   const latestData = weatherData[weatherData.length - 1];
 
-  // Вычисляем скорость ветра из компонентов
-  const windSpeed = Math.sqrt(latestData.wind_x ** 2 + latestData.wind_y ** 2);
+  // Вычисляем скорость ветра из компонентов (в m/s)
+  const windSpeedMs = Math.sqrt(latestData.wind_x ** 2 + latestData.wind_y ** 2);
+  const windSpeed = convertWindSpeed(windSpeedMs);
 
   // Вычисляем направление ветра в градусах
   const windDirection = (Math.atan2(latestData.wind_y, latestData.wind_x) * 180 / Math.PI + 360) % 360;
@@ -41,13 +77,14 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
 
   // Находим мин/макс температуру
   const temperatures = weatherData.map(d => d.temperature);
-  const minTemp = Math.min(...temperatures);
-  const maxTemp = Math.max(...temperatures);
+  const minTemp = convertTemp(Math.min(...temperatures));
+  const maxTemp = convertTemp(Math.max(...temperatures));
 
   // Средние значения
-  const avgPressure = weatherData
+  const avgPressureRaw = weatherData
     .filter(d => d.pressure !== null)
     .reduce((sum, d, _, arr) => sum + (d.pressure || 0) / arr.length, 0);
+  const avgPressure = convertPressure(avgPressureRaw);
 
   return (
     <div className="w-full max-h-[70vh] overflow-y-auto">
@@ -68,7 +105,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
         {/* Основная температура */}
         <div className="text-center py-5">
           <div className="text-[64px] font-extralight text-gray-800">
-            {Math.round(latestData.temperature)}&deg;
+            {Math.round(convertTemp(latestData.temperature))}&deg;{temperatureUnit}
           </div>
           <div className="text-gray-500 text-base mt-2">
             Max: {Math.round(maxTemp)}&deg; Min: {Math.round(minTemp)}&deg;
@@ -94,7 +131,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
               {windSpeed.toFixed(1)}
             </div>
             <div className="text-gray-400 text-[11px]">
-              m/s
+              {windSpeedUnit}
             </div>
           </div>
 
@@ -109,7 +146,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
               Dew Point
             </div>
             <div className="text-gray-800 text-[22px] font-semibold">
-              {Math.round(latestData.dewpoint)}&deg;
+              {Math.round(convertTemp(latestData.dewpoint))}&deg;
             </div>
           </div>
 
@@ -128,7 +165,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
                 {Math.round(avgPressure)}
               </div>
               <div className="text-gray-400 text-[11px]">
-                hPa
+                {pressureUnit}
               </div>
             </div>
           )}
@@ -144,10 +181,10 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
               Precipitation
             </div>
             <div className="text-gray-800 text-[22px] font-semibold">
-              {latestData.precip.toFixed(1)}
+              {convertPrecipitation(latestData.precip).toFixed(precipitationUnit === 'in' ? 2 : 1)}
             </div>
             <div className="text-gray-400 text-[11px]">
-              mm
+              {precipitationUnit}
             </div>
           </div>
         </div>
@@ -174,10 +211,10 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
                 </span>
                 <div className="flex items-center gap-4">
                   <span className="text-gray-800 font-semibold">
-                    {Math.round(point.temperature)}&deg;
+                    {Math.round(convertTemp(point.temperature))}&deg;
                   </span>
-                  <span className="text-gray-500 text-xs w-[60px] text-right">
-                    {Math.sqrt(point.wind_x ** 2 + point.wind_y ** 2).toFixed(1)} m/s
+                  <span className="text-gray-500 text-xs w-[70px] text-right">
+                    {convertWindSpeed(Math.sqrt(point.wind_x ** 2 + point.wind_y ** 2)).toFixed(1)} {windSpeedUnit}
                   </span>
                 </div>
               </div>

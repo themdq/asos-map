@@ -25,7 +25,9 @@ export default function WeatherStationsMap() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [temperatureUnit, setTemperatureUnit] = useState<'C' | 'F'>('C');
-  const [windSpeedUnit, setWindSpeedUnit] = useState<'ms' | 'kmh' | 'mph'>('ms');
+  const [windSpeedUnit, setWindSpeedUnit] = useState<'kmh' | 'mph'>('kmh');
+  const [pressureUnit, setPressureUnit] = useState<'mb' | 'hPa'>('mb');
+  const [precipitationUnit, setPrecipitationUnit] = useState<'mm' | 'in'>('mm');
 
   useEffect(() => {
     setMapboxToken('pk.eyJ1IjoidGhlbWRxIiwiYSI6ImNta2tkeXJzdDFkNjYzZ29tMmp4NTF1ejUifQ.fctCq2IYRLfdCr8W1b5Kew');
@@ -154,6 +156,10 @@ export default function WeatherStationsMap() {
                   stationName={selectedStation.station_name}
                   weatherData={weatherData}
                   loading={weatherLoading}
+                  temperatureUnit={temperatureUnit}
+                  windSpeedUnit={windSpeedUnit}
+                  pressureUnit={pressureUnit}
+                  precipitationUnit={precipitationUnit}
                 />
               </div>
             )}
@@ -173,9 +179,13 @@ export default function WeatherStationsMap() {
                 darkMode={darkMode}
                 temperatureUnit={temperatureUnit}
                 windSpeedUnit={windSpeedUnit}
+                pressureUnit={pressureUnit}
+                precipitationUnit={precipitationUnit}
                 onDarkModeToggle={() => setDarkMode(!darkMode)}
                 onTemperatureUnitChange={setTemperatureUnit}
                 onWindSpeedUnitChange={setWindSpeedUnit}
+                onPressureUnitChange={setPressureUnit}
+                onPrecipitationUnitChange={setPrecipitationUnit}
               />
             )}
           </div>

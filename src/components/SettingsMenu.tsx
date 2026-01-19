@@ -1,19 +1,27 @@
 interface SettingsMenuProps {
   darkMode: boolean;
   temperatureUnit: 'C' | 'F';
-  windSpeedUnit: 'ms' | 'kmh' | 'mph';
+  windSpeedUnit: 'kmh' | 'mph';
+  pressureUnit: 'mb' | 'hPa';
+  precipitationUnit: 'mm' | 'in';
   onDarkModeToggle: () => void;
   onTemperatureUnitChange: (unit: 'C' | 'F') => void;
-  onWindSpeedUnitChange: (unit: 'ms' | 'kmh' | 'mph') => void;
+  onWindSpeedUnitChange: (unit: 'kmh' | 'mph') => void;
+  onPressureUnitChange: (unit: 'mb' | 'hPa') => void;
+  onPrecipitationUnitChange: (unit: 'mm' | 'in') => void;
 }
 
 export default function SettingsMenu({
   darkMode,
   temperatureUnit,
   windSpeedUnit,
+  pressureUnit,
+  precipitationUnit,
   onDarkModeToggle,
   onTemperatureUnitChange,
-  onWindSpeedUnitChange
+  onWindSpeedUnitChange,
+  onPressureUnitChange,
+  onPrecipitationUnitChange
 }: SettingsMenuProps) {
   return (
     <div
@@ -91,23 +99,92 @@ export default function SettingsMenu({
       </div>
 
       {/* Wind Speed Unit */}
-      <div className="pt-3">
+      <div
+        className={`
+          py-3 border-b
+          ${darkMode ? 'border-gray-600' : 'border-gray-200'}
+        `}
+      >
         <div className={`text-sm mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
           Wind Speed
         </div>
         <div className="flex gap-2">
           {[
-            { value: 'ms', label: 'm/s' },
             { value: 'kmh', label: 'km/h' },
             { value: 'mph', label: 'mph' }
           ].map((unit) => (
             <button
               key={unit.value}
-              onClick={() => onWindSpeedUnitChange(unit.value as 'ms' | 'kmh' | 'mph')}
+              onClick={() => onWindSpeedUnitChange(unit.value as 'kmh' | 'mph')}
               className={`
                 flex-1 py-1.5 px-2 rounded-md border-none cursor-pointer
                 text-xs font-medium transition-all duration-200
                 ${windSpeedUnit === unit.value
+                  ? 'bg-blue-500 text-white'
+                  : darkMode
+                    ? 'bg-gray-600 text-gray-300'
+                    : 'bg-gray-100 text-gray-600'
+                }
+              `}
+            >
+              {unit.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Pressure Unit */}
+      <div
+        className={`
+          py-3 border-b
+          ${darkMode ? 'border-gray-600' : 'border-gray-200'}
+        `}
+      >
+        <div className={`text-sm mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          Pressure
+        </div>
+        <div className="flex gap-2">
+          {[
+            { value: 'mb', label: 'mb' },
+            { value: 'hPa', label: 'hPa' }
+          ].map((unit) => (
+            <button
+              key={unit.value}
+              onClick={() => onPressureUnitChange(unit.value as 'mb' | 'hPa')}
+              className={`
+                flex-1 py-1.5 px-2 rounded-md border-none cursor-pointer
+                text-xs font-medium transition-all duration-200
+                ${pressureUnit === unit.value
+                  ? 'bg-blue-500 text-white'
+                  : darkMode
+                    ? 'bg-gray-600 text-gray-300'
+                    : 'bg-gray-100 text-gray-600'
+                }
+              `}
+            >
+              {unit.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Precipitation Unit */}
+      <div className="pt-3">
+        <div className={`text-sm mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          Precipitation
+        </div>
+        <div className="flex gap-2">
+          {[
+            { value: 'mm', label: 'mm' },
+            { value: 'in', label: 'in' }
+          ].map((unit) => (
+            <button
+              key={unit.value}
+              onClick={() => onPrecipitationUnitChange(unit.value as 'mm' | 'in')}
+              className={`
+                flex-1 py-1.5 px-2 rounded-md border-none cursor-pointer
+                text-xs font-medium transition-all duration-200
+                ${precipitationUnit === unit.value
                   ? 'bg-blue-500 text-white'
                   : darkMode
                     ? 'bg-gray-600 text-gray-300'
