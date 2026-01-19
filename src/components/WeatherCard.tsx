@@ -9,7 +9,7 @@ interface WeatherCardProps {
 export default function WeatherCard({ stationName, weatherData, loading }: WeatherCardProps) {
   if (loading) {
     return (
-      <div className="w-full max-w-[400px]">
+      <div className="w-full">
         <div className="bg-brand-50 border border-gray-200 rounded-xl p-8 shadow-lg">
           <div className="flex items-center justify-center text-gray-500">
             Data Loading...
@@ -50,7 +50,7 @@ export default function WeatherCard({ stationName, weatherData, loading }: Weath
     .reduce((sum, d, _, arr) => sum + (d.pressure || 0) / arr.length, 0);
 
   return (
-    <div className="w-full max-w-[400px] max-h-[70vh] overflow-y-auto">
+    <div className="w-full max-h-[70vh] overflow-y-auto">
       <div className="bg-primary border border-gray-200 rounded-2xl shadow-lg text-gray-800 p-6">
         {/* Заголовок */}
         <h2 className="text-xl font-semibold text-gray-800 mb-1">

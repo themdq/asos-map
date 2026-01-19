@@ -132,7 +132,7 @@ export default function WeatherStationsMap() {
         {/* Top Bar with Controls */}
         <div className="absolute top-4 left-4 right-4 z-20 flex justify-between items-start pointer-events-none">
           {/* Left Side: Menu Button, Search Bar, and Weather Card */}
-          <div className="flex flex-col gap-3 pointer-events-auto">
+          <div className="flex flex-col gap-3 pointer-events-auto w-lg">
             {/* Menu Button and Search Bar */}
             <div className="flex gap-2 items-center">
               <MenuButton
@@ -149,7 +149,7 @@ export default function WeatherStationsMap() {
 
             {/* Weather Card */}
             {selectedStation && (
-              <div className="max-w-[400px]">
+              <div>
                 <WeatherCard
                   stationName={selectedStation.station_name}
                   weatherData={weatherData}
