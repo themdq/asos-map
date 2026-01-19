@@ -121,3 +121,61 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Mapbox GL Controls Styling */
+.mapboxgl-ctrl-group {
+  background: var(--primary) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+  border: none !important;
+}
+
+.mapboxgl-ctrl-group > button {
+  background-color: transparent !important;
+  border: none !important;
+  width: 36px !important;
+  height: 36px !important;
+  transition: all 0.2s !important;
+}
+
+.mapboxgl-ctrl-group > button + button {
+  border-top: 1px solid var(--border) !important;
+}
+
+.mapboxgl-ctrl-group > button:hover {
+  background-color: var(--accent) !important;
+}
+
+.mapboxgl-ctrl-group > button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.mapboxgl-ctrl-icon {
+  filter: brightness(0) saturate(100%) invert(13%) sepia(8%) saturate(2958%) hue-rotate(215deg) brightness(95%) contrast(92%);
+}
+
+.mapboxgl-ctrl-group > button:hover .mapboxgl-ctrl-icon {
+  filter: brightness(0) saturate(100%) invert(20%) sepia(10%) saturate(3000%) hue-rotate(220deg) brightness(90%) contrast(95%);
+}
+
+.mapboxgl-ctrl-group:not(:empty) {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+}
+
+/* Dark mode support */
+.dark .mapboxgl-ctrl-group {
+  background: var(--card) !important;
+}
+
+.dark .mapboxgl-ctrl-group > button:hover {
+  background-color: var(--accent) !important;
+}
+
+.dark .mapboxgl-ctrl-icon {
+  filter: brightness(0) saturate(100%) invert(98%) sepia(3%) saturate(247%) hue-rotate(201deg) brightness(100%) contrast(98%);
+}
+
+.dark .mapboxgl-ctrl-group > button:hover .mapboxgl-ctrl-icon {
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(105%) contrast(100%);
+}
