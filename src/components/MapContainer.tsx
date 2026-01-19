@@ -46,7 +46,8 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         mapLoadedRef.current = true;
       });
 
-      map.current.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+      map.current.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-right');
+      map.current.addControl(new mapboxgl.GeolocateControl(), 'bottom-right');
     } catch (error) {
       console.error('Map initialization error:', error);
     }
