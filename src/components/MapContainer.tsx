@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import type { Station } from '../types/station';
-import { createPopupHTML } from '../utils/mapMarker';
 
 interface MapContainerProps {
   stations: Station[];
@@ -210,10 +209,6 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
 
       onStationSelect(station);
 
-      popupRef.current
-        .setLngLat(coordinates)
-        .setHTML(createPopupHTML(station))
-        .addTo(map.current);
     });
 
     // Меняем курсор при наведении на кластеры и точки

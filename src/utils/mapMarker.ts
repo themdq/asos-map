@@ -22,14 +22,3 @@ export function createMarkerElement(): HTMLDivElement {
   return el;
 }
 
-export function createPopupHTML(station: Station): string {
-  return `
-    <div style="padding: 12px; min-width: 220px; background: #1a1a1a; border-radius: 8px;">
-      <h3 style="font-weight: bold; font-size: 14px; margin: 0 0 8px 0; color: white;">${station.station_name}</h3>
-      <p style="font-size: 12px; color: #d1d5db; margin: 4px 0;">ID: ${station.station_id}</p>
-      <p style="font-size: 12px; color: #d1d5db; margin: 4px 0;">Network: ${station.station_network}</p>
-      <p style="font-size: 12px; color: #d1d5db; margin: 4px 0;">Elevation: ${station.elevation}m</p>
-      <p style="font-size: 12px; color: #d1d5db; margin: 4px 0;">Timezone: ${station.timezone}</p>
-    </div>
-  `;
-}
