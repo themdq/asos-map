@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import type { Station } from '../types/station';
-import { createMarkerElement, createPopupHTML } from '../utils/mapMarker';
+import { createPopupHTML } from '../utils/mapMarker';
 
 interface MapContainerProps {
   stations: Station[];
@@ -21,8 +21,8 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
 }, ref) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
   const mapLoadedRef = useRef(false);
+  const popupRef = useRef<any>(null);
 
   // Инициализация карты
   useEffect(() => {
@@ -59,38 +59,177 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     };
   }, [scriptLoaded, mapboxToken]);
 
-  // Добавление маркеров
+  // Добавление кластеризации
   useEffect(() => {
     if (!mapLoadedRef.current || !map.current || stations.length === 0) return;
 
     const mapboxgl = (window as any).mapboxgl;
     if (!mapboxgl) return;
 
-    // Очистка старых маркеров
-    markersRef.current.forEach(marker => marker.remove());
-    markersRef.current = [];
+    // Преобразуем станции в GeoJSON формат
+    const geojson = {
+      type: 'FeatureCollection',
+      features: stations.map((station) => ({
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [station.longitude, station.latitude]
+        },
+        properties: {
+          station_id: station.station_id,
+          station_name: station.station_name,
+          station_network: station.station_network,
+          elevation: station.elevation,
+          timezone: station.timezone,
+          latitude: station.latitude,
+          longitude: station.longitude
+        }
+      }))
+    };
 
-    // Добавление маркеров для каждой станции
-    stations.forEach((station) => {
-      const el = createMarkerElement();
+    // Удаляем существующие слои и источники
+    if (map.current.getLayer('clusters')) {
+      map.current.removeLayer('clusters');
+    }
+    if (map.current.getLayer('cluster-count')) {
+      map.current.removeLayer('cluster-count');
+    }
+    if (map.current.getLayer('unclustered-point')) {
+      map.current.removeLayer('unclustered-point');
+    }
+    if (map.current.getSource('stations')) {
+      map.current.removeSource('stations');
+    }
 
-      const popup = new mapboxgl.Popup({
-        offset: 25,
-        closeButton: false,
-        className: 'custom-popup'
-      }).setHTML(createPopupHTML(station));
-
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat([station.longitude, station.latitude])
-        .setPopup(popup)
-        .addTo(map.current);
-
-      el.addEventListener('click', () => {
-        onStationSelect(station);
-      });
-
-      markersRef.current.push(marker);
+    // Добавляем источник данных с кластеризацией
+    map.current.addSource('stations', {
+      type: 'geojson',
+      data: geojson,
+      cluster: true,
+      clusterMaxZoom: 14,
+      clusterRadius: 50
     });
+
+    // Слой для кластеров
+    map.current.addLayer({
+      id: 'clusters',
+      type: 'circle',
+      source: 'stations',
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-color': [
+          'step',
+          ['get', 'point_count'],
+          '#51bbd6',
+          10,
+          '#f1f075',
+          30,
+          '#f28cb1'
+        ],
+        'circle-radius': [
+          'step',
+          ['get', 'point_count'],
+          20,
+          10,
+          30,
+          30,
+          40
+        ]
+      }
+    });
+
+    // Слой для количества точек в кластере
+    map.current.addLayer({
+      id: 'cluster-count',
+      type: 'symbol',
+      source: 'stations',
+      filter: ['has', 'point_count'],
+      layout: {
+        'text-field': '{point_count_abbreviated}',
+        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+        'text-size': 12
+      }
+    });
+
+    // Слой для отдельных точек
+    map.current.addLayer({
+      id: 'unclustered-point',
+      type: 'circle',
+      source: 'stations',
+      filter: ['!', ['has', 'point_count']],
+      paint: {
+        'circle-color': '#11b4da',
+        'circle-radius': 8,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#fff'
+      }
+    });
+
+    // Создаем popup для отображения информации
+    if (!popupRef.current) {
+      popupRef.current = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        className: 'custom-popup'
+      });
+    }
+
+    // Обработчик клика на кластер - зумим к нему
+    map.current.on('click', 'clusters', (e: any) => {
+      const features = map.current.queryRenderedFeatures(e.point, {
+        layers: ['clusters']
+      });
+      const clusterId = features[0].properties.cluster_id;
+      map.current.getSource('stations').getClusterExpansionZoom(
+        clusterId,
+        (err: any, zoom: number) => {
+          if (err) return;
+
+          map.current.easeTo({
+            center: features[0].geometry.coordinates,
+            zoom: zoom
+          });
+        }
+      );
+    });
+
+    // Обработчик клика на отдельную точку
+    map.current.on('click', 'unclustered-point', (e: any) => {
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      const properties = e.features[0].properties;
+
+      const station: Station = {
+        station_id: properties.station_id,
+        station_name: properties.station_name,
+        station_network: properties.station_network,
+        latitude: properties.latitude,
+        longitude: properties.longitude,
+        elevation: properties.elevation,
+        timezone: properties.timezone
+      };
+
+      onStationSelect(station);
+
+      popupRef.current
+        .setLngLat(coordinates)
+        .setHTML(createPopupHTML(station))
+        .addTo(map.current);
+    });
+
+    // Меняем курсор при наведении на кластеры и точки
+    map.current.on('mouseenter', 'clusters', () => {
+      map.current.getCanvas().style.cursor = 'pointer';
+    });
+    map.current.on('mouseleave', 'clusters', () => {
+      map.current.getCanvas().style.cursor = '';
+    });
+    map.current.on('mouseenter', 'unclustered-point', () => {
+      map.current.getCanvas().style.cursor = 'pointer';
+    });
+    map.current.on('mouseleave', 'unclustered-point', () => {
+      map.current.getCanvas().style.cursor = '';
+    });
+
   }, [stations, onStationSelect]);
 
   // Предоставляем метод flyToStation родительскому компоненту через ref
