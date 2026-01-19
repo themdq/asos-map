@@ -24,6 +24,10 @@ export default function WeatherStationsMap() {
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
   useEffect(() => {
+    setMapboxToken('pk.eyJ1IjoidGhlbWRxIiwiYSI6ImNta2tkeXJzdDFkNjYzZ29tMmp4NTF1ejUifQ.fctCq2IYRLfdCr8W1b5Kew');
+  })
+
+  useEffect(() => {
     // Убираем отступы у body
     document.body.style.margin = '0';
     document.body.style.padding = '0';
@@ -224,45 +228,6 @@ export default function WeatherStationsMap() {
             </h1>
           </div>
 
-          {/* Поле для токена */}
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ 
-              display: 'block', 
-              color: '#9ca3af', 
-              fontSize: '12px',
-              marginBottom: '5px'
-            }}>
-              Mapbox Token:
-            </label>
-            <input
-              type="text"
-              value={mapboxToken}
-              onChange={(e) => setMapboxToken(e.target.value)}
-              placeholder="Вставьте ваш Mapbox токен"
-              style={{
-                width: '100%',
-                padding: '10px',
-                backgroundColor: '#2a2a2a',
-                border: '1px solid #444',
-                borderRadius: '6px',
-                color: 'white',
-                fontSize: '13px',
-                boxSizing: 'border-box'
-              }}
-            />
-            <a 
-              href="https://account.mapbox.com/access-tokens/" 
-              target="_blank"
-              style={{ 
-                color: '#3b82f6', 
-                fontSize: '11px',
-                textDecoration: 'none'
-              }}
-            >
-              Получить токен →
-            </a>
-          </div>
-
           {/* Поиск */}
           <div style={{ position: 'relative', marginBottom: '15px' }}>
             <span style={{ 
@@ -403,22 +368,6 @@ export default function WeatherStationsMap() {
             justifyContent: 'center',
             backgroundColor: '#111'
           }}>
-            <div style={{ 
-              textAlign: 'center',
-              color: '#9ca3af',
-              maxWidth: '400px',
-              padding: '20px'
-            }}>
-              <div style={{ fontSize: '64px', marginBottom: '20px' }}>🗺️</div>
-              <h2 style={{ color: 'white', marginBottom: '10px' }}>
-                Введите Mapbox токен
-              </h2>
-              <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                1. Зарегистрируйтесь на <a href="https://account.mapbox.com/" target="_blank" style={{ color: '#3b82f6' }}>mapbox.com</a><br/>
-                2. Создайте токен<br/>
-                3. Вставьте его в поле слева
-              </p>
-            </div>
           </div>
         ) : !scriptLoaded ? (
           <div style={{ 
