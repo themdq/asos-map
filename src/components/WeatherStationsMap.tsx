@@ -109,8 +109,14 @@ export default function WeatherStationsMap() {
     });
   };
 
-  const handleStationClick = async (station: Station) => {
+  const handleStationClick = async (station: Station | null) => {
     setSelectedStation(station);
+
+    if (!station) {
+      setWeatherData([]);
+      return;
+    }
+
     if (mapRef.current?.flyToStation) {
       mapRef.current.flyToStation(station);
     }
@@ -275,6 +281,7 @@ export default function WeatherStationsMap() {
         <MapContainer
           ref={mapRef}
           stations={stations}
+          selectedStation={selectedStation}
           mapboxToken={mapboxToken}
           scriptLoaded={scriptLoaded}
           onStationSelect={handleStationClick}

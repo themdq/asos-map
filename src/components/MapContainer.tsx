@@ -4,6 +4,7 @@ import LoadingOverlay from './LoadingOverlay';
 
 interface MapContainerProps {
   stations: Station[];
+  selectedStation: Station | null;
   mapboxToken: string;
   scriptLoaded: boolean;
   onStationSelect: (station: Station) => void;
@@ -20,6 +21,7 @@ export interface MapRef {
 
 const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   stations,
+  selectedStation,
   mapboxToken,
   scriptLoaded,
   onStationSelect
@@ -28,6 +30,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   const map = useRef<any>(null);
   const mapLoadedRef = useRef(false);
   const popupRef = useRef<any>(null);
+  const selectedStationRef = useRef<Station | null>(selectedStation);
 
   // Инициализация карты
   useEffect(() => {
@@ -54,7 +57,15 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
           if (map.current && !map.current.hasImage('custom-marker')) {
             map.current.addImage('custom-marker', img, { sdf: false });
           }
-          mapLoadedRef.current = true;
+          // Загружаем маркер для выбранной станции
+          const selectedImg = new Image();
+          selectedImg.onload = () => {
+            if (map.current && !map.current.hasImage('selected-marker')) {
+              map.current.addImage('selected-marker', selectedImg, { sdf: false });
+            }
+            mapLoadedRef.current = true;
+          };
+          selectedImg.src = '/marker-selected.svg';
         };
         img.src = '/marker.svg';
       });
@@ -101,6 +112,12 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     };
 
     // Удаляем существующие слои и источники
+    if (map.current.getLayer('selected-point')) {
+      map.current.removeLayer('selected-point');
+    }
+    if (map.current.getSource('selected-station')) {
+      map.current.removeSource('selected-station');
+    }
     if (map.current.getLayer('clusters')) {
       map.current.removeLayer('clusters');
     }
@@ -170,6 +187,35 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       }
     });
 
+    // Добавляем источник и слой для выбранной станции
+    const currentSelected = selectedStationRef.current;
+    map.current.addSource('selected-station', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: currentSelected ? [{
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [currentSelected.longitude, currentSelected.latitude]
+          },
+          properties: {}
+        }] : []
+      }
+    });
+
+    map.current.addLayer({
+      id: 'selected-point',
+      type: 'symbol',
+      source: 'selected-station',
+      layout: {
+        'icon-image': 'selected-marker',
+        'icon-size': 0.18,
+        'icon-allow-overlap': true,
+        'icon-anchor': 'bottom'
+      }
+    });
+
     // Создаем popup для отображения информации
     if (!popupRef.current) {
       popupRef.current = new mapboxgl.Popup({
@@ -232,6 +278,48 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     });
 
   }, [stations, onStationSelect]);
+
+  // Обновляем слой выбранной станции
+  useEffect(() => {
+    selectedStationRef.current = selectedStation;
+
+    if (!map.current) return;
+
+    const updateSelectedStation = () => {
+      const source = map.current?.getSource('selected-station');
+      if (!source) return false;
+
+      if (selectedStation) {
+        source.setData({
+          type: 'FeatureCollection',
+          features: [{
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [selectedStation.longitude, selectedStation.latitude]
+            },
+            properties: {}
+          }]
+        });
+      } else {
+        source.setData({
+          type: 'FeatureCollection',
+          features: []
+        });
+      }
+      return true;
+    };
+
+    // Пробуем обновить сразу, если source ещё не создан - ждём
+    if (!updateSelectedStation()) {
+      const interval = setInterval(() => {
+        if (updateSelectedStation()) {
+          clearInterval(interval);
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [selectedStation]);
 
   // Предоставляем методы родительскому компоненту через ref
   useImperativeHandle(ref, () => ({
