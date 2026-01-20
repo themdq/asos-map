@@ -150,6 +150,21 @@ export default function WeatherCard({
     });
   };
 
+  const formatTimezoneUTC = (tz: string) => {
+    try {
+      const now = new Date();
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: tz,
+        timeZoneName: 'shortOffset'
+      });
+      const parts = formatter.formatToParts(now);
+      const offsetPart = parts.find(p => p.type === 'timeZoneName');
+      return offsetPart?.value || tz;
+    } catch {
+      return tz;
+    }
+  };
+
   // Компонент метрики с градиентной полоской
   const MetricRow = ({
     label,
@@ -232,7 +247,7 @@ export default function WeatherCard({
 
         {/* Date/Time */}
         <div className="text-gray-500 text-sm font-medium mb-3">
-          {formatDate(currentData.timestamp)}, {formatTime(currentData.timestamp)} {timezone}
+          {formatDate(currentData.timestamp)}, {formatTime(currentData.timestamp)} {formatTimezoneUTC(timezone)}
         </div>
 
         {/* Metrics List */}
