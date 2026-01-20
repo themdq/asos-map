@@ -15,7 +15,7 @@ export default function SearchBar({
 }: SearchBarProps) {
   return (
     <div className="relative w-full">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-graphit" />
       <input
         type="text"
         value={value}
@@ -26,7 +26,7 @@ export default function SearchBar({
           transition-colors w-full cursor-text
           ${darkMode
             ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400'
-            : 'bg-primary border-gray-300 text-gray-800 placeholder:text-gray-500'
+            : 'bg-primary border-gray-300 text-graphit placeholder:text-graphit'
           }
           border focus:ring-2 focus:ring-blue-500
         `}

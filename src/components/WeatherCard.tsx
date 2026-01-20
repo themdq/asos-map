@@ -99,11 +99,11 @@ export default function WeatherCard({
 
   return (
     <div className="w-full">
-      <div className="bg-primary border border-gray-200 rounded-[5px] shadow-lg text-gray-800 p-4">
+      <div className="bg-primary border border-gray-200 rounded-[5px] shadow-lg text-graphit p-4">
         {/* Заголовок */}
         <div className="flex justify-between items-start mb-3">
           <div>
-            <h2 className="text-base font-semibold text-gray-800">
+            <h2 className="text-base font-semibold text-graphit">
               {stationName}
             </h2>
             <p className="text-gray-500 text-xs">
@@ -111,7 +111,7 @@ export default function WeatherCard({
             </p>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-light text-gray-800">
+            <div className="text-3xl font-light text-graphit">
               {Math.round(convertTemp(currentData.temperature))}&deg;{temperatureUnit}
             </div>
             <div className="text-gray-400 text-[10px]">
@@ -125,7 +125,7 @@ export default function WeatherCard({
           {/* Ветер */}
           <div className="rounded bg-primary-foreground p-2 text-center">
             <div className="text-gray-400 text-[9px] mb-0.5">Wind</div>
-            <div className="text-gray-800 text-sm font-semibold">
+            <div className="text-graphit text-sm font-semibold">
               {windSpeed.toFixed(1)}
             </div>
             <div className="text-gray-400 text-[9px]">{windSpeedUnit}</div>
@@ -137,7 +137,7 @@ export default function WeatherCard({
           {/* Точка росы */}
           <div className="rounded bg-primary-foreground p-2 text-center">
             <div className="text-gray-400 text-[9px] mb-0.5">Dew</div>
-            <div className="text-gray-800 text-sm font-semibold">
+            <div className="text-graphit text-sm font-semibold">
               {Math.round(convertTemp(currentData.dewpoint))}&deg;
             </div>
           </div>
@@ -145,7 +145,7 @@ export default function WeatherCard({
           {/* Давление */}
           <div className="rounded bg-primary-foreground p-2 text-center">
             <div className="text-gray-400 text-[9px] mb-0.5">Pressure</div>
-            <div className="text-gray-800 text-sm font-semibold">
+            <div className="text-graphit text-sm font-semibold">
               {currentData.pressure ? Math.round(convertPressure(currentData.pressure)) : '—'}
             </div>
             <div className="text-gray-400 text-[9px]">{pressureUnit}</div>
@@ -154,7 +154,7 @@ export default function WeatherCard({
           {/* Осадки */}
           <div className="rounded bg-primary-foreground p-2 text-center">
             <div className="text-gray-400 text-[9px] mb-0.5">Precip</div>
-            <div className="text-gray-800 text-sm font-semibold">
+            <div className="text-graphit text-sm font-semibold">
               {convertPrecipitation(currentData.precip).toFixed(precipitationUnit === 'in' ? 2 : 1)}
             </div>
             <div className="text-gray-400 text-[9px]">{precipitationUnit}</div>

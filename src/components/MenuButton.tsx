@@ -57,13 +57,13 @@ export default function MenuButton({
             }
             ${darkMode
               ? 'text-white hover:bg-gray-600'
-              : 'text-gray-800 hover:bg-gray-50'
+              : 'text-graphit hover:bg-accent'
             }
           `}
         >
           <span
             className={`
-              text-base font-semibold whitespace-nowrap
+              text-graphit font-semibold whitespace-nowrap
               transition-all duration-300
               ${isExpanded
                 ? 'opacity-100 max-w-[200px]'
@@ -104,7 +104,7 @@ export default function MenuButton({
         border shadow-md transition-all duration-200 cursor-pointer
         ${darkMode
           ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
-          : 'bg-primary border-gray-300 text-gray-800 hover:bg-gray-50'
+          : 'bg-primary border-gray-300 text-graphit hover:bg-accent'
         }
       `}
     >
