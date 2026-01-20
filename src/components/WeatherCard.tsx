@@ -179,14 +179,14 @@ export default function WeatherCard({
     unit: string;
     percent: number;
     gradient: string;
-    extra?: string;
+    extra?: React.ReactNode;
   }) => (
     <div className="py-1.5">
       <div className="flex items-center gap-3">
         <div className="w-28 shrink-0">
           <div className="text-gray-500 text-xs uppercase">{label}</div>
-          <div className="text-gray-500 text-xs">
-            {value} {unit} {extra && <span className="text-gray-400">{extra}</span>}
+          <div className="text-gray-500 text-xs flex items-center gap-1">
+            {value} {unit} {extra && <span className="text-gray-400 flex items-center gap-0.5">{extra}</span>}
           </div>
         </div>
         <div className="w-32 h-3 bg-gray-100 rounded-full overflow-hidden">
@@ -274,7 +274,19 @@ export default function WeatherCard({
             unit={windSpeedUnit}
             percent={normalizeWind(windSpeed)}
             gradient="linear-gradient(90deg, #ddd6fe 0%, #c4b5fd 100%)"
-            extra={getWindDirectionLabel(windDirection)}
+            extra={
+              <>
+                <svg
+                  className="w-3 h-3"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  style={{ transform: `rotate(${windDirection + 180}deg)` }}
+                >
+                  <path d="M12 2L6 12h4v10h4V12h4L12 2z" />
+                </svg>
+                {getWindDirectionLabel(windDirection)}
+              </>
+            }
           />
           <MetricRow
             label="Pressure"
