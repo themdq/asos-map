@@ -56,7 +56,7 @@ export default function Sidebar({
                     className={`
                       p-[15px] rounded-lg mb-2 cursor-pointer transition-all duration-200 border
                       ${isSelected
-                        ? 'bg-blue-500 border-blue-500'
+                        ? 'bg-secondary-foreground'
                         : 'bg-primary-foreground border-gray-200 hover:bg-gray-100'
                       }
                     `}
