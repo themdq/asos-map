@@ -351,7 +351,7 @@ export default function WeatherCard({
             onClick={copyCoordinates}
             className="flex items-center gap-1 hover:text-secondary-foreground transition-colors group"
           >
-            <span>{elevation}m</span>
+            <span>{precipitationUnit === 'in' ? `${Math.round(elevation * 3.28084)}ft` : `${elevation}m`}</span>
             <span className="text-gray-300">•</span>
             
             <span>{latitude.toFixed(4)}, {longitude.toFixed(4)}</span>

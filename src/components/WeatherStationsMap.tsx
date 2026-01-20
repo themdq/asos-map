@@ -156,6 +156,7 @@ export default function WeatherStationsMap() {
           searchQuery={searchQuery}
           selectedStation={selectedStation}
           favoriteStations={favoriteStations}
+          precipitationUnit={precipitationUnit}
           onSearchChange={setSearchQuery}
           onStationClick={handleStationClick}
           onToggleFavorite={handleToggleFavorite}

@@ -6,6 +6,7 @@ interface SidebarProps {
   searchQuery: string;
   selectedStation: Station | null;
   favoriteStations?: Set<string>;
+  precipitationUnit?: 'mm' | 'in';
   onSearchChange: (query: string) => void;
   onStationClick: (station: Station | null) => void;
   onToggleFavorite?: (stationId: string) => void;
@@ -20,6 +21,7 @@ export default function Sidebar({
   searchQuery,
   selectedStation,
   favoriteStations = emptySet,
+  precipitationUnit = 'mm',
   onSearchChange,
   onStationClick,
   onToggleFavorite,
@@ -100,7 +102,7 @@ export default function Sidebar({
                           text-xs my-[3px] transition-colors duration-200
                           ${isSelected ? 'text-white/90' : 'text-gray-500 group-hover:text-white/90'}
                         `}>
-                          ⛰️ {station.elevation}m
+                          ⛰️ {precipitationUnit === 'in' ? `${Math.round(station.elevation * 3.28084)}ft` : `${station.elevation}m`}
                         </p>
                       </div>
                       <span className={`
