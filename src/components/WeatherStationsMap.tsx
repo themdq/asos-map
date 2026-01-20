@@ -107,44 +107,42 @@ export default function WeatherStationsMap() {
     }
   };
 
-  // Обновляем размер карты при изменении состояния sidebar
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (mapRef.current?.resize) {
-        mapRef.current.resize();
-      }
-    }, 300); // Задержка совпадает с transition-duration
-
-    return () => clearTimeout(timer);
-  }, [sidebarOpen]);
-
   return (
     <div
       className={`
-        flex h-screen w-full relative font-sans transition-colors duration-300
+        relative h-screen w-full font-sans transition-colors duration-300
         ${darkMode ? 'bg-gray-800' : 'bg-[#EFF5E8]'}
       `}
     >
-      {/* Sidebar */}
-      {sidebarOpen && (
-        <div className="transition-all duration-300 flex-shrink-0" style={{ width: '400px' }}>
-          <Sidebar
-            stations={stations}
-            loading={loading}
-            searchQuery={searchQuery}
-            selectedStation={selectedStation}
-            onSearchChange={setSearchQuery}
-            onStationClick={handleStationClick}
-          />
-        </div>
-      )}
+      {/* Sidebar Overlay */}
+      <div
+        className={`
+          absolute left-0 top-0 h-full z-30 transition-transform duration-300
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}
+        style={{ width: '400px' }}
+      >
+        <Sidebar
+          stations={stations}
+          loading={loading}
+          searchQuery={searchQuery}
+          selectedStation={selectedStation}
+          onSearchChange={setSearchQuery}
+          onStationClick={handleStationClick}
+        />
+      </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 relative overflow-hidden">
+      <div className="relative w-full h-full overflow-hidden">
         {/* Top Bar with Controls */}
         <div className="absolute top-4 left-4 right-4 z-20 flex justify-between items-start pointer-events-none">
           {/* Left Side: Menu Button, Search Bar, and Weather Card */}
-          <div className="flex flex-col gap-3 pointer-events-auto w-lg">
+          <div
+            className={`
+              flex flex-col gap-3 pointer-events-auto w-lg transition-transform duration-300
+              ${sidebarOpen ? 'translate-x-[400px]' : 'translate-x-0'}
+            `}
+          >
             {/* Menu Button and Search Bar */}
             <div className="flex gap-2 items-center">
               <MenuButton
