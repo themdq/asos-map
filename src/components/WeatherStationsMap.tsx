@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Plus, Minus, LocateFixed } from 'lucide-react';
 import type { Station } from '../types/station';
 import type { WeatherPoint } from '../types/weather';
 import { fetchStations } from '../api/stations';
@@ -210,6 +211,49 @@ export default function WeatherStationsMap() {
               />
             </MenuButton>
           </div>
+        </div>
+
+        {/* Map Controls - Bottom Right */}
+        <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-2 pointer-events-auto">
+          <button
+            onClick={() => mapRef.current?.zoomIn()}
+            className={`
+              flex items-center justify-center rounded-[5px] p-2.5
+              border shadow-md transition-all duration-200 cursor-pointer
+              ${darkMode
+                ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
+                : 'bg-primary border-gray-200 text-graphit hover:bg-accent'
+              }
+            `}
+          >
+            <Plus className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => mapRef.current?.zoomOut()}
+            className={`
+              flex items-center justify-center rounded-[5px] p-2.5
+              border shadow-md transition-all duration-200 cursor-pointer
+              ${darkMode
+                ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
+                : 'bg-primary border-gray-200 text-graphit hover:bg-accent'
+              }
+            `}
+          >
+            <Minus className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => mapRef.current?.geolocate()}
+            className={`
+              flex items-center justify-center rounded-[5px] p-2.5
+              border shadow-md transition-all duration-200 cursor-pointer
+              ${darkMode
+                ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
+                : 'bg-primary border-gray-200 text-graphit hover:bg-accent'
+              }
+            `}
+          >
+            <LocateFixed className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Map Container */}

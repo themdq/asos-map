@@ -13,6 +13,9 @@ export interface MapRef {
   flyToStation: (station: Station) => void;
   flyTo: (lng: number, lat: number, zoom?: number) => void;
   resize: () => void;
+  zoomIn: () => void;
+  zoomOut: () => void;
+  geolocate: () => void;
 }
 
 const MapContainer = forwardRef<MapRef, MapContainerProps>(({
@@ -56,8 +59,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         img.src = '/marker.svg';
       });
 
-      map.current.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-right');
-      map.current.addControl(new mapboxgl.GeolocateControl(), 'bottom-right');
+      // Контролы убраны - используем кастомные кнопки
     } catch (error) {
       console.error('Map initialization error:', error);
     }
@@ -254,6 +256,32 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     resize: () => {
       if (map.current && map.current.resize) {
         map.current.resize();
+      }
+    },
+    zoomIn: () => {
+      if (map.current) {
+        map.current.zoomIn();
+      }
+    },
+    zoomOut: () => {
+      if (map.current) {
+        map.current.zoomOut();
+      }
+    },
+    geolocate: () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            if (map.current) {
+              map.current.flyTo({
+                center: [position.coords.longitude, position.coords.latitude],
+                zoom: 12,
+                duration: 2000
+              });
+            }
+          },
+          (error) => console.error('Geolocation error:', error)
+        );
       }
     }
   }));
