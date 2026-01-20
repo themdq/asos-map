@@ -62,6 +62,14 @@ export default function WeatherCard({
     return precipitationUnit === 'in' ? precipMm / 25.4 : precipMm;
   };
 
+  // Расчёт относительной влажности по формуле Магнуса
+  const calcHumidity = (temp: number, dewpoint: number) => {
+    const a = 17.625;
+    const b = 243.04;
+    const rh = 100 * Math.exp((a * dewpoint) / (b + dewpoint)) / Math.exp((a * temp) / (b + temp));
+    return Math.min(100, Math.max(0, rh));
+  };
+
   // Текущая точка данных
   const currentData = weatherData[currentIndex];
 
@@ -134,11 +142,14 @@ export default function WeatherCard({
             </span>
           </div>
 
-          {/* Точка росы */}
+          {/* Влажность */}
           <div className="rounded bg-primary-foreground p-2 text-center">
-            <div className="text-gray-400 text-[9px] mb-0.5">Dew</div>
+            <div className="text-gray-400 text-[9px] mb-0.5">Humidity</div>
             <div className="text-graphit text-sm font-semibold">
-              {Math.round(convertTemp(currentData.dewpoint))}&deg;
+              {Math.round(calcHumidity(currentData.temperature, currentData.dewpoint))}%
+            </div>
+            <div className="text-gray-400 text-[9px]">
+              dew {Math.round(convertTemp(currentData.dewpoint))}&deg;
             </div>
           </div>
 
