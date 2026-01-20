@@ -5,6 +5,7 @@ import LoadingOverlay from './LoadingOverlay';
 interface MapContainerProps {
   stations: Station[];
   selectedStation: Station | null;
+  darkMode?: boolean;
   mapboxToken: string;
   scriptLoaded: boolean;
   onStationSelect: (station: Station) => void;
@@ -22,6 +23,7 @@ export interface MapRef {
 const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   stations,
   selectedStation,
+  darkMode = false,
   mapboxToken,
   scriptLoaded,
   onStationSelect
@@ -96,6 +98,35 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   useEffect(() => {
     onStationSelectRef.current = onStationSelect;
   }, [onStationSelect]);
+
+  // Переключение стиля карты при смене темы
+  useEffect(() => {
+    if (!map.current || !mapLoadedRef.current) return;
+
+    const newStyle = darkMode
+      ? 'mapbox://styles/mapbox/dark-v11'
+      : 'mapbox://styles/mapbox/standard';
+
+    map.current.setStyle(newStyle);
+
+    // После смены стиля нужно заново добавить изображения маркеров
+    map.current.once('style.load', () => {
+      const img = new Image();
+      img.onload = () => {
+        if (map.current && !map.current.hasImage('custom-marker')) {
+          map.current.addImage('custom-marker', img, { sdf: false });
+        }
+        const selectedImg = new Image();
+        selectedImg.onload = () => {
+          if (map.current && !map.current.hasImage('selected-marker')) {
+            map.current.addImage('selected-marker', selectedImg, { sdf: false });
+          }
+        };
+        selectedImg.src = '/marker-selected.svg';
+      };
+      img.src = '/marker.svg';
+    });
+  }, [darkMode]);
 
   // Добавление кластеризации
   useEffect(() => {

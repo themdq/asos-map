@@ -259,6 +259,7 @@ export default function WeatherStationsMap() {
           ref={mapRef}
           stations={stations}
           selectedStation={selectedStation}
+          darkMode={darkMode}
           mapboxToken={mapboxToken}
           scriptLoaded={scriptLoaded}
           onStationSelect={handleStationClick}
