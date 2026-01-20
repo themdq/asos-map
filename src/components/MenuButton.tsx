@@ -41,7 +41,7 @@ export default function MenuButton({
           }
         `}
         style={{
-          width: isExpanded ? '250px' : '44px',
+          width: isExpanded ? '180px' : '44px',
           height: isExpanded ? 'auto' : '44px'
         }}
       >
