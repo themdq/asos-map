@@ -417,6 +417,8 @@ export default function WeatherCard({
             gradient="linear-gradient(90deg, #ddd6fe 0%, #c4b5fd 100%)"
             extra={
               <>
+                
+                {getWindDirectionLabel(windDirection)}
                 <svg
                   className="w-3 h-3"
                   viewBox="0 0 24 24"
@@ -425,7 +427,6 @@ export default function WeatherCard({
                 >
                   <path d="M12 2L6 12h4v10h4V12h4L12 2z" />
                 </svg>
-                {getWindDirectionLabel(windDirection)}
               </>
             }
           />
