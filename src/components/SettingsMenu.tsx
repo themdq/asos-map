@@ -73,7 +73,7 @@ export default function SettingsMenu({
                 flex-1 py-1.5 px-3 rounded-md border-none cursor-pointer
                 text-[13px] font-medium transition-all duration-200
                 ${temperatureUnit === unit
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-accent text-white'
                   : darkMode
                     ? 'bg-gray-600 text-gray-300'
                     : 'bg-gray-100 text-gray-600'
@@ -108,7 +108,7 @@ export default function SettingsMenu({
                 flex-1 py-1.5 px-2 rounded-md border-none cursor-pointer
                 text-xs font-medium transition-all duration-200
                 ${windSpeedUnit === unit.value
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-accent text-white'
                   : darkMode
                     ? 'bg-gray-600 text-gray-300'
                     : 'bg-gray-100 text-gray-600'
@@ -143,7 +143,7 @@ export default function SettingsMenu({
                 flex-1 py-1.5 px-2 rounded-md border-none cursor-pointer
                 text-xs font-medium transition-all duration-200
                 ${pressureUnit === unit.value
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-accent text-white'
                   : darkMode
                     ? 'bg-gray-600 text-gray-300'
                     : 'bg-gray-100 text-gray-600'
@@ -173,7 +173,7 @@ export default function SettingsMenu({
                 flex-1 py-1.5 px-2 rounded-md border-none cursor-pointer
                 text-xs font-medium transition-all duration-200
                 ${precipitationUnit === unit.value
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-accent text-white'
                   : darkMode
                     ? 'bg-gray-600 text-gray-300'
                     : 'bg-gray-100 text-gray-600'

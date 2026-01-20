@@ -96,10 +96,10 @@ export default function Sidebar({
                         px-2 py-1 rounded-[5px] text-[11px] font-medium
                         ${isSelected
                           ? 'bg-white/20 text-white'
-                          : 'bg-gray-200 text-gray-700'
+                          : 'bg-accent text-gray-700'
                         }
                       `}>
-                        {station.station_network}
+                        {station.station_network.split('_')[0]}
                       </span>
                     </div>
                   </div>
