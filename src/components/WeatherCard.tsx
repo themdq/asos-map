@@ -162,13 +162,34 @@ export default function WeatherCard({
   };
 
   const normalizePressure = (p: number | null) => {
-    if (p === null || maxPressure === minPressure) return 50;
+    if (p === null) return 0;
+    if (maxPressure === minPressure) return 50;
     return ((p - minPressure) / (maxPressure - minPressure)) * 100;
   };
 
   const normalizePrecip = (p: number) => {
     return (p / maxPrecip) * 100;
   };
+
+  // Градиент для температуры: холодные цвета для низких, тёплые для высоких
+  const getTemperatureGradient = (tempF: number) => {
+    const tempC = toCelsius(tempF);
+    // Холодно: < 10°C — синие тона
+    // Тепло: > 20°C — красные/оранжевые тона
+    // Между — переход
+    if (tempC < 10) {
+      return 'linear-gradient(90deg, #93c5fd 0%, #60a5fa 100%)'; // blue
+    } else if (tempC > 25) {
+      return 'linear-gradient(90deg, #fca5a5 0%, #f87171 100%)'; // red
+    } else if (tempC > 18) {
+      return 'linear-gradient(90deg, #fdba74 0%, #fb923c 100%)'; // orange
+    } else {
+      return 'linear-gradient(90deg, #a5f3fc 0%, #67e8f9 100%)'; // cyan (переходный)
+    }
+  };
+
+  // Зелёный градиент в цветах сайта
+  const greenGradient = 'linear-gradient(90deg, #c8d5cb 0%, #A4B7AA 100%)';
 
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString('en-US', {
@@ -398,7 +419,7 @@ export default function WeatherCard({
             value={Math.round(currentTemp)}
             unit={`°${temperatureUnit}`}
             percent={normalizeTemp(currentData.temperature)}
-            gradient="linear-gradient(90deg, #fecaca 0%, #fca5a5 100%)"
+            gradient={getTemperatureGradient(currentData.temperature)}
             extra={`${Math.round(convertTemp(maxTempRaw))}° / ${Math.round(convertTemp(minTempRaw))}°`}
           />
           <MetricRow
@@ -406,7 +427,7 @@ export default function WeatherCard({
             value={Math.round(currentHumidity)}
             unit="%"
             percent={normalizeHumidity(currentHumidity)}
-            gradient="linear-gradient(90deg, #a5f3fc 0%, #67e8f9 100%)"
+            gradient={greenGradient}
             extra={`dew ${Math.round(convertTemp(currentData.dewpoint))}°`}
           />
           <MetricRow
@@ -414,10 +435,9 @@ export default function WeatherCard({
             value={windSpeed.toFixed(1)}
             unit={windSpeedUnit}
             percent={normalizeWind(windSpeed)}
-            gradient="linear-gradient(90deg, #ddd6fe 0%, #c4b5fd 100%)"
+            gradient={greenGradient}
             extra={
               <>
-                
                 {getWindDirectionLabel(windDirection)}
                 <svg
                   className="w-3 h-3"
@@ -435,14 +455,14 @@ export default function WeatherCard({
             value={currentData.pressure ? Math.round(convertPressure(currentData.pressure)) : '—'}
             unit={pressureUnit}
             percent={normalizePressure(currentData.pressure)}
-            gradient="linear-gradient(90deg, #fef08a 0%, #fde047 100%)"
+            gradient={greenGradient}
           />
           <MetricRow
             label="Precipitation"
             value={currentPrecip.toFixed(precipitationUnit === 'in' ? 2 : 1)}
             unit={precipitationUnit}
             percent={normalizePrecip(currentPrecip)}
-            gradient="linear-gradient(90deg, #bbf7d0 0%, #86efac 100%)"
+            gradient={greenGradient}
           />
         </div>
 
