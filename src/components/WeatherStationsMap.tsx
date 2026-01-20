@@ -190,10 +190,13 @@ export default function WeatherStationsMap() {
                 icon="panel_left"
                 isExpanded={sidebarOpen}
               />
-              <SearchBar
-                value={searchQuery}
-                onChange={setSearchQuery}
-              />
+              {/* SearchBar — скрыт на мобильных, там он в sidebar */}
+              <div className="hidden md:block">
+                <SearchBar
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                />
+              </div>
             </div>
 
             {/* Weather Card */}

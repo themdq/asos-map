@@ -1,5 +1,6 @@
 import type { Station } from '../types/station';
 import MenuButton from './MenuButton';
+import SearchBar from './SearchBar';
 
 interface SidebarProps {
   stations: Station[];
@@ -35,6 +36,14 @@ export default function Sidebar({
     station.station_id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleStationClick = (station: Station | null) => {
+    onStationClick(station);
+    // Закрываем sidebar на мобильных при выборе станции
+    if (station && onClose && window.innerWidth < 768) {
+      onClose();
+    }
+  };
+
   return (
     <div className="w-full md:w-[400px] bg-primary border-r border-border h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)] flex flex-col">
       {/* Fixed header */}
@@ -62,6 +71,10 @@ export default function Sidebar({
             </div>
           )}
         </div>
+        {/* SearchBar — только на мобильных */}
+        <div className="md:hidden mt-3">
+          <SearchBar value={searchQuery} onChange={onSearchChange} />
+        </div>
       </div>
 
       {/* Scrollable content */}
@@ -84,7 +97,7 @@ export default function Sidebar({
                 return (
                   <div
                     key={station.station_id}
-                    onClick={() => onStationClick(isSelected ? null : station)}
+                    onClick={() => handleStationClick(isSelected ? null : station)}
                     className={`
                       group p-[15px] pb-8 rounded-[5px] mb-2 cursor-pointer transition-all duration-200 border relative
                       ${isSelected
