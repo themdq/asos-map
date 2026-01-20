@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Plus, Minus, LocateFixed } from 'lucide-react';
 import type { Station } from '../types/station';
-import type { WeatherPoint } from '../types/weather';
-import { fetchStations } from '../api/stations';
-import { fetchHistoricalWeather } from '../api/weather';
+import { useStationsQuery } from '../hooks/useStationsQuery';
+import { useHistoricalQuery } from '../hooks/useHistoricalQuery';
 import Sidebar from './Sidebar';
 import MapContainer, { type MapRef } from './MapContainer';
 import WeatherCard from './WeatherCard';
@@ -14,14 +13,10 @@ import SettingsMenu from './SettingsMenu';
 export default function WeatherStationsMap() {
   const mapRef = useRef<MapRef>(null);
 
-  const [stations, setStations] = useState<Station[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN;
   const [scriptLoaded, setScriptLoaded] = useState(false);
-  const [weatherData, setWeatherData] = useState<WeatherPoint[]>([]);
-  const [weatherLoading, setWeatherLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -30,6 +25,11 @@ export default function WeatherStationsMap() {
   const [pressureUnit, setPressureUnit] = useState<'mb' | 'hPa'>('mb');
   const [precipitationUnit, setPrecipitationUnit] = useState<'mm' | 'in'>('mm');
   const [favoriteStations, setFavoriteStations] = useState<Set<string>>(new Set());
+
+  // Кэшированные запросы
+  const { data: stations = [], isLoading: loading } = useStationsQuery();
+  const { data: weatherResponse, isLoading: weatherLoading } = useHistoricalQuery(selectedStation?.station_id);
+  const weatherData = weatherResponse?.points ?? [];
 
 
   // Close settings menu and weather card when clicking outside
@@ -74,22 +74,6 @@ export default function WeatherStationsMap() {
     };
   }, []);
 
-  useEffect(() => {
-    loadStations();
-  }, []);
-
-  const loadStations = async () => {
-    try {
-      setLoading(true);
-      const data = await fetchStations();
-      setStations(data);
-    } catch (error) {
-      console.error('Error loading stations:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleLogoClick = () => {
     setSelectedStation(null);
     if (mapRef.current?.flyTo) {
@@ -109,28 +93,11 @@ export default function WeatherStationsMap() {
     });
   };
 
-  const handleStationClick = async (station: Station | null) => {
+  const handleStationClick = (station: Station | null) => {
     setSelectedStation(station);
 
-    if (!station) {
-      setWeatherData([]);
-      return;
-    }
-
-    if (mapRef.current?.flyToStation) {
+    if (station && mapRef.current?.flyToStation) {
       mapRef.current.flyToStation(station);
-    }
-
-    // Загружаем погодные данные для выбранной станции
-    try {
-      setWeatherLoading(true);
-      const data = await fetchHistoricalWeather(station.station_id);
-      setWeatherData(data.points);
-    } catch (error) {
-      console.error('Error loading weather data:', error);
-      setWeatherData([]);
-    } finally {
-      setWeatherLoading(false);
     }
   };
 
