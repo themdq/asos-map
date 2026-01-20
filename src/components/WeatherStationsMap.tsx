@@ -29,6 +29,7 @@ export default function WeatherStationsMap() {
   const [windSpeedUnit, setWindSpeedUnit] = useState<'kmh' | 'mph'>('kmh');
   const [pressureUnit, setPressureUnit] = useState<'mb' | 'hPa'>('mb');
   const [precipitationUnit, setPrecipitationUnit] = useState<'mm' | 'in'>('mm');
+  const [favoriteStations, setFavoriteStations] = useState<Set<string>>(new Set());
 
 
   // Close settings menu and weather card when clicking outside
@@ -96,6 +97,18 @@ export default function WeatherStationsMap() {
     }
   };
 
+  const handleToggleFavorite = (stationId: string) => {
+    setFavoriteStations(prev => {
+      const next = new Set(prev);
+      if (next.has(stationId)) {
+        next.delete(stationId);
+      } else {
+        next.add(stationId);
+      }
+      return next;
+    });
+  };
+
   const handleStationClick = async (station: Station) => {
     setSelectedStation(station);
     if (mapRef.current?.flyToStation) {
@@ -136,8 +149,10 @@ export default function WeatherStationsMap() {
           loading={loading}
           searchQuery={searchQuery}
           selectedStation={selectedStation}
+          favoriteStations={favoriteStations}
           onSearchChange={setSearchQuery}
           onStationClick={handleStationClick}
+          onToggleFavorite={handleToggleFavorite}
           onLogoClick={handleLogoClick}
         />
       </div>
