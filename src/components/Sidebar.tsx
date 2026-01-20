@@ -6,7 +6,7 @@ interface SidebarProps {
   searchQuery: string;
   selectedStation: Station | null;
   onSearchChange: (query: string) => void;
-  onStationClick: (station: Station) => void;
+  onStationClick: (station: Station | null) => void;
   onLogoClick: () => void;
 }
 
@@ -60,7 +60,7 @@ export default function Sidebar({
                 return (
                   <div
                     key={station.station_id}
-                    onClick={() => onStationClick(station)}
+                    onClick={() => onStationClick(isSelected ? null : station)}
                     className={`
                       group p-[15px] rounded-[5px] mb-2 cursor-pointer transition-all duration-200 border
                       ${isSelected
