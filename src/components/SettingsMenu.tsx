@@ -1,3 +1,5 @@
+import { Sun, Moon } from 'lucide-react';
+
 interface SettingsMenuProps {
   darkMode: boolean;
   temperatureUnit: 'C' | 'F';
@@ -26,32 +28,44 @@ export default function SettingsMenu({
   return (
     <div className="min-w-[250px]">{/* Контейнер для содержимого */}
 
-      {/* Dark Mode Toggle */}
+      {/* Theme Toggle */}
       <div
         className={`
-          flex items-center justify-between py-3 border-b
+          py-3 border-b
           ${darkMode ? 'border-gray-600' : 'border-gray-200'}
         `}
       >
-        <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-          Dark Mode
-        </span>
-        <button
-          onClick={onDarkModeToggle}
-          className={`
-            w-12 h-[26px] rounded-full border-none cursor-pointer relative
-            transition-colors duration-200
-            ${darkMode ? 'bg-blue-500' : 'bg-gray-300'}
-          `}
-        >
-          <div
+        <div className={`text-sm mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          Theme
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => darkMode && onDarkModeToggle()}
             className={`
-              w-[22px] h-[22px] rounded-full bg-white absolute top-0.5
-              transition-all duration-200 shadow-md
-              ${darkMode ? 'left-6' : 'left-0.5'}
+              flex-1 py-1.5 px-3 rounded-md border-none cursor-pointer
+              flex items-center justify-center transition-all duration-200
+              ${!darkMode
+                ? 'bg-secondary-foreground text-white'
+                : 'bg-gray-600 text-gray-300'
+              }
             `}
-          />
-        </button>
+          >
+            <Sun className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => !darkMode && onDarkModeToggle()}
+            className={`
+              flex-1 py-1.5 px-3 rounded-md border-none cursor-pointer
+              flex items-center justify-center transition-all duration-200
+              ${darkMode
+                ? 'bg-secondary-foreground text-white'
+                : 'bg-primary-foreground text-gray-600'
+              }
+            `}
+          >
+            <Moon className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Temperature Unit */}
