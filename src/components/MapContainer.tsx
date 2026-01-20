@@ -130,7 +130,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       source: 'stations',
       filter: ['has', 'point_count'],
       paint: {
-        'circle-color': '#ACC6D0',
+        'circle-color': '#A4B7AA',
         'circle-radius': [
           'step',
           ['get', 'point_count'],
