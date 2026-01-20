@@ -31,6 +31,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   const mapLoadedRef = useRef(false);
   const popupRef = useRef<any>(null);
   const selectedStationRef = useRef<Station | null>(selectedStation);
+  const clusterMarkersRef = useRef<Map<number, any>>(new Map());
 
   // Инициализация карты
   useEffect(() => {
@@ -76,6 +77,12 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     }
 
     return () => {
+      // Очищаем HTML маркеры
+      clusterMarkersRef.current.forEach((value) => {
+        value.marker.remove();
+      });
+      clusterMarkersRef.current.clear();
+
       if (map.current) {
         map.current.remove();
         map.current = null;
@@ -118,11 +125,14 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     if (map.current.getSource('selected-station')) {
       map.current.removeSource('selected-station');
     }
+    // Очищаем HTML маркеры кластеров
+    clusterMarkersRef.current.forEach((value) => {
+      value.marker.remove();
+    });
+    clusterMarkersRef.current.clear();
+
     if (map.current.getLayer('clusters')) {
       map.current.removeLayer('clusters');
-    }
-    if (map.current.getLayer('cluster-count')) {
-      map.current.removeLayer('cluster-count');
     }
     if (map.current.getLayer('unclustered-point')) {
       map.current.removeLayer('unclustered-point');
@@ -160,16 +170,68 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       }
     });
 
-    // Слой для количества точек в кластере
-    map.current.addLayer({
-      id: 'cluster-count',
-      type: 'symbol',
-      source: 'stations',
-      filter: ['has', 'point_count'],
-      layout: {
-        'text-field': '{point_count_abbreviated}',
-        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-        'text-size': 12
+    // Функция для обновления HTML маркеров с числами кластеров
+    const updateClusterMarkers = () => {
+      if (!map.current) return;
+
+      const mapboxgl = (window as any).mapboxgl;
+      const features = map.current.querySourceFeatures('stations', {
+        filter: ['has', 'point_count']
+      });
+
+      // Отслеживаем какие кластеры видны сейчас
+      const currentClusterIds = new Set<number>();
+
+      features.forEach((feature: any) => {
+        const clusterId = feature.properties.cluster_id;
+        const pointCount = feature.properties.point_count_abbreviated;
+        const coordinates = feature.geometry.coordinates;
+
+        currentClusterIds.add(clusterId);
+
+        if (!clusterMarkersRef.current.has(clusterId)) {
+          // Создаём HTML элемент для маркера
+          const el = document.createElement('div');
+          el.className = 'cluster-count-marker';
+          el.textContent = pointCount;
+          el.style.cssText = `
+            font-family: 'PPNeue Montreal', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            color: #363636;
+            pointer-events: none;
+            text-align: center;
+          `;
+
+          const marker = new mapboxgl.Marker({
+            element: el,
+            anchor: 'center'
+          })
+            .setLngLat(coordinates)
+            .addTo(map.current);
+
+          clusterMarkersRef.current.set(clusterId, { marker, el });
+        } else {
+          // Обновляем позицию и текст существующего маркера
+          const { marker, el } = clusterMarkersRef.current.get(clusterId);
+          marker.setLngLat(coordinates);
+          el.textContent = pointCount;
+        }
+      });
+
+      // Удаляем маркеры для кластеров, которых больше нет
+      clusterMarkersRef.current.forEach((value, clusterId) => {
+        if (!currentClusterIds.has(clusterId)) {
+          value.marker.remove();
+          clusterMarkersRef.current.delete(clusterId);
+        }
+      });
+    };
+
+    // Обновляем маркеры при изменении карты
+    map.current.on('render', () => {
+      if (map.current.isSourceLoaded('stations')) {
+        updateClusterMarkers();
       }
     });
 
