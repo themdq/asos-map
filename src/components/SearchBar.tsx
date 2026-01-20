@@ -3,14 +3,12 @@ import { Search } from 'lucide-react';
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
-  darkMode?: boolean;
   placeholder?: string;
 }
 
 export default function SearchBar({
   value,
   onChange,
-  darkMode = false,
   placeholder = "Search"
 }: SearchBarProps) {
   return (
@@ -21,15 +19,7 @@ export default function SearchBar({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`
-          py-3 pl-9 pr-2.5 rounded-[5px] text-sm outline-none shadow-md
-          transition-colors w-full cursor-text
-          ${darkMode
-            ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400'
-            : 'bg-primary border-gray-300 text-graphit placeholder:text-graphit'
-          }
-          border focus:ring-2 focus:ring-secondary-foreground
-        `}
+        className="py-3 pl-9 pr-2.5 rounded-[5px] text-sm outline-none shadow-md transition-colors w-full cursor-text bg-primary-foreground border border-border text-graphit placeholder:text-muted-foreground focus:ring-2 focus:ring-accent"
       />
     </div>
   );

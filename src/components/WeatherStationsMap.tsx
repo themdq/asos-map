@@ -137,8 +137,8 @@ export default function WeatherStationsMap() {
   return (
     <div
       className={`
-        relative h-screen w-full font-sans transition-colors duration-300
-        ${darkMode ? 'bg-gray-800' : 'bg-[#EFF5E8]'}
+        relative h-screen w-full font-sans transition-colors duration-300 bg-primary
+        ${darkMode ? 'dark' : ''}
       `}
     >
       {/* Sidebar Overlay */}
@@ -179,13 +179,11 @@ export default function WeatherStationsMap() {
             <div className="flex gap-2 items-center">
               <MenuButton
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                darkMode={darkMode}
                 icon="panel_left"
               />
               <SearchBar
                 value={searchQuery}
                 onChange={setSearchQuery}
-                darkMode={darkMode}
               />
             </div>
 
@@ -215,7 +213,6 @@ export default function WeatherStationsMap() {
           <div className="relative pointer-events-auto" data-settings-menu>
             <MenuButton
               onClick={() => setSettingsOpen(!settingsOpen)}
-              darkMode={darkMode}
               icon="settings"
               isExpanded={settingsOpen}
             >
@@ -239,40 +236,19 @@ export default function WeatherStationsMap() {
         <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-2 pointer-events-auto">
           <button
             onClick={() => mapRef.current?.zoomIn()}
-            className={`
-              flex items-center justify-center rounded-[5px] p-2.5
-              border shadow-md transition-all duration-200 cursor-pointer
-              ${darkMode
-                ? 'bg-gray-700 border-gray-600 text-white hover:bg-secondary-foreground'
-                : 'bg-primary border-gray-200 text-graphit hover:bg-secondary-foreground hover:text-white'
-              }
-            `}
+            className="flex items-center justify-center rounded-[5px] p-2.5 bg-primary-foreground border border-border shadow-md transition-all duration-200 cursor-pointer text-graphit hover:bg-secondary-foreground hover:text-white"
           >
             <Plus className="w-5 h-5" />
           </button>
           <button
             onClick={() => mapRef.current?.zoomOut()}
-            className={`
-              flex items-center justify-center rounded-[5px] p-2.5
-              border shadow-md transition-all duration-200 cursor-pointer
-              ${darkMode
-                ? 'bg-gray-700 border-gray-600 text-white hover:bg-secondary-foreground'
-                : 'bg-primary border-gray-200 text-graphit hover:bg-secondary-foreground hover:text-white'
-              }
-            `}
+            className="flex items-center justify-center rounded-[5px] p-2.5 bg-primary-foreground border border-border shadow-md transition-all duration-200 cursor-pointer text-graphit hover:bg-secondary-foreground hover:text-white"
           >
             <Minus className="w-5 h-5" />
           </button>
           <button
             onClick={() => mapRef.current?.geolocate()}
-            className={`
-              flex items-center justify-center rounded-[5px] p-2.5
-              border shadow-md transition-all duration-200 cursor-pointer
-              ${darkMode
-                ? 'bg-gray-700 border-gray-600 text-white hover:bg-secondary-foreground'
-                : 'bg-primary border-gray-200 text-graphit hover:bg-secondary-foreground hover:text-white'
-              }
-            `}
+            className="flex items-center justify-center rounded-[5px] p-2.5 bg-primary-foreground border border-border shadow-md transition-all duration-200 cursor-pointer text-graphit hover:bg-secondary-foreground hover:text-white"
           >
             <LocateFixed className="w-5 h-5" />
           </button>

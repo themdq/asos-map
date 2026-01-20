@@ -47,8 +47,8 @@ export default function WeatherCard({
   if (loading) {
     return (
       <div className="w-full">
-        <div className="bg-primary border border-gray-200 rounded-[5px] p-4 shadow-lg">
-          <div className="flex items-center justify-start text-gray-500 text-sm">
+        <div className="bg-primary-foreground border border-border rounded-[5px] p-4 shadow-lg">
+          <div className="flex items-center justify-start text-muted-foreground text-sm">
             Loading...
           </div>
         </div>
@@ -59,14 +59,14 @@ export default function WeatherCard({
   if (weatherData.length === 0) {
     return (
       <div className="w-full">
-        <div className="bg-primary border border-gray-200 rounded-[5px] p-4 shadow-lg">
+        <div className="bg-primary-foreground border border-border rounded-[5px] p-4 shadow-lg">
           <h2 className="text-base font-semibold text-graphit leading-tight mb-1">
             {stationName}
           </h2>
-          <div className="text-gray-500 text-xs space-y-0.5 mb-3">
+          <div className="text-muted-foreground text-xs space-y-0.5 mb-3">
             <div className="flex items-center gap-1">
               <span>{stationId}</span>
-              <span className="text-gray-300">•</span>
+              <span className="text-border">•</span>
               <span>{network.split('_')[0]}</span>
             </div>
             <button
@@ -74,7 +74,7 @@ export default function WeatherCard({
               className="flex items-center gap-1 hover:text-secondary-foreground transition-colors group"
             >
               <span>{precipitationUnit === 'in' ? `${Math.round(elevation * 3.28084)}ft` : `${elevation}m`}</span>
-              <span className="text-gray-300">•</span>
+              <span className="text-border">•</span>
               <span>{latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
               <svg
                 className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -84,10 +84,10 @@ export default function WeatherCard({
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
-              {copied && <span className="text-green-500 text-[10px]">copied!</span>}
+              {copied && <span className="text-accent text-[10px]">copied!</span>}
             </button>
           </div>
-          <div className="text-gray-400 text-sm text-center py-4">
+          <div className="text-muted-foreground text-sm text-center py-4">
             No weather data available
           </div>
         </div>
@@ -219,12 +219,12 @@ export default function WeatherCard({
     <div className="py-1.5">
       <div className="flex items-center gap-3">
         <div className="w-28 shrink-0">
-          <div className="text-gray-500 text-xs uppercase">{label}</div>
-          <div className="text-gray-500 text-xs flex items-center gap-1">
-            {value} {unit} {extra && <span className="text-gray-400 flex items-center gap-0.5">{extra}</span>}
+          <div className="text-muted-foreground text-xs uppercase">{label}</div>
+          <div className="text-muted-foreground text-xs flex items-center gap-1">
+            {value} {unit} {extra && <span className="text-muted-foreground flex items-center gap-0.5">{extra}</span>}
           </div>
         </div>
-        <div className="w-32 h-3 bg-gray-100 rounded-full overflow-hidden">
+        <div className="w-32 h-3 bg-border rounded-full overflow-hidden">
           <div
             className="h-full rounded transition-all duration-300"
             style={{
@@ -344,7 +344,7 @@ export default function WeatherCard({
 
   return (
     <div className="w-full">
-      <div className="bg-primary border border-gray-200 rounded-[5px] shadow-lg text-graphit p-4 relative">
+      <div className="bg-primary-foreground border border-border rounded-[5px] shadow-lg text-graphit p-4 relative">
         {/* Weather Icon */}
         <div className="absolute top-3 right-3">
           <WeatherIcon condition={weatherCondition} />
@@ -356,12 +356,12 @@ export default function WeatherCard({
         </h2>
 
         {/* Station info */}
-        <div className="text-gray-500 text-xs space-y-0.5 mb-3">
-          
+        <div className="text-muted-foreground text-xs space-y-0.5 mb-3">
+
           <div className="flex items-center gap-1">
-            
+
             <span>{stationId}</span>
-            <span className="text-gray-300">•</span>
+            <span className="text-border">•</span>
             <span>{network.split('_')[0]}</span>
           </div>
           <button
@@ -369,7 +369,7 @@ export default function WeatherCard({
             className="flex items-center gap-1 hover:text-secondary-foreground transition-colors group"
           >
             <span>{precipitationUnit === 'in' ? `${Math.round(elevation * 3.28084)}ft` : `${elevation}m`}</span>
-            <span className="text-gray-300">•</span>
+            <span className="text-border">•</span>
             
             <span>{latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
             <svg
@@ -387,7 +387,7 @@ export default function WeatherCard({
         </div>
 
         {/* Date/Time */}
-        <div className="text-gray-500 text-sm font-medium mb-3">
+        <div className="text-muted-foreground text-sm font-medium mb-3">
           {formatDate(currentData.timestamp)}, {formatTime(currentData.timestamp)} {formatTimezoneUTC(timezone)}
         </div>
 
@@ -448,13 +448,13 @@ export default function WeatherCard({
         {/* Timeline */}
         <div className="pt-3">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-gray-400 text-[10px]">
+            <span className="text-muted-foreground text-[10px]">
               {formatDate(weatherData[0].timestamp)}
             </span>
-            <span className="text-gray-500 text-[10px] font-medium">
+            <span className="text-muted-foreground text-[10px] font-medium">
               {weatherData.length} time points
             </span>
-            <span className="text-gray-400 text-[10px]">
+            <span className="text-muted-foreground text-[10px]">
               {formatDate(weatherData[weatherData.length - 1].timestamp)}
             </span>
           </div>
@@ -464,7 +464,7 @@ export default function WeatherCard({
             max={weatherData.length - 1}
             value={currentIndex}
             onChange={(e) => setSelectedIndex(Number(e.target.value))}
-            className="w-full h-1.5 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-secondary-foreground"
+            className="w-full h-1.5 bg-border rounded-lg appearance-none cursor-pointer accent-secondary-foreground"
           />
         </div>
       </div>

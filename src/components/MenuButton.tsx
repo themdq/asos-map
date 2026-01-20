@@ -2,7 +2,6 @@ import { Menu, PanelLeft, Settings } from "lucide-react";
 
 interface MenuButtonProps {
   onClick: () => void;
-  darkMode?: boolean;
   icon?: 'menu' | 'settings' | 'panel_left';
   isExpanded?: boolean;
   children?: React.ReactNode;
@@ -10,36 +9,21 @@ interface MenuButtonProps {
 
 export default function MenuButton({
   onClick,
-  darkMode = false,
   icon = 'menu',
   isExpanded = false,
   children
 }: MenuButtonProps) {
   const icons = {
-    menu: (
-      <Menu />
-    ),
-    settings: (
-      <Settings />
-    ),
-    panel_left: (
-      <PanelLeft />
-    )
+    menu: <Menu />,
+    settings: <Settings />,
+    panel_left: <PanelLeft />
   };
 
   // Для кнопки settings показываем анимированный переход по диагонали
   if (icon === 'settings') {
     return (
       <div
-        className={`
-          overflow-hidden border shadow-lg
-          transition-all duration-300 ease-out
-          rounded-[5px] origin-top-right
-          ${darkMode
-            ? 'bg-gray-700 border-gray-600'
-            : 'bg-primary border-gray-200'
-          }
-        `}
+        className="overflow-hidden border border-border shadow-lg transition-all duration-300 ease-out rounded-[5px] origin-top-right bg-primary-foreground"
         style={{
           width: isExpanded ? '180px' : '44px',
           height: isExpanded ? 'auto' : '44px'
@@ -51,14 +35,8 @@ export default function MenuButton({
           className={`
             flex items-center w-full cursor-pointer h-[44px]
             transition-all duration-300 ease-out
-            ${isExpanded
-              ? 'justify-between px-4'
-              : 'justify-center px-3'
-            }
-            ${darkMode
-              ? 'text-white hover:bg-secondary-foreground'
-              : 'text-graphit hover:bg-secondary-foreground hover:text-white'
-            }
+            text-graphit hover:bg-secondary-foreground hover:text-white
+            ${isExpanded ? 'justify-between px-4' : 'justify-center px-3'}
           `}
         >
           <span
@@ -91,14 +69,7 @@ export default function MenuButton({
   return (
     <button
       onClick={onClick}
-      className={`
-        flex items-center justify-center rounded-[5px] px-3 py-2.5
-        border shadow-md transition-all duration-200 cursor-pointer
-        ${darkMode
-          ? 'bg-gray-700 border-gray-600 text-white hover:bg-secondary-foreground'
-          : 'bg-primary border-gray-300 text-graphit hover:bg-secondary-foreground hover:text-white'
-        }
-      `}
+      className="flex items-center justify-center rounded-[5px] px-3 py-2.5 border border-border shadow-md transition-all duration-200 cursor-pointer bg-primary-foreground text-graphit hover:bg-secondary-foreground hover:text-white"
     >
       {icons[icon]}
     </button>

@@ -25,23 +25,15 @@ export default function SettingsMenu({
   onPressureUnitChange,
   onPrecipitationUnitChange
 }: SettingsMenuProps) {
-  const buttonBase = `
-    flex-1 py-1.5 px-2 rounded border-none cursor-pointer
-    text-xs font-medium transition-all duration-200
-  `;
-
+  const buttonBase = "flex-1 py-1.5 px-2 rounded border-none cursor-pointer text-xs font-medium transition-all duration-200";
   const buttonActive = 'bg-secondary-foreground text-white';
-  const buttonInactive = darkMode
-    ? 'bg-gray-600 text-gray-300'
-    : 'bg-primary-foreground text-gray-600';
+  const buttonInactive = 'bg-primary text-muted-foreground';
 
   return (
     <div className="w-full">
       {/* Theme */}
-      <div className={`py-2 border-b ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-        <div className={`text-xs mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
-          Theme
-        </div>
+      <div className="py-2 border-b border-border">
+        <div className="text-xs mb-1.5 text-muted-foreground">Theme</div>
         <div className="flex gap-1.5">
           <button
             onClick={() => darkMode && onDarkModeToggle()}
@@ -59,10 +51,8 @@ export default function SettingsMenu({
       </div>
 
       {/* Temperature */}
-      <div className={`py-2 border-b ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-        <div className={`text-xs mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
-          Temperature
-        </div>
+      <div className="py-2 border-b border-border">
+        <div className="text-xs mb-1.5 text-muted-foreground">Temperature</div>
         <div className="flex gap-1.5">
           {(['C', 'F'] as const).map((unit) => (
             <button
@@ -77,10 +67,8 @@ export default function SettingsMenu({
       </div>
 
       {/* Wind Speed */}
-      <div className={`py-2 border-b ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-        <div className={`text-xs mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
-          Wind
-        </div>
+      <div className="py-2 border-b border-border">
+        <div className="text-xs mb-1.5 text-muted-foreground">Wind</div>
         <div className="flex gap-1.5">
           {[
             { value: 'kts', label: 'kts' },
@@ -98,10 +86,8 @@ export default function SettingsMenu({
       </div>
 
       {/* Pressure */}
-      <div className={`py-2 border-b ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-        <div className={`text-xs mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
-          Pressure
-        </div>
+      <div className="py-2 border-b border-border">
+        <div className="text-xs mb-1.5 text-muted-foreground">Pressure</div>
         <div className="flex gap-1.5">
           {[
             { value: 'mb', label: 'mb' },
@@ -120,9 +106,7 @@ export default function SettingsMenu({
 
       {/* Precipitation */}
       <div className="py-2">
-        <div className={`text-xs mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
-          Precip
-        </div>
+        <div className="text-xs mb-1.5 text-muted-foreground">Precip</div>
         <div className="flex gap-1.5">
           {[
             { value: 'mm', label: 'mm' },
