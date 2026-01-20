@@ -48,7 +48,7 @@ export default function MenuButton({
         <button
           onClick={onClick}
           className={`
-            flex items-center w-full
+            flex items-center w-full cursor-pointer
             transition-all duration-300 ease-in-out
             ${isExpanded
               ? 'justify-between px-4 py-3'
@@ -100,7 +100,7 @@ export default function MenuButton({
       onClick={onClick}
       className={`
         flex items-center justify-center rounded-sm px-3 py-2.5
-        border shadow-md transition-all duration-200
+        border shadow-md transition-all duration-200 cursor-pointer
         ${darkMode
           ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
           : 'bg-primary border-gray-300 text-gray-800 hover:bg-gray-50'
