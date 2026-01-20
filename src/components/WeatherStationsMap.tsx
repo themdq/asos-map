@@ -30,20 +30,23 @@ export default function WeatherStationsMap() {
   const [precipitationUnit, setPrecipitationUnit] = useState<'mm' | 'in'>('mm');
 
 
-  // Close settings menu when clicking outside
+  // Close settings menu and weather card when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (settingsOpen) {
-        const target = event.target as HTMLElement;
-        if (!target.closest('[data-settings-menu]')) {
-          setSettingsOpen(false);
-        }
+      const target = event.target as HTMLElement;
+
+      if (settingsOpen && !target.closest('[data-settings-menu]')) {
+        setSettingsOpen(false);
+      }
+
+      if (selectedStation && !target.closest('[data-weather-card]') && !target.closest('[data-sidebar]')) {
+        setSelectedStation(null);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [settingsOpen]);
+  }, [settingsOpen, selectedStation]);
 
   useEffect(() => {
     document.body.style.margin = '0';
@@ -120,6 +123,7 @@ export default function WeatherStationsMap() {
     >
       {/* Sidebar Overlay */}
       <div
+        data-sidebar
         className={`
           absolute left-0 top-0 h-full z-30 transition-transform duration-300
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -164,7 +168,7 @@ export default function WeatherStationsMap() {
 
             {/* Weather Card */}
             {selectedStation && (
-              <div>
+              <div data-weather-card>
                 <WeatherCard
                   stationName={selectedStation.station_name}
                   weatherData={weatherData}
