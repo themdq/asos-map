@@ -174,7 +174,7 @@ export default function WeatherCard({
             {value} {unit} {extra && <span className="text-gray-400">{extra}</span>}
           </div>
         </div>
-        <div className="w-28 h-2 bg-gray-200 rounded overflow-hidden">
+        <div className="w-32 h-3 bg-gray-100 rounded-full overflow-hidden">
           <div
             className="h-full rounded transition-all duration-300"
             style={{
@@ -242,7 +242,7 @@ export default function WeatherCard({
             value={Math.round(currentTemp)}
             unit={`°${temperatureUnit}`}
             percent={normalizeTemp(currentData.temperature)}
-            gradient="linear-gradient(180deg, #ef4444 0%, #3b82f6 100%)"
+            gradient="linear-gradient(90deg, #fecaca 0%, #fca5a5 100%)"
             extra={`${Math.round(convertTemp(maxTempRaw))}° / ${Math.round(convertTemp(minTempRaw))}°`}
           />
           <MetricRow
@@ -250,7 +250,7 @@ export default function WeatherCard({
             value={Math.round(currentHumidity)}
             unit="%"
             percent={normalizeHumidity(currentHumidity)}
-            gradient="linear-gradient(180deg, #06b6d4 0%, #0284c7 100%)"
+            gradient="linear-gradient(90deg, #a5f3fc 0%, #67e8f9 100%)"
             extra={`dew ${Math.round(convertTemp(currentData.dewpoint))}°`}
           />
           <MetricRow
@@ -258,7 +258,7 @@ export default function WeatherCard({
             value={windSpeed.toFixed(1)}
             unit={windSpeedUnit}
             percent={normalizeWind(windSpeed)}
-            gradient="linear-gradient(180deg, #8b5cf6 0%, #6366f1 100%)"
+            gradient="linear-gradient(90deg, #ddd6fe 0%, #c4b5fd 100%)"
             extra={getWindDirectionLabel(windDirection)}
           />
           <MetricRow
@@ -266,14 +266,14 @@ export default function WeatherCard({
             value={currentData.pressure ? Math.round(convertPressure(currentData.pressure)) : '—'}
             unit={pressureUnit}
             percent={normalizePressure(currentData.pressure)}
-            gradient="linear-gradient(180deg, #f59e0b 0%, #d97706 100%)"
+            gradient="linear-gradient(90deg, #fef08a 0%, #fde047 100%)"
           />
           <MetricRow
             label="Precipitation"
             value={currentPrecip.toFixed(precipitationUnit === 'in' ? 2 : 1)}
             unit={precipitationUnit}
             percent={normalizePrecip(currentPrecip)}
-            gradient="linear-gradient(180deg, #10b981 0%, #059669 100%)"
+            gradient="linear-gradient(90deg, #bbf7d0 0%, #86efac 100%)"
           />
         </div>
 
