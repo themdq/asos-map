@@ -259,7 +259,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   }));
 
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative" data-map>
       {!scriptLoaded && <LoadingOverlay />}
       <div ref={mapContainer} className="w-full h-full" />
     </div>

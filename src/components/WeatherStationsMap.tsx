@@ -39,7 +39,7 @@ export default function WeatherStationsMap() {
         setSettingsOpen(false);
       }
 
-      if (selectedStation && !target.closest('[data-weather-card]') && !target.closest('[data-sidebar]')) {
+      if (selectedStation && target.closest('[data-map]')) {
         setSelectedStation(null);
       }
     };
