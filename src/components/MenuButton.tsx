@@ -69,7 +69,13 @@ export default function MenuButton({
   return (
     <button
       onClick={onClick}
-      className="flex items-center justify-center rounded-[5px] px-3 py-2.5 border border-border shadow-md transition-all duration-200 cursor-pointer bg-primary-foreground text-graphit hover:bg-secondary-foreground hover:text-white"
+      className={`
+        flex items-center justify-center rounded-[5px] px-3 py-2.5 border shadow-md transition-all duration-200 cursor-pointer
+        ${isExpanded
+          ? 'bg-secondary-foreground text-white border-secondary-foreground'
+          : 'bg-primary-foreground text-graphit border-border hover:bg-secondary-foreground hover:text-white'
+        }
+      `}
     >
       {icons[icon]}
     </button>

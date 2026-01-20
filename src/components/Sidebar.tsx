@@ -1,4 +1,5 @@
 import type { Station } from '../types/station';
+import MenuButton from './MenuButton';
 
 interface SidebarProps {
   stations: Station[];
@@ -11,6 +12,7 @@ interface SidebarProps {
   onStationClick: (station: Station | null) => void;
   onToggleFavorite?: (stationId: string) => void;
   onLogoClick: () => void;
+  onClose?: () => void;
 }
 
 const emptySet = new Set<string>();
@@ -25,7 +27,8 @@ export default function Sidebar({
   onSearchChange,
   onStationClick,
   onToggleFavorite,
-  onLogoClick
+  onLogoClick,
+  onClose
 }: SidebarProps) {
   const filteredStations = stations.filter(station =>
     station.station_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -33,19 +36,31 @@ export default function Sidebar({
   );
 
   return (
-    <div className="w-[400px] bg-primary border-r border-border h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)] flex flex-col">
+    <div className="w-full md:w-[400px] bg-primary border-r border-border h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)] flex flex-col">
       {/* Fixed header */}
       <div className="p-5 pb-3 bg-primary border-b border-border">
-        <div className="flex items-center gap-2.5 cursor-pointer" onClick={onLogoClick}>
-          <div className="w-12 h-auto flex-shrink-0">
-            <img src="/logo.svg" alt="WindBorne Systems" className="w-full h-full object-contain" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5 cursor-pointer" onClick={onLogoClick}>
+            <div className="w-12 h-auto flex-shrink-0">
+              <img src="/logo.svg" alt="WindBorne Systems" className="w-full h-full object-contain" />
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-graphit text-xl font-bold m-0 leading-tight">
+                ASOS Stations
+              </h1>
+              <h2 className="text-graphit text-sm m-0 leading-tight">WindBorne Systems</h2>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <h1 className="text-graphit text-xl font-bold m-0 leading-tight">
-              ASOS Stations
-            </h1>
-            <h2 className="text-graphit text-sm m-0 leading-tight">WindBorne Systems</h2>
-          </div>
+          {/* Кнопка закрытия — только на мобильных */}
+          {onClose && (
+            <div className="md:hidden">
+              <MenuButton
+                onClick={onClose}
+                icon="panel_left"
+                isExpanded={true}
+              />
+            </div>
+          )}
         </div>
       </div>
 

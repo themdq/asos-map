@@ -17,7 +17,7 @@ export default function WeatherStationsMap() {
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN;
   const [scriptLoaded, setScriptLoaded] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [temperatureUnit, setTemperatureUnit] = useState<'C' | 'F'>('F');
@@ -36,6 +36,13 @@ export default function WeatherStationsMap() {
   useEffect(() => {
     localStorage.setItem('favoriteStations', JSON.stringify([...favoriteStations]));
   }, [favoriteStations]);
+
+  // Открываем sidebar при поисковом запросе
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      setSidebarOpen(true);
+    }
+  }, [searchQuery]);
 
   // Кэшированные запросы
   const { data: stations = [], isLoading: loading } = useStationsQuery();
@@ -124,9 +131,9 @@ export default function WeatherStationsMap() {
         data-sidebar
         className={`
           absolute left-0 top-0 h-full z-30 transition-transform duration-300
+          w-full md:w-[400px]
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
-        style={{ width: '400px' }}
       >
         <Sidebar
           stations={stations}
@@ -139,6 +146,7 @@ export default function WeatherStationsMap() {
           onStationClick={handleStationClick}
           onToggleFavorite={handleToggleFavorite}
           onLogoClick={handleLogoClick}
+          onClose={() => setSidebarOpen(false)}
         />
       </div>
 
@@ -149,8 +157,8 @@ export default function WeatherStationsMap() {
           {/* Left Side: Menu Button, Search Bar, and Weather Card */}
           <div
             className={`
-              flex flex-col gap-3 pointer-events-auto w-72 transition-transform duration-300
-              ${sidebarOpen ? 'translate-x-[400px]' : 'translate-x-0'}
+              flex flex-col gap-3 pointer-events-auto w-72 transition-all duration-300
+              ${sidebarOpen ? 'md:translate-x-[400px] max-md:opacity-0 max-md:pointer-events-none' : 'translate-x-0'}
             `}
           >
             {/* Menu Button and Search Bar */}
@@ -158,6 +166,7 @@ export default function WeatherStationsMap() {
               <MenuButton
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 icon="panel_left"
+                isExpanded={sidebarOpen}
               />
               <SearchBar
                 value={searchQuery}
