@@ -24,7 +24,7 @@ export default function WeatherStationsMap() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [temperatureUnit, setTemperatureUnit] = useState<'C' | 'F'>('C');
+  const [temperatureUnit, setTemperatureUnit] = useState<'C' | 'F'>('F');
   const [windSpeedUnit, setWindSpeedUnit] = useState<'kmh' | 'mph'>('kmh');
   const [pressureUnit, setPressureUnit] = useState<'mb' | 'hPa'>('mb');
   const [precipitationUnit, setPrecipitationUnit] = useState<'mm' | 'in'>('mm');

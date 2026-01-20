@@ -165,13 +165,13 @@ export default function WeatherCard({
         <div className="rounded bg-primary-foreground p-3">
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-400 text-[10px]">
-              {formatTime(weatherData[0].timestamp)}
+              {formatDate(weatherData[0].timestamp)}
             </span>
             <span className="text-gray-500 text-[10px] font-medium">
-              {weatherData.length} points
+              {weatherData.length} time points
             </span>
             <span className="text-gray-400 text-[10px]">
-              {formatTime(weatherData[weatherData.length - 1].timestamp)}
+              {formatDate(weatherData[weatherData.length - 1].timestamp)}
             </span>
           </div>
           <input
