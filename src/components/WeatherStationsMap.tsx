@@ -17,7 +17,7 @@ export default function WeatherStationsMap() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
-  const [mapboxToken, setMapboxToken] = useState('');
+  const mapboxToken = import.meta.env.PUBLIC_MAPBOX_TOKEN;
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [weatherData, setWeatherData] = useState<WeatherPoint[]>([]);
   const [weatherLoading, setWeatherLoading] = useState(false);
@@ -29,9 +29,6 @@ export default function WeatherStationsMap() {
   const [pressureUnit, setPressureUnit] = useState<'mb' | 'hPa'>('mb');
   const [precipitationUnit, setPrecipitationUnit] = useState<'mm' | 'in'>('mm');
 
-  useEffect(() => {
-    setMapboxToken('pk.eyJ1IjoidGhlbWRxIiwiYSI6ImNta2tkeXJzdDFkNjYzZ29tMmp4NTF1ejUifQ.fctCq2IYRLfdCr8W1b5Kew');
-  });
 
   // Close settings menu when clicking outside
   useEffect(() => {

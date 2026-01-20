@@ -44,7 +44,15 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       });
 
       map.current.on('load', () => {
-        mapLoadedRef.current = true;
+        // Загружаем кастомный маркер
+        const img = new Image();
+        img.onload = () => {
+          if (map.current && !map.current.hasImage('custom-marker')) {
+            map.current.addImage('custom-marker', img, { sdf: false });
+          }
+          mapLoadedRef.current = true;
+        };
+        img.src = '/marker.svg';
       });
 
       map.current.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-right');
@@ -153,17 +161,17 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       }
     });
 
-    // Слой для отдельных точек
+    // Слой для отдельных точек с кастомным маркером
     map.current.addLayer({
       id: 'unclustered-point',
-      type: 'circle',
+      type: 'symbol',
       source: 'stations',
       filter: ['!', ['has', 'point_count']],
-      paint: {
-        'circle-color': '#11b4da',
-        'circle-radius': 8,
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#fff'
+      layout: {
+        'icon-image': 'custom-marker',
+        'icon-size': 0.12,
+        'icon-allow-overlap': true,
+        'icon-anchor': 'bottom'
       }
     });
 
