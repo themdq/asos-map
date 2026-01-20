@@ -22,8 +22,8 @@ export default function SearchBar({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={`
-          py-3 pl-9 pr-2.5 rounded-sm text-sm outline-none shadow-md
-          transition-colors w-full
+          py-3 pl-9 pr-2.5 rounded-[5px] text-sm outline-none shadow-md
+          transition-colors w-full cursor-text
           ${darkMode
             ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400'
             : 'bg-primary border-gray-300 text-gray-800 placeholder:text-gray-500'

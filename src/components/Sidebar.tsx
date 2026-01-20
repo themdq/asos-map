@@ -54,7 +54,7 @@ export default function Sidebar({
                     key={station.station_id}
                     onClick={() => onStationClick(station)}
                     className={`
-                      p-[15px] rounded-lg mb-2 cursor-pointer transition-all duration-200 border
+                      p-[15px] rounded-[5px] mb-2 cursor-pointer transition-all duration-200 border
                       ${isSelected
                         ? 'bg-secondary-foreground'
                         : 'bg-primary-foreground border-gray-200 hover:bg-gray-100'
@@ -89,7 +89,7 @@ export default function Sidebar({
                         </p>
                       </div>
                       <span className={`
-                        px-2 py-1 rounded text-[11px] font-medium
+                        px-2 py-1 rounded-[5px] text-[11px] font-medium
                         ${isSelected
                           ? 'bg-white/20 text-white'
                           : 'bg-gray-200 text-gray-700'

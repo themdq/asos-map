@@ -175,7 +175,7 @@
 /* Mapbox GL Controls Styling */
 .mapboxgl-ctrl-group {
   background: var(--primary) !important;
-  border-radius: var(--radius) !important;
+  border-radius: 5px !important;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
   border: none !important;
 }
@@ -186,6 +186,7 @@
   width: 36px !important;
   height: 36px !important;
   transition: all 0.2s !important;
+  cursor: pointer !important;
 }
 
 .mapboxgl-ctrl-group > button + button {

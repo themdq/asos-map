@@ -34,9 +34,10 @@ export default function MenuButton({
         className={`
           overflow-hidden border shadow-lg
           transition-all duration-300 ease-in-out
+          rounded-[5px]
           ${isExpanded
-            ? 'rounded-xl min-w-[250px]'
-            : 'rounded-sm w-[44px]'
+            ? 'min-w-[250px]'
+            : 'w-[44px]'
           }
           ${darkMode
             ? 'bg-gray-700 border-gray-600'
@@ -99,7 +100,7 @@ export default function MenuButton({
     <button
       onClick={onClick}
       className={`
-        flex items-center justify-center rounded-sm px-3 py-2.5
+        flex items-center justify-center rounded-[5px] px-3 py-2.5
         border shadow-md transition-all duration-200 cursor-pointer
         ${darkMode
           ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
