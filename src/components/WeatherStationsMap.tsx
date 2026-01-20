@@ -184,14 +184,14 @@ export default function WeatherStationsMap() {
             `}
           >
             {/* Menu Button and Search Bar */}
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center w-full">
               <MenuButton
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 icon="panel_left"
                 isExpanded={sidebarOpen}
               />
               {/* SearchBar — скрыт на мобильных, там он в sidebar */}
-              <div className="hidden md:block">
+              <div className="hidden md:flex flex-1">
                 <SearchBar
                   value={searchQuery}
                   onChange={setSearchQuery}
