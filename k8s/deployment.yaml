@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: asos-map
+  labels:
+    app: asos-map
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: asos-map
+  template:
+    metadata:
+      labels:
+        app: asos-map
+    spec:
+      containers:
+        - name: asos-map
+          image: docker.io/themdq/asos-map:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
