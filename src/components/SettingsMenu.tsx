@@ -24,19 +24,7 @@ export default function SettingsMenu({
   onPrecipitationUnitChange
 }: SettingsMenuProps) {
   return (
-    <div
-      className={`
-        absolute top-[50px] right-0 min-w-[250px] rounded-xl p-4 shadow-lg z-30
-        border
-        ${darkMode
-          ? 'bg-gray-700 border-gray-600'
-          : 'bg-primary border-gray-200'
-        }
-      `}
-    >
-      <h3 className={`text-base font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-        Settings
-      </h3>
+    <div className="min-w-[250px]">{/* Контейнер для содержимого */}
 
       {/* Dark Mode Toggle */}
       <div
