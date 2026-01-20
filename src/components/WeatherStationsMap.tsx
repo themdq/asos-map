@@ -24,7 +24,18 @@ export default function WeatherStationsMap() {
   const [windSpeedUnit, setWindSpeedUnit] = useState<'kts' | 'mph'>('kts');
   const [pressureUnit, setPressureUnit] = useState<'mb' | 'hPa'>('mb');
   const [precipitationUnit, setPrecipitationUnit] = useState<'mm' | 'in'>('mm');
-  const [favoriteStations, setFavoriteStations] = useState<Set<string>>(new Set());
+  const [favoriteStations, setFavoriteStations] = useState<Set<string>>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('favoriteStations');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    }
+    return new Set();
+  });
+
+  // Сохраняем избранные в localStorage
+  useEffect(() => {
+    localStorage.setItem('favoriteStations', JSON.stringify([...favoriteStations]));
+  }, [favoriteStations]);
 
   // Кэшированные запросы
   const { data: stations = [], isLoading: loading } = useStationsQuery();
@@ -226,6 +237,7 @@ export default function WeatherStationsMap() {
           ref={mapRef}
           stations={stations}
           selectedStation={selectedStation}
+          favoriteStations={favoriteStations}
           darkMode={darkMode}
           mapboxToken={mapboxToken}
           scriptLoaded={scriptLoaded}

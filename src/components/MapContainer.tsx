@@ -5,6 +5,7 @@ import LoadingOverlay from './LoadingOverlay';
 interface MapContainerProps {
   stations: Station[];
   selectedStation: Station | null;
+  favoriteStations: Set<string>;
   darkMode?: boolean;
   mapboxToken: string;
   scriptLoaded: boolean;
@@ -23,6 +24,7 @@ export interface MapRef {
 const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   stations,
   selectedStation,
+  favoriteStations,
   darkMode = false,
   mapboxToken,
   scriptLoaded,
@@ -31,8 +33,10 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
   const mapLoadedRef = useRef(false);
+  const imagesLoadedRef = useRef(false);
   const popupRef = useRef<any>(null);
   const selectedStationRef = useRef<Station | null>(selectedStation);
+  const favoriteStationsRef = useRef<Set<string>>(favoriteStations);
   const clusterMarkersRef = useRef<Map<number, any>>(new Map());
   const onStationSelectRef = useRef(onStationSelect);
   const eventHandlersAddedRef = useRef(false);
@@ -56,24 +60,34 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       });
 
       map.current.on('load', () => {
-        // Загружаем кастомный маркер
-        const img = new Image();
-        img.onload = () => {
-          if (map.current && !map.current.hasImage('custom-marker')) {
-            map.current.addImage('custom-marker', img, { sdf: false });
-          }
-          // Загружаем маркер для выбранной станции
-          const selectedImg = new Image();
-          selectedImg.onload = () => {
-            if (map.current && !map.current.hasImage('selected-marker')) {
-              map.current.addImage('selected-marker', selectedImg, { sdf: false });
-            }
-            mapLoadedRef.current = true;
-          };
-          selectedImg.src = '/marker-selected.svg';
-        };
-        img.src = '/marker.svg';
+        loadMarkerImages();
       });
+
+      const loadMarkerImages = () => {
+        const markers = [
+          { name: 'custom-marker', src: '/marker.svg' },
+          { name: 'selected-marker', src: '/marker-selected.svg' },
+          { name: 'favorite-marker', src: '/marker-favorite.svg' },
+        ];
+
+        let loaded = 0;
+        markers.forEach(({ name, src }) => {
+          const img = new Image();
+          img.onload = () => {
+            if (map.current && !map.current.hasImage(name)) {
+              map.current.addImage(name, img, { sdf: false });
+            }
+            loaded++;
+            if (loaded === markers.length) {
+              mapLoadedRef.current = true;
+              imagesLoadedRef.current = true;
+              // Триггерим обновление слоёв
+              map.current?.fire('images-loaded');
+            }
+          };
+          img.src = src;
+        });
+      };
 
       // Контролы убраны - используем кастомные кнопки
     } catch (error) {
@@ -111,50 +125,66 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
 
     // После смены стиля нужно заново добавить изображения маркеров
     map.current.once('style.load', () => {
-      const img = new Image();
-      img.onload = () => {
-        if (map.current && !map.current.hasImage('custom-marker')) {
-          map.current.addImage('custom-marker', img, { sdf: false });
-        }
-        const selectedImg = new Image();
-        selectedImg.onload = () => {
-          if (map.current && !map.current.hasImage('selected-marker')) {
-            map.current.addImage('selected-marker', selectedImg, { sdf: false });
+      const markers = [
+        { name: 'custom-marker', src: '/marker.svg' },
+        { name: 'selected-marker', src: '/marker-selected.svg' },
+        { name: 'favorite-marker', src: '/marker-favorite.svg' },
+      ];
+
+      let loaded = 0;
+      markers.forEach(({ name, src }) => {
+        const img = new Image();
+        img.onload = () => {
+          if (map.current && !map.current.hasImage(name)) {
+            map.current.addImage(name, img, { sdf: false });
+          }
+          loaded++;
+          if (loaded === markers.length) {
+            imagesLoadedRef.current = true;
+            map.current?.fire('images-loaded');
           }
         };
-        selectedImg.src = '/marker-selected.svg';
-      };
-      img.src = '/marker.svg';
+        img.src = src;
+      });
     });
   }, [darkMode]);
 
+  // Обновляем ref для favoriteStations
+  useEffect(() => {
+    favoriteStationsRef.current = favoriteStations;
+  }, [favoriteStations]);
+
   // Добавление кластеризации
   useEffect(() => {
-    if (!mapLoadedRef.current || !map.current || stations.length === 0) return;
+    if (!map.current || stations.length === 0) return;
 
     const mapboxgl = (window as any).mapboxgl;
     if (!mapboxgl) return;
 
-    // Преобразуем станции в GeoJSON формат
-    const geojson = {
-      type: 'FeatureCollection',
-      features: stations.map((station) => ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [station.longitude, station.latitude]
-        },
-        properties: {
-          station_id: station.station_id,
-          station_name: station.station_name,
-          station_network: station.station_network,
-          elevation: station.elevation,
-          timezone: station.timezone,
-          latitude: station.latitude,
-          longitude: station.longitude
-        }
-      }))
-    };
+    const setupLayers = () => {
+      if (!imagesLoadedRef.current || !map.current) return;
+
+      // Преобразуем станции в GeoJSON формат
+      const geojson = {
+        type: 'FeatureCollection',
+        features: stations.map((station) => ({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [station.longitude, station.latitude]
+          },
+          properties: {
+            station_id: station.station_id,
+            station_name: station.station_name,
+            station_network: station.station_network,
+            elevation: station.elevation,
+            timezone: station.timezone,
+            latitude: station.latitude,
+            longitude: station.longitude,
+            is_favorite: favoriteStationsRef.current.has(station.station_id)
+          }
+        }))
+      };
 
     // Удаляем существующие слои и источники
     if (map.current.getLayer('selected-point')) {
@@ -273,14 +303,19 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       }
     });
 
-    // Слой для отдельных точек с кастомным маркером
+    // Слой для отдельных точек с условным выбором маркера (favorite или обычный)
     map.current.addLayer({
       id: 'unclustered-point',
       type: 'symbol',
       source: 'stations',
       filter: ['!', ['has', 'point_count']],
       layout: {
-        'icon-image': 'custom-marker',
+        'icon-image': [
+          'case',
+          ['get', 'is_favorite'],
+          'favorite-marker',
+          'custom-marker'
+        ],
         'icon-size': 0.18,
         'icon-allow-overlap': true,
         'icon-anchor': 'bottom'
@@ -379,8 +414,21 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
 
       eventHandlersAddedRef.current = true;
     }
+    }; // конец setupLayers
 
-  }, [stations]);
+    // Если изображения уже загружены, настраиваем слои
+    if (imagesLoadedRef.current) {
+      setupLayers();
+    }
+
+    // Слушаем событие загрузки изображений
+    const handleImagesLoaded = () => setupLayers();
+    map.current.on('images-loaded', handleImagesLoaded);
+
+    return () => {
+      map.current?.off('images-loaded', handleImagesLoaded);
+    };
+  }, [stations, favoriteStations]);
 
   // Обновляем слой выбранной станции
   useEffect(() => {
