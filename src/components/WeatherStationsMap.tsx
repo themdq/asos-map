@@ -267,19 +267,19 @@ export default function WeatherStationsMap() {
         <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-2 pointer-events-auto">
           <button
             onClick={() => mapRef.current?.zoomIn()}
-            className="flex items-center justify-center rounded-[5px] p-2.5 bg-primary-foreground border border-border shadow-md transition-all duration-200 cursor-pointer text-graphit hover:bg-secondary-foreground hover:text-white"
+            className="flex items-center justify-center rounded-[5px] p-2.5 bg-primary border border-border shadow-md transition-all duration-200 cursor-pointer text-graphit hover:bg-secondary-foreground hover:text-white"
           >
             <Plus className="w-5 h-5" />
           </button>
           <button
             onClick={() => mapRef.current?.zoomOut()}
-            className="flex items-center justify-center rounded-[5px] p-2.5 bg-primary-foreground border border-border shadow-md transition-all duration-200 cursor-pointer text-graphit hover:bg-secondary-foreground hover:text-white"
+            className="flex items-center justify-center rounded-[5px] p-2.5 bg-primary border border-border shadow-md transition-all duration-200 cursor-pointer text-graphit hover:bg-secondary-foreground hover:text-white"
           >
             <Minus className="w-5 h-5" />
           </button>
           <button
             onClick={() => mapRef.current?.geolocate()}
-            className="flex items-center justify-center rounded-[5px] p-2.5 bg-primary-foreground border border-border shadow-md transition-all duration-200 cursor-pointer text-graphit hover:bg-secondary-foreground hover:text-white"
+            className="flex items-center justify-center rounded-[5px] p-2.5 bg-primary border border-border shadow-md transition-all duration-200 cursor-pointer text-graphit hover:bg-secondary-foreground hover:text-white"
           >
             <LocateFixed className="w-5 h-5" />
           </button>

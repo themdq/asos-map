@@ -19,7 +19,7 @@ export default function SearchBar({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="py-3 pl-9 pr-2.5 rounded-[5px] text-sm outline-none shadow-md transition-colors w-full cursor-text bg-primary-foreground border border-border text-graphit placeholder:text-muted-foreground focus:ring-2 focus:ring-accent"
+        className="py-3 pl-9 pr-2.5 rounded-[5px] text-sm outline-none shadow-md transition-colors w-full cursor-text bg-primary border border-border text-graphit placeholder:text-muted-foreground focus:ring-2 focus:ring-accent"
       />
     </div>
   );

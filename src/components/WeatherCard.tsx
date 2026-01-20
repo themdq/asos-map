@@ -47,7 +47,7 @@ export default function WeatherCard({
   if (loading) {
     return (
       <div className="w-full">
-        <div className="bg-primary-foreground border border-border rounded-[5px] p-4 shadow-lg">
+        <div className="bg-primary border border-border rounded-[5px] p-4 shadow-lg">
           <div className="flex items-center justify-start text-muted-foreground text-sm">
             Loading...
           </div>
@@ -59,7 +59,7 @@ export default function WeatherCard({
   if (weatherData.length === 0) {
     return (
       <div className="w-full">
-        <div className="bg-primary-foreground border border-border rounded-[5px] p-4 shadow-lg">
+        <div className="bg-primary border border-border rounded-[5px] p-4 shadow-lg">
           <h2 className="text-base font-semibold text-graphit leading-tight mb-1">
             {stationName}
           </h2>
@@ -366,7 +366,7 @@ export default function WeatherCard({
 
   return (
     <div className="w-full">
-      <div className="bg-primary-foreground border border-border rounded-[5px] shadow-lg text-graphit p-4 relative">
+      <div className="bg-primary border border-border rounded-[5px] shadow-lg text-graphit p-4 relative">
         {/* Weather Icon */}
         <div className="absolute top-3 right-3">
           <WeatherIcon condition={weatherCondition} />
