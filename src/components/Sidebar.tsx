@@ -1,4 +1,5 @@
 import type { Station } from '../types/station';
+import type { SortOption } from './WeatherStationsMap';
 import MenuButton from './MenuButton';
 import SearchBar from './SearchBar';
 
@@ -9,14 +10,28 @@ interface SidebarProps {
   selectedStation: Station | null;
   favoriteStations?: Set<string>;
   precipitationUnit?: 'mm' | 'in';
+  sortBy?: SortOption;
+  userLocation?: { lat: number; lng: number } | null;
   onSearchChange: (query: string) => void;
   onStationClick: (station: Station | null) => void;
   onToggleFavorite?: (stationId: string) => void;
+  onSortChange?: (sort: SortOption) => void;
   onLogoClick: () => void;
   onClose?: () => void;
 }
 
 const emptySet = new Set<string>();
+
+// Расстояние между двумя точками (Haversine formula)
+const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+};
 
 export default function Sidebar({
   stations,
@@ -25,16 +40,46 @@ export default function Sidebar({
   selectedStation,
   favoriteStations = emptySet,
   precipitationUnit = 'mm',
+  sortBy = 'name',
+  userLocation,
   onSearchChange,
   onStationClick,
   onToggleFavorite,
+  onSortChange,
   onLogoClick,
   onClose
 }: SidebarProps) {
+  // Фильтрация
   const filteredStations = stations.filter(station =>
     station.station_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     station.station_id.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Сортировка (избранные всегда сверху)
+  const sortedStations = [...filteredStations].sort((a, b) => {
+    // Избранные всегда первые
+    const aFav = favoriteStations.has(a.station_id);
+    const bFav = favoriteStations.has(b.station_id);
+    if (aFav && !bFav) return -1;
+    if (!aFav && bFav) return 1;
+
+    // Затем по выбранному критерию
+    switch (sortBy) {
+      case 'name':
+        return a.station_name.localeCompare(b.station_name);
+      case 'distance':
+        if (!userLocation) return 0;
+        const distA = getDistance(userLocation.lat, userLocation.lng, a.latitude, a.longitude);
+        const distB = getDistance(userLocation.lat, userLocation.lng, b.latitude, b.longitude);
+        return distA - distB;
+      case 'network':
+        return a.station_network.localeCompare(b.station_network);
+      case 'elevation':
+        return b.elevation - a.elevation;
+      default:
+        return 0;
+    }
+  });
 
   const handleStationClick = (station: Station | null) => {
     onStationClick(station);
@@ -85,12 +130,24 @@ export default function Sidebar({
           </div>
         ) : (
           <>
-            <p className="text-muted-foreground text-xs mb-2.5">
-              Found: {filteredStations.length} stations
-            </p>
+            <div className="flex items-center justify-between mb-2.5">
+              <p className="text-muted-foreground text-xs">
+                Found: {filteredStations.length} stations
+              </p>
+              <select
+                value={sortBy}
+                onChange={(e) => onSortChange?.(e.target.value as SortOption)}
+                className="text-xs bg-primary-foreground border border-border rounded px-2 py-1 text-graphit cursor-pointer focus:outline-none focus:ring-1 focus:ring-secondary-foreground"
+              >
+                <option value="name">By name</option>
+                <option value="distance">By distance</option>
+                <option value="network">By network</option>
+                <option value="elevation">By elevation</option>
+              </select>
+            </div>
 
             <div className=" overflow-y-auto">
-              {filteredStations.map((station) => {
+              {sortedStations.map((station) => {
                 const isSelected = selectedStation?.station_id === station.station_id;
                 const isFavorite = favoriteStations.has(station.station_id);
 

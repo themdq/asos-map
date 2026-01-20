@@ -3,6 +3,8 @@ import { Plus, Minus, LocateFixed } from 'lucide-react';
 import type { Station } from '../types/station';
 import { useStationsQuery } from '../hooks/useStationsQuery';
 import { useHistoricalQuery } from '../hooks/useHistoricalQuery';
+
+export type SortOption = 'name' | 'distance' | 'network' | 'elevation';
 import Sidebar from './Sidebar';
 import MapContainer, { type MapRef } from './MapContainer';
 import WeatherCard from './WeatherCard';
@@ -27,6 +29,8 @@ export default function WeatherStationsMap() {
   const [windSpeedUnit, setWindSpeedUnit] = useState<'kts' | 'mph'>('kts');
   const [pressureUnit, setPressureUnit] = useState<'mb' | 'hPa'>('mb');
   const [precipitationUnit, setPrecipitationUnit] = useState<'mm' | 'in'>('mm');
+  const [sortBy, setSortBy] = useState<SortOption>('name');
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [favoriteStations, setFavoriteStations] = useState<Set<string>>(new Set());
 
   // Загружаем настройки из localStorage после монтирования
@@ -45,6 +49,17 @@ export default function WeatherStationsMap() {
     if (savedPrecipUnit) setPrecipitationUnit(savedPrecipUnit);
     if (savedFavorites) setFavoriteStations(new Set(JSON.parse(savedFavorites)));
 
+    const savedSortBy = localStorage.getItem('sortBy') as SortOption;
+    if (savedSortBy) setSortBy(savedSortBy);
+
+    // Получаем геолокацию для сортировки по расстоянию
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => {} // Игнорируем ошибку
+      );
+    }
+
     setIsHydrated(true);
   }, []);
 
@@ -56,8 +71,9 @@ export default function WeatherStationsMap() {
     localStorage.setItem('windSpeedUnit', windSpeedUnit);
     localStorage.setItem('pressureUnit', pressureUnit);
     localStorage.setItem('precipitationUnit', precipitationUnit);
+    localStorage.setItem('sortBy', sortBy);
     localStorage.setItem('favoriteStations', JSON.stringify([...favoriteStations]));
-  }, [isHydrated, darkMode, temperatureUnit, windSpeedUnit, pressureUnit, precipitationUnit, favoriteStations]);
+  }, [isHydrated, darkMode, temperatureUnit, windSpeedUnit, pressureUnit, precipitationUnit, sortBy, favoriteStations]);
 
   // Открываем sidebar при поисковом запросе
   useEffect(() => {
@@ -164,9 +180,12 @@ export default function WeatherStationsMap() {
           selectedStation={selectedStation}
           favoriteStations={favoriteStations}
           precipitationUnit={precipitationUnit}
+          sortBy={sortBy}
+          userLocation={userLocation}
           onSearchChange={setSearchQuery}
           onStationClick={handleStationClick}
           onToggleFavorite={handleToggleFavorite}
+          onSortChange={setSortBy}
           onLogoClick={handleLogoClick}
           onClose={() => setSidebarOpen(false)}
         />
