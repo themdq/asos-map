@@ -12,7 +12,7 @@ interface WeatherCardProps {
   weatherData: WeatherPoint[];
   loading?: boolean;
   temperatureUnit?: 'C' | 'F';
-  windSpeedUnit?: 'kmh' | 'mph';
+  windSpeedUnit?: 'kts' | 'mph';
   pressureUnit?: 'mb' | 'hPa';
   precipitationUnit?: 'mm' | 'in';
 }
@@ -28,7 +28,7 @@ export default function WeatherCard({
   weatherData,
   loading,
   temperatureUnit = 'C',
-  windSpeedUnit = 'kmh',
+  windSpeedUnit = 'kts',
   pressureUnit = 'mb',
   precipitationUnit = 'mm'
 }: WeatherCardProps) {
@@ -68,7 +68,7 @@ export default function WeatherCard({
   const toCelsius = (tempF: number) => (tempF - 32) * 5/9;
 
   const convertWindSpeed = (speedMs: number) => {
-    return windSpeedUnit === 'kmh' ? speedMs * 3.6 : speedMs * 2.237;
+    return windSpeedUnit === 'kts' ? speedMs * 1.94384 : speedMs * 2.237;
   };
 
   const convertPressure = (pressureHPa: number) => pressureHPa;

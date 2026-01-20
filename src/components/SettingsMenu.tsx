@@ -3,12 +3,12 @@ import { Sun, Moon } from 'lucide-react';
 interface SettingsMenuProps {
   darkMode: boolean;
   temperatureUnit: 'C' | 'F';
-  windSpeedUnit: 'kmh' | 'mph';
+  windSpeedUnit: 'kts' | 'mph';
   pressureUnit: 'mb' | 'hPa';
   precipitationUnit: 'mm' | 'in';
   onDarkModeToggle: () => void;
   onTemperatureUnitChange: (unit: 'C' | 'F') => void;
-  onWindSpeedUnitChange: (unit: 'kmh' | 'mph') => void;
+  onWindSpeedUnitChange: (unit: 'kts' | 'mph') => void;
   onPressureUnitChange: (unit: 'mb' | 'hPa') => void;
   onPrecipitationUnitChange: (unit: 'mm' | 'in') => void;
 }
@@ -83,12 +83,12 @@ export default function SettingsMenu({
         </div>
         <div className="flex gap-1.5">
           {[
-            { value: 'kmh', label: 'km/h' },
+            { value: 'kts', label: 'kts' },
             { value: 'mph', label: 'mph' }
           ].map((unit) => (
             <button
               key={unit.value}
-              onClick={() => onWindSpeedUnitChange(unit.value as 'kmh' | 'mph')}
+              onClick={() => onWindSpeedUnitChange(unit.value as 'kts' | 'mph')}
               className={`${buttonBase} ${windSpeedUnit === unit.value ? buttonActive : buttonInactive}`}
             >
               {unit.label}
