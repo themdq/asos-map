@@ -19,23 +19,45 @@ export default function WeatherStationsMap() {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Настройки с дефолтными значениями
   const [darkMode, setDarkMode] = useState(false);
   const [temperatureUnit, setTemperatureUnit] = useState<'C' | 'F'>('F');
   const [windSpeedUnit, setWindSpeedUnit] = useState<'kts' | 'mph'>('kts');
   const [pressureUnit, setPressureUnit] = useState<'mb' | 'hPa'>('mb');
   const [precipitationUnit, setPrecipitationUnit] = useState<'mm' | 'in'>('mm');
-  const [favoriteStations, setFavoriteStations] = useState<Set<string>>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('favoriteStations');
-      return saved ? new Set(JSON.parse(saved)) : new Set();
-    }
-    return new Set();
-  });
+  const [favoriteStations, setFavoriteStations] = useState<Set<string>>(new Set());
 
-  // Сохраняем избранные в localStorage
+  // Загружаем настройки из localStorage после монтирования
   useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    const savedTempUnit = localStorage.getItem('temperatureUnit') as 'C' | 'F';
+    const savedWindUnit = localStorage.getItem('windSpeedUnit') as 'kts' | 'mph';
+    const savedPressureUnit = localStorage.getItem('pressureUnit') as 'mb' | 'hPa';
+    const savedPrecipUnit = localStorage.getItem('precipitationUnit') as 'mm' | 'in';
+    const savedFavorites = localStorage.getItem('favoriteStations');
+
+    if (savedDarkMode !== null) setDarkMode(savedDarkMode === 'true');
+    if (savedTempUnit) setTemperatureUnit(savedTempUnit);
+    if (savedWindUnit) setWindSpeedUnit(savedWindUnit);
+    if (savedPressureUnit) setPressureUnit(savedPressureUnit);
+    if (savedPrecipUnit) setPrecipitationUnit(savedPrecipUnit);
+    if (savedFavorites) setFavoriteStations(new Set(JSON.parse(savedFavorites)));
+
+    setIsHydrated(true);
+  }, []);
+
+  // Сохраняем настройки в localStorage (только после гидратации)
+  useEffect(() => {
+    if (!isHydrated) return;
+    localStorage.setItem('darkMode', String(darkMode));
+    localStorage.setItem('temperatureUnit', temperatureUnit);
+    localStorage.setItem('windSpeedUnit', windSpeedUnit);
+    localStorage.setItem('pressureUnit', pressureUnit);
+    localStorage.setItem('precipitationUnit', precipitationUnit);
     localStorage.setItem('favoriteStations', JSON.stringify([...favoriteStations]));
-  }, [favoriteStations]);
+  }, [isHydrated, darkMode, temperatureUnit, windSpeedUnit, pressureUnit, precipitationUnit, favoriteStations]);
 
   // Открываем sidebar при поисковом запросе
   useEffect(() => {

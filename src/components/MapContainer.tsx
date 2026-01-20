@@ -121,6 +121,12 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       ? 'mapbox://styles/mapbox/dark-v11'
       : 'mapbox://styles/mapbox/standard';
 
+    // Сбрасываем флаги и очищаем маркеры кластеров
+    imagesLoadedRef.current = false;
+    eventHandlersAddedRef.current = false;
+    clusterMarkersRef.current.forEach((value) => value.marker.remove());
+    clusterMarkersRef.current.clear();
+
     map.current.setStyle(newStyle);
 
     // После смены стиля нужно заново добавить изображения маркеров
@@ -428,7 +434,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     return () => {
       map.current?.off('images-loaded', handleImagesLoaded);
     };
-  }, [stations, favoriteStations]);
+  }, [stations, favoriteStations, darkMode]);
 
   // Обновляем слой выбранной станции
   useEffect(() => {
