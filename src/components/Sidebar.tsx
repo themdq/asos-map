@@ -85,7 +85,7 @@ export default function Sidebar({
           </div>
         ) : (
           <>
-            <p className="text-muted-foreground text-[13px] mb-2.5">
+            <p className="text-muted-foreground text-xs mb-2.5">
               Found: {filteredStations.length} stations
             </p>
 
@@ -134,7 +134,7 @@ export default function Sidebar({
                         </p>
                       </div>
                       <span className={`
-                        px-2 py-1 rounded-[5px] text-[11px] font-medium transition-colors duration-200
+                        px-2 py-1 rounded-[5px] text-[10px] font-medium transition-colors duration-200
                         ${isSelected
                           ? 'bg-primary-foreground text-secondary-foreground'
                           : 'bg-secondary-foreground text-white group-hover:bg-primary-foreground group-hover:text-secondary-foreground'
