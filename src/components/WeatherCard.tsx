@@ -69,6 +69,23 @@ export default function WeatherCard({
               <span className="text-gray-300">•</span>
               <span>{network.split('_')[0]}</span>
             </div>
+            <button
+              onClick={copyCoordinates}
+              className="flex items-center gap-1 hover:text-secondary-foreground transition-colors group"
+            >
+              <span>{precipitationUnit === 'in' ? `${Math.round(elevation * 3.28084)}ft` : `${elevation}m`}</span>
+              <span className="text-gray-300">•</span>
+              <span>{latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
+              <svg
+                className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              {copied && <span className="text-green-500 text-[10px]">copied!</span>}
+            </button>
           </div>
           <div className="text-gray-400 text-sm text-center py-4">
             No weather data available
