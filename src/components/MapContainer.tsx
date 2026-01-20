@@ -11,6 +11,7 @@ interface MapContainerProps {
 
 export interface MapRef {
   flyToStation: (station: Station) => void;
+  resize: () => void;
 }
 
 const MapContainer = forwardRef<MapRef, MapContainerProps>(({
@@ -229,7 +230,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
 
   }, [stations, onStationSelect]);
 
-  // Предоставляем метод flyToStation родительскому компоненту через ref
+  // Предоставляем методы родительскому компоненту через ref
   useImperativeHandle(ref, () => ({
     flyToStation: (station: Station) => {
       if (map.current) {
@@ -238,6 +239,11 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
           zoom: 10,
           duration: 2000
         });
+      }
+    },
+    resize: () => {
+      if (map.current && map.current.resize) {
+        map.current.resize();
       }
     }
   }));

@@ -107,6 +107,17 @@ export default function WeatherStationsMap() {
     }
   };
 
+  // Обновляем размер карты при изменении состояния sidebar
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (mapRef.current?.resize) {
+        mapRef.current.resize();
+      }
+    }, 300); // Задержка совпадает с transition-duration
+
+    return () => clearTimeout(timer);
+  }, [sidebarOpen]);
+
   return (
     <div
       className={`
@@ -115,19 +126,18 @@ export default function WeatherStationsMap() {
       `}
     >
       {/* Sidebar */}
-      <div
-        className="transition-[width] duration-300 overflow-hidden flex-shrink-0"
-        style={{ width: sidebarOpen ? '400px' : '0' }}
-      >
-        <Sidebar
-          stations={stations}
-          loading={loading}
-          searchQuery={searchQuery}
-          selectedStation={selectedStation}
-          onSearchChange={setSearchQuery}
-          onStationClick={handleStationClick}
-        />
-      </div>
+      {sidebarOpen && (
+        <div className="transition-all duration-300 flex-shrink-0" style={{ width: '400px' }}>
+          <Sidebar
+            stations={stations}
+            loading={loading}
+            searchQuery={searchQuery}
+            selectedStation={selectedStation}
+            onSearchChange={setSearchQuery}
+            onStationClick={handleStationClick}
+          />
+        </div>
+      )}
 
       {/* Main Content Area */}
       <div className="flex-1 relative overflow-hidden">
