@@ -3,6 +3,9 @@ import type { WeatherPoint } from '../types/weather';
 
 interface WeatherCardProps {
   stationName: string;
+  stationId: string;
+  latitude: number;
+  longitude: number;
   weatherData: WeatherPoint[];
   loading?: boolean;
   temperatureUnit?: 'C' | 'F';
@@ -13,6 +16,9 @@ interface WeatherCardProps {
 
 export default function WeatherCard({
   stationName,
+  stationId,
+  latitude,
+  longitude,
   weatherData,
   loading,
   temperatureUnit = 'C',
@@ -21,15 +27,22 @@ export default function WeatherCard({
   precipitationUnit = 'mm'
 }: WeatherCardProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [copied, setCopied] = useState(false);
 
-  // При изменении данных сбрасываем на последнюю точку
   const currentIndex = selectedIndex ?? weatherData.length - 1;
+
+  const copyCoordinates = async () => {
+    const coords = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+    await navigator.clipboard.writeText(coords);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   if (loading) {
     return (
       <div className="w-full">
-        <div className="bg-primary border border-gray-200 rounded-[5px] p-6 shadow-lg">
-          <div className="flex items-center justify-center text-gray-500 text-sm">
+        <div className="bg-primary border border-gray-200 rounded-[5px] p-4 shadow-lg">
+          <div className="flex items-center justify-start text-gray-500 text-sm">
             Loading...
           </div>
         </div>
@@ -41,31 +54,23 @@ export default function WeatherCard({
     return null;
   }
 
-  // Функции конвертации (данные приходят в Фаренгейтах)
+  // Функции конвертации
   const convertTemp = (tempF: number) => {
     return temperatureUnit === 'C' ? (tempF - 32) * 5/9 : tempF;
   };
 
-  // Конвертация в Цельсий для расчётов (формула Магнуса требует °C)
   const toCelsius = (tempF: number) => (tempF - 32) * 5/9;
 
   const convertWindSpeed = (speedMs: number) => {
-    if (windSpeedUnit === 'kmh') {
-      return speedMs * 3.6;
-    } else {
-      return speedMs * 2.237;
-    }
+    return windSpeedUnit === 'kmh' ? speedMs * 3.6 : speedMs * 2.237;
   };
 
-  const convertPressure = (pressureHPa: number) => {
-    return pressureHPa;
-  };
+  const convertPressure = (pressureHPa: number) => pressureHPa;
 
   const convertPrecipitation = (precipMm: number) => {
     return precipitationUnit === 'in' ? precipMm / 25.4 : precipMm;
   };
 
-  // Расчёт относительной влажности по формуле Магнуса (требует °C)
   const calcHumidity = (tempF: number, dewpointF: number) => {
     const temp = toCelsius(tempF);
     const dewpoint = toCelsius(dewpointF);
@@ -75,26 +80,55 @@ export default function WeatherCard({
     return Math.min(100, Math.max(0, rh));
   };
 
-  // Текущая точка данных
   const currentData = weatherData[currentIndex];
 
-  // Вычисляем скорость и направление ветра
+  // Расчёт ветра
   const windSpeedMs = Math.sqrt(currentData.wind_x ** 2 + currentData.wind_y ** 2);
   const windSpeed = convertWindSpeed(windSpeedMs);
   const windDirection = (Math.atan2(currentData.wind_y, currentData.wind_x) * 180 / Math.PI + 360) % 360;
 
   const getWindDirectionLabel = (degrees: number) => {
     const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-    const index = Math.round(degrees / 45) % 8;
-    return directions[index];
+    return directions[Math.round(degrees / 45) % 8];
   };
 
-  // Мин/макс температура за весь период
+  // Мин/макс за период для нормализации градиентов
   const temperatures = weatherData.map(d => d.temperature);
-  const minTemp = convertTemp(Math.min(...temperatures));
-  const maxTemp = convertTemp(Math.max(...temperatures));
+  const minTempRaw = Math.min(...temperatures);
+  const maxTempRaw = Math.max(...temperatures);
 
-  // Форматирование даты для слайдера
+  const winds = weatherData.map(d => convertWindSpeed(Math.sqrt(d.wind_x ** 2 + d.wind_y ** 2)));
+  const maxWind = Math.max(...winds);
+
+  const pressures = weatherData.filter(d => d.pressure !== null).map(d => d.pressure as number);
+  const minPressure = pressures.length > 0 ? Math.min(...pressures) : 0;
+  const maxPressure = pressures.length > 0 ? Math.max(...pressures) : 1;
+
+  const precips = weatherData.map(d => convertPrecipitation(d.precip));
+  const maxPrecip = Math.max(...precips, 0.1);
+
+  // Нормализация значений для градиентных полосок (0-100%)
+  const normalizeTemp = (tempF: number) => {
+    if (maxTempRaw === minTempRaw) return 50;
+    return ((tempF - minTempRaw) / (maxTempRaw - minTempRaw)) * 100;
+  };
+
+  const normalizeHumidity = (h: number) => h;
+
+  const normalizeWind = (w: number) => {
+    if (maxWind === 0) return 0;
+    return (w / maxWind) * 100;
+  };
+
+  const normalizePressure = (p: number | null) => {
+    if (p === null || maxPressure === minPressure) return 50;
+    return ((p - minPressure) / (maxPressure - minPressure)) * 100;
+  };
+
+  const normalizePrecip = (p: number) => {
+    return (p / maxPrecip) * 100;
+  };
+
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString('en-US', {
       hour: '2-digit',
@@ -110,75 +144,123 @@ export default function WeatherCard({
     });
   };
 
+  // Компонент метрики с градиентной полоской
+  const MetricRow = ({
+    label,
+    value,
+    unit,
+    percent,
+    gradient,
+    extra
+  }: {
+    label: string;
+    value: string | number;
+    unit: string;
+    percent: number;
+    gradient: string;
+    extra?: string;
+  }) => (
+    <div className="py-1.5">
+      <div className="flex items-center gap-3">
+        <div className="w-28 shrink-0">
+          <div className="text-gray-500 text-xs uppercase">{label}</div>
+          <div className="text-gray-500 text-xs">
+            {value} {unit} {extra && <span className="text-gray-400">{extra}</span>}
+          </div>
+        </div>
+        <div className="w-28 h-2 bg-gray-200 rounded overflow-hidden">
+          <div
+            className="h-full rounded transition-all duration-300"
+            style={{
+              width: `${Math.max(percent, 3)}%`,
+              background: gradient
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  const currentTemp = convertTemp(currentData.temperature);
+  const currentHumidity = calcHumidity(currentData.temperature, currentData.dewpoint);
+  const currentPrecip = convertPrecipitation(currentData.precip);
+
   return (
     <div className="w-full">
       <div className="bg-primary border border-gray-200 rounded-[5px] shadow-lg text-graphit p-4">
-        {/* Заголовок */}
-        <div className="flex justify-between items-start mb-3">
-          <div>
-            <h2 className="text-base font-semibold text-graphit">
-              {stationName}
-            </h2>
-            <p className="text-gray-500 text-xs">
-              {formatDate(currentData.timestamp)}, {formatTime(currentData.timestamp)}
-            </p>
-          </div>
-          <div className="text-right">
-            <div className="text-3xl font-light text-graphit">
-              {Math.round(convertTemp(currentData.temperature))}&deg;{temperatureUnit}
-            </div>
-            <div className="text-gray-400 text-[10px]">
-              {Math.round(maxTemp)}&deg; / {Math.round(minTemp)}&deg;
-            </div>
-          </div>
+        {/* Header: Name */}
+        <h2 className="text-base font-semibold text-graphit leading-tight mb-1">
+          {stationName}
+        </h2>
+
+        {/* ID & Coordinates (copyable) */}
+        <button
+          onClick={copyCoordinates}
+          className="flex items-center gap-2 text-gray-500 text-xs hover:text-graphit transition-colors mb-3 group"
+        >
+          <span>{stationId}</span>
+          <span className="text-gray-300">•</span>
+          <span>{latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
+          <svg
+            className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          {copied && <span className="text-green-500 text-[10px]">copied!</span>}
+        </button>
+
+        {/* Date/Time */}
+        <div className="text-gray-500 text-sm font-medium mb-3">
+          {formatDate(currentData.timestamp)}, {formatTime(currentData.timestamp)}
         </div>
 
-        {/* Сетка метрик */}
-        <div className="grid grid-cols-4 gap-2 mb-3">
-          {/* Ветер */}
-          <div className="rounded bg-primary-foreground p-2 text-center">
-            <div className="text-gray-400 text-[9px] mb-0.5">Wind</div>
-            <div className="text-graphit text-sm font-semibold">
-              {windSpeed.toFixed(1)}
-            </div>
-            <div className="text-gray-400 text-[9px]">{windSpeedUnit}</div>
-            <span className="text-[9px] text-blue-500 font-medium">
-              {getWindDirectionLabel(windDirection)}
-            </span>
-          </div>
-
-          {/* Влажность */}
-          <div className="rounded bg-primary-foreground p-2 text-center">
-            <div className="text-gray-400 text-[9px] mb-0.5">Humidity</div>
-            <div className="text-graphit text-sm font-semibold">
-              {Math.round(calcHumidity(currentData.temperature, currentData.dewpoint))}%
-            </div>
-            <div className="text-gray-400 text-[9px]">
-              dew {Math.round(convertTemp(currentData.dewpoint))}&deg;
-            </div>
-          </div>
-
-          {/* Давление */}
-          <div className="rounded bg-primary-foreground p-2 text-center">
-            <div className="text-gray-400 text-[9px] mb-0.5">Pressure</div>
-            <div className="text-graphit text-sm font-semibold">
-              {currentData.pressure ? Math.round(convertPressure(currentData.pressure)) : '—'}
-            </div>
-            <div className="text-gray-400 text-[9px]">{pressureUnit}</div>
-          </div>
-
-          {/* Осадки */}
-          <div className="rounded bg-primary-foreground p-2 text-center">
-            <div className="text-gray-400 text-[9px] mb-0.5">Precip</div>
-            <div className="text-graphit text-sm font-semibold">
-              {convertPrecipitation(currentData.precip).toFixed(precipitationUnit === 'in' ? 2 : 1)}
-            </div>
-            <div className="text-gray-400 text-[9px]">{precipitationUnit}</div>
-          </div>
+        {/* Metrics List */}
+        <div className="space-y-0 mb-3">
+          <MetricRow
+            label="Temperature"
+            value={Math.round(currentTemp)}
+            unit={`°${temperatureUnit}`}
+            percent={normalizeTemp(currentData.temperature)}
+            gradient="linear-gradient(180deg, #ef4444 0%, #3b82f6 100%)"
+            extra={`${Math.round(convertTemp(maxTempRaw))}° / ${Math.round(convertTemp(minTempRaw))}°`}
+          />
+          <MetricRow
+            label="Humidity"
+            value={Math.round(currentHumidity)}
+            unit="%"
+            percent={normalizeHumidity(currentHumidity)}
+            gradient="linear-gradient(180deg, #06b6d4 0%, #0284c7 100%)"
+            extra={`dew ${Math.round(convertTemp(currentData.dewpoint))}°`}
+          />
+          <MetricRow
+            label="Wind"
+            value={windSpeed.toFixed(1)}
+            unit={windSpeedUnit}
+            percent={normalizeWind(windSpeed)}
+            gradient="linear-gradient(180deg, #8b5cf6 0%, #6366f1 100%)"
+            extra={getWindDirectionLabel(windDirection)}
+          />
+          <MetricRow
+            label="Pressure"
+            value={currentData.pressure ? Math.round(convertPressure(currentData.pressure)) : '—'}
+            unit={pressureUnit}
+            percent={normalizePressure(currentData.pressure)}
+            gradient="linear-gradient(180deg, #f59e0b 0%, #d97706 100%)"
+          />
+          <MetricRow
+            label="Precipitation"
+            value={currentPrecip.toFixed(precipitationUnit === 'in' ? 2 : 1)}
+            unit={precipitationUnit}
+            percent={normalizePrecip(currentPrecip)}
+            gradient="linear-gradient(180deg, #10b981 0%, #059669 100%)"
+          />
         </div>
 
-        {/* Временная шкала */}
-        <div className="rounded bg-primary-foreground p-3">
+        {/* Timeline */}
+        <div className="pt-3">
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-400 text-[10px]">
               {formatDate(weatherData[0].timestamp)}

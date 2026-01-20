@@ -148,7 +148,7 @@ export default function WeatherStationsMap() {
           {/* Left Side: Menu Button, Search Bar, and Weather Card */}
           <div
             className={`
-              flex flex-col gap-3 pointer-events-auto w-lg transition-transform duration-300
+              flex flex-col gap-3 pointer-events-auto w-72 transition-transform duration-300
               ${sidebarOpen ? 'translate-x-[400px]' : 'translate-x-0'}
             `}
           >
@@ -171,6 +171,9 @@ export default function WeatherStationsMap() {
               <div data-weather-card>
                 <WeatherCard
                   stationName={selectedStation.station_name}
+                  stationId={selectedStation.station_id}
+                  latitude={selectedStation.latitude}
+                  longitude={selectedStation.longitude}
                   weatherData={weatherData}
                   loading={weatherLoading}
                   temperatureUnit={temperatureUnit}
