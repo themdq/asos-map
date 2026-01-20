@@ -162,7 +162,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       filter: ['!', ['has', 'point_count']],
       layout: {
         'icon-image': 'custom-marker',
-        'icon-size': 0.12,
+        'icon-size': 0.18,
         'icon-allow-overlap': true,
         'icon-anchor': 'bottom'
       }

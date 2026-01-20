@@ -174,6 +174,9 @@ export default function WeatherStationsMap() {
                   stationId={selectedStation.station_id}
                   latitude={selectedStation.latitude}
                   longitude={selectedStation.longitude}
+                  elevation={selectedStation.elevation}
+                  timezone={selectedStation.timezone}
+                  network={selectedStation.station_network}
                   weatherData={weatherData}
                   loading={weatherLoading}
                   temperatureUnit={temperatureUnit}

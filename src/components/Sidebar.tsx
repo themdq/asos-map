@@ -25,9 +25,10 @@ export default function Sidebar({
   );
 
   return (
-    <div className="w-[400px] bg-primary overflow-y-auto border-r border-gray-200 h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)]">
-      <div className="p-5">
-        <div className="flex items-center gap-2.5 mb-5 cursor-pointer" onClick={onLogoClick}>
+    <div className="w-[400px] bg-primary border-r border-gray-200 h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)] flex flex-col">
+      {/* Fixed header */}
+      <div className="p-5 pb-3 bg-primary border-b border-gray-100">
+        <div className="flex items-center gap-2.5 cursor-pointer" onClick={onLogoClick}>
           <div className="w-12 h-auto flex-shrink-0">
             <img src="/logo.svg" alt="WindBorne Systems" className="w-full h-full object-contain" />
           </div>
@@ -38,7 +39,10 @@ export default function Sidebar({
             <h2 className="text-graphit text-sm m-0 leading-tight">WindBorne Systems</h2>
           </div>
         </div>
+      </div>
 
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto p-5 pt-3">
         {loading ? (
           <div className="text-center py-10 text-gray-500">
             ⏳ Loading...

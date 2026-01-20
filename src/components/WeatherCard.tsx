@@ -6,6 +6,9 @@ interface WeatherCardProps {
   stationId: string;
   latitude: number;
   longitude: number;
+  elevation: number;
+  timezone: string;
+  network: string;
   weatherData: WeatherPoint[];
   loading?: boolean;
   temperatureUnit?: 'C' | 'F';
@@ -19,6 +22,9 @@ export default function WeatherCard({
   stationId,
   latitude,
   longitude,
+  elevation,
+  timezone,
+  network,
   weatherData,
   loading,
   temperatureUnit = 'C',
@@ -193,28 +199,40 @@ export default function WeatherCard({
           {stationName}
         </h2>
 
-        {/* ID & Coordinates (copyable) */}
-        <button
-          onClick={copyCoordinates}
-          className="flex items-center gap-2 text-gray-500 text-xs hover:text-graphit transition-colors mb-3 group"
-        >
-          <span>{stationId}</span>
-          <span className="text-gray-300">•</span>
-          <span>{latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
-          <svg
-            className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        {/* Station info */}
+        <div className="text-gray-500 text-xs space-y-0.5 mb-3">
+          
+          <div className="flex items-center gap-1">
+            
+            <span>{stationId}</span>
+            <span className="text-gray-300">•</span>
+            <span>{network.split('_')[0]}</span>
+          </div>
+          <button
+            onClick={copyCoordinates}
+            className="flex items-center gap-1 hover:text-graphit transition-colors group"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-          </svg>
-          {copied && <span className="text-green-500 text-[10px]">copied!</span>}
-        </button>
+            <span>{elevation}m</span>
+            <span className="text-gray-300">•</span>
+            
+            <span>{latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
+            <svg
+              className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            {copied && <span className="text-green-500 text-[10px]">copied!</span>}
+            
+            
+          </button>
+        </div>
 
         {/* Date/Time */}
         <div className="text-gray-500 text-sm font-medium mb-3">
-          {formatDate(currentData.timestamp)}, {formatTime(currentData.timestamp)}
+          {formatDate(currentData.timestamp)}, {formatTime(currentData.timestamp)} {timezone}
         </div>
 
         {/* Metrics List */}
