@@ -8,7 +8,14 @@ export async function fetchHistoricalWeather(stationId: string): Promise<Histori
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
+    let text = await response.text();
+
+    // Workaround: сервер иногда возвращает обрезанный JSON без закрывающей скобки
+    if (!text.trim().endsWith('}')) {
+      text = text + '}';
+    }
+
+    const data = JSON.parse(text);
     return data;
   } catch (error) {
     console.error('Error fetching historical weather:', error);

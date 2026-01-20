@@ -57,7 +57,25 @@ export default function WeatherCard({
   }
 
   if (weatherData.length === 0) {
-    return null;
+    return (
+      <div className="w-full">
+        <div className="bg-primary border border-gray-200 rounded-[5px] p-4 shadow-lg">
+          <h2 className="text-base font-semibold text-graphit leading-tight mb-1">
+            {stationName}
+          </h2>
+          <div className="text-gray-500 text-xs space-y-0.5 mb-3">
+            <div className="flex items-center gap-1">
+              <span>{stationId}</span>
+              <span className="text-gray-300">•</span>
+              <span>{network.split('_')[0]}</span>
+            </div>
+          </div>
+          <div className="text-gray-400 text-sm text-center py-4">
+            No weather data available
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Функции конвертации

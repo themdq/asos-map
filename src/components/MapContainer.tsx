@@ -32,6 +32,8 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   const popupRef = useRef<any>(null);
   const selectedStationRef = useRef<Station | null>(selectedStation);
   const clusterMarkersRef = useRef<Map<number, any>>(new Map());
+  const onStationSelectRef = useRef(onStationSelect);
+  const eventHandlersAddedRef = useRef(false);
 
   // Инициализация карты
   useEffect(() => {
@@ -89,6 +91,11 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       }
     };
   }, [scriptLoaded, mapboxToken]);
+
+  // Обновляем ref для onStationSelect
+  useEffect(() => {
+    onStationSelectRef.current = onStationSelect;
+  }, [onStationSelect]);
 
   // Добавление кластеризации
   useEffect(() => {
@@ -287,59 +294,62 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       });
     }
 
-    // Обработчик клика на кластер - зумим к нему
-    map.current.on('click', 'clusters', (e: any) => {
-      const features = map.current.queryRenderedFeatures(e.point, {
-        layers: ['clusters']
+    // Добавляем обработчики событий только один раз
+    if (!eventHandlersAddedRef.current) {
+      // Обработчик клика на кластер - зумим к нему
+      map.current.on('click', 'clusters', (e: any) => {
+        const features = map.current.queryRenderedFeatures(e.point, {
+          layers: ['clusters']
+        });
+        const clusterId = features[0].properties.cluster_id;
+        map.current.getSource('stations').getClusterExpansionZoom(
+          clusterId,
+          (err: any, zoom: number) => {
+            if (err) return;
+
+            map.current.easeTo({
+              center: features[0].geometry.coordinates,
+              zoom: zoom
+            });
+          }
+        );
       });
-      const clusterId = features[0].properties.cluster_id;
-      map.current.getSource('stations').getClusterExpansionZoom(
-        clusterId,
-        (err: any, zoom: number) => {
-          if (err) return;
 
-          map.current.easeTo({
-            center: features[0].geometry.coordinates,
-            zoom: zoom
-          });
-        }
-      );
-    });
+      // Обработчик клика на отдельную точку
+      map.current.on('click', 'unclustered-point', (e: any) => {
+        const properties = e.features[0].properties;
 
-    // Обработчик клика на отдельную точку
-    map.current.on('click', 'unclustered-point', (e: any) => {
-      const coordinates = e.features[0].geometry.coordinates.slice();
-      const properties = e.features[0].properties;
+        const station: Station = {
+          station_id: properties.station_id,
+          station_name: properties.station_name,
+          station_network: properties.station_network,
+          latitude: properties.latitude,
+          longitude: properties.longitude,
+          elevation: properties.elevation,
+          timezone: properties.timezone
+        };
 
-      const station: Station = {
-        station_id: properties.station_id,
-        station_name: properties.station_name,
-        station_network: properties.station_network,
-        latitude: properties.latitude,
-        longitude: properties.longitude,
-        elevation: properties.elevation,
-        timezone: properties.timezone
-      };
+        onStationSelectRef.current(station);
+      });
 
-      onStationSelect(station);
+      // Меняем курсор при наведении на кластеры и точки
+      map.current.on('mouseenter', 'clusters', () => {
+        map.current.getCanvas().style.cursor = 'pointer';
+      });
+      map.current.on('mouseleave', 'clusters', () => {
+        map.current.getCanvas().style.cursor = '';
+      });
+      map.current.on('mouseenter', 'unclustered-point', () => {
+        map.current.getCanvas().style.cursor = 'pointer';
+      });
+      map.current.on('mouseleave', 'unclustered-point', () => {
+        map.current.getCanvas().style.cursor = '';
+      });
 
-    });
+      eventHandlersAddedRef.current = true;
+    }
 
-    // Меняем курсор при наведении на кластеры и точки
-    map.current.on('mouseenter', 'clusters', () => {
-      map.current.getCanvas().style.cursor = 'pointer';
-    });
-    map.current.on('mouseleave', 'clusters', () => {
-      map.current.getCanvas().style.cursor = '';
-    });
-    map.current.on('mouseenter', 'unclustered-point', () => {
-      map.current.getCanvas().style.cursor = 'pointer';
-    });
-    map.current.on('mouseleave', 'unclustered-point', () => {
-      map.current.getCanvas().style.cursor = '';
-    });
-
-  }, [stations, onStationSelect]);
+  }, [stations]);
 
   // Обновляем слой выбранной станции
   useEffect(() => {
