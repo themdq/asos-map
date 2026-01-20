@@ -210,7 +210,7 @@ export default function WeatherCard({
           </div>
           <button
             onClick={copyCoordinates}
-            className="flex items-center gap-1 hover:text-graphit transition-colors group"
+            className="flex items-center gap-1 hover:text-secondary-foreground transition-colors group"
           >
             <span>{elevation}m</span>
             <span className="text-gray-300">•</span>

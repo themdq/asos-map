@@ -221,8 +221,8 @@ export default function WeatherStationsMap() {
               flex items-center justify-center rounded-[5px] p-2.5
               border shadow-md transition-all duration-200 cursor-pointer
               ${darkMode
-                ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
-                : 'bg-primary border-gray-200 text-graphit hover:bg-accent'
+                ? 'bg-gray-700 border-gray-600 text-white hover:bg-secondary-foreground'
+                : 'bg-primary border-gray-200 text-graphit hover:bg-secondary-foreground hover:text-white'
               }
             `}
           >
@@ -234,8 +234,8 @@ export default function WeatherStationsMap() {
               flex items-center justify-center rounded-[5px] p-2.5
               border shadow-md transition-all duration-200 cursor-pointer
               ${darkMode
-                ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
-                : 'bg-primary border-gray-200 text-graphit hover:bg-accent'
+                ? 'bg-gray-700 border-gray-600 text-white hover:bg-secondary-foreground'
+                : 'bg-primary border-gray-200 text-graphit hover:bg-secondary-foreground hover:text-white'
               }
             `}
           >
@@ -247,8 +247,8 @@ export default function WeatherStationsMap() {
               flex items-center justify-center rounded-[5px] p-2.5
               border shadow-md transition-all duration-200 cursor-pointer
               ${darkMode
-                ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
-                : 'bg-primary border-gray-200 text-graphit hover:bg-accent'
+                ? 'bg-gray-700 border-gray-600 text-white hover:bg-secondary-foreground'
+                : 'bg-primary border-gray-200 text-graphit hover:bg-secondary-foreground hover:text-white'
               }
             `}
           >

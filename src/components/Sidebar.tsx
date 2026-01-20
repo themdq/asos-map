@@ -65,7 +65,7 @@ export default function Sidebar({
                       p-[15px] rounded-[5px] mb-2 cursor-pointer transition-all duration-200 border
                       ${isSelected
                         ? 'bg-secondary-foreground'
-                        : 'bg-primary-foreground border-gray-200 hover:bg-accent'
+                        : 'bg-primary-foreground border-gray-200 hover:bg-secondary-foreground hover:text-white'
                       }
                     `}
                   >
