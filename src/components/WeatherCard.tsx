@@ -41,10 +41,13 @@ export default function WeatherCard({
     return null;
   }
 
-  // Функции конвертации
-  const convertTemp = (tempC: number) => {
-    return temperatureUnit === 'F' ? (tempC * 9/5) + 32 : tempC;
+  // Функции конвертации (данные приходят в Фаренгейтах)
+  const convertTemp = (tempF: number) => {
+    return temperatureUnit === 'C' ? (tempF - 32) * 5/9 : tempF;
   };
+
+  // Конвертация в Цельсий для расчётов (формула Магнуса требует °C)
+  const toCelsius = (tempF: number) => (tempF - 32) * 5/9;
 
   const convertWindSpeed = (speedMs: number) => {
     if (windSpeedUnit === 'kmh') {
@@ -62,8 +65,10 @@ export default function WeatherCard({
     return precipitationUnit === 'in' ? precipMm / 25.4 : precipMm;
   };
 
-  // Расчёт относительной влажности по формуле Магнуса
-  const calcHumidity = (temp: number, dewpoint: number) => {
+  // Расчёт относительной влажности по формуле Магнуса (требует °C)
+  const calcHumidity = (tempF: number, dewpointF: number) => {
+    const temp = toCelsius(tempF);
+    const dewpoint = toCelsius(dewpointF);
     const a = 17.625;
     const b = 243.04;
     const rh = 100 * Math.exp((a * dewpoint) / (b + dewpoint)) / Math.exp((a * temp) / (b + temp));
