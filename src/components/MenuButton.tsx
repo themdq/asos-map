@@ -27,12 +27,17 @@ export default function MenuButton({
     )
   };
 
-  // Если это кнопка settings и она раскрыта, показываем расширенный блок
-  if (icon === 'settings' && isExpanded && children) {
+  // Для кнопки settings показываем анимированный переход
+  if (icon === 'settings') {
     return (
       <div
         className={`
-          rounded-xl border shadow-lg transition-all duration-300
+          overflow-hidden border shadow-lg
+          transition-all duration-300 ease-in-out
+          ${isExpanded
+            ? 'rounded-xl min-w-[250px]'
+            : 'rounded-sm w-[44px]'
+          }
           ${darkMode
             ? 'bg-gray-700 border-gray-600'
             : 'bg-primary border-gray-200'
@@ -43,20 +48,46 @@ export default function MenuButton({
         <button
           onClick={onClick}
           className={`
-            flex items-center justify-between w-full px-4 py-3 rounded-t-xl
-            transition-colors duration-200
+            flex items-center w-full
+            transition-all duration-300 ease-in-out
+            ${isExpanded
+              ? 'justify-between px-4 py-3'
+              : 'justify-center px-3 py-2.5'
+            }
             ${darkMode
               ? 'text-white hover:bg-gray-600'
               : 'text-gray-800 hover:bg-gray-50'
             }
           `}
         >
-          <span className="text-base font-semibold">Settings</span>
-          <Settings />
+          <span
+            className={`
+              text-base font-semibold whitespace-nowrap
+              transition-all duration-300
+              ${isExpanded
+                ? 'opacity-100 max-w-[200px]'
+                : 'opacity-0 max-w-0 overflow-hidden'
+              }
+            `}
+          >
+            Settings
+          </span>
+          <Settings className="flex-shrink-0" />
         </button>
 
         {/* Контент меню */}
-        <div className="px-4 pb-4">
+        <div
+          className={`
+            px-4 transition-all duration-300 ease-in-out
+            ${isExpanded
+              ? 'max-h-[600px] pb-4 opacity-100'
+              : 'max-h-0 pb-0 opacity-0'
+            }
+          `}
+          style={{
+            overflow: isExpanded ? 'visible' : 'hidden'
+          }}
+        >
           {children}
         </div>
       </div>

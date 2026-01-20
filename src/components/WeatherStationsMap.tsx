@@ -173,20 +173,18 @@ export default function WeatherStationsMap() {
               icon="settings"
               isExpanded={settingsOpen}
             >
-              {settingsOpen && (
-                <SettingsMenu
-                  darkMode={darkMode}
-                  temperatureUnit={temperatureUnit}
-                  windSpeedUnit={windSpeedUnit}
-                  pressureUnit={pressureUnit}
-                  precipitationUnit={precipitationUnit}
-                  onDarkModeToggle={() => setDarkMode(!darkMode)}
-                  onTemperatureUnitChange={setTemperatureUnit}
-                  onWindSpeedUnitChange={setWindSpeedUnit}
-                  onPressureUnitChange={setPressureUnit}
-                  onPrecipitationUnitChange={setPrecipitationUnit}
-                />
-              )}
+              <SettingsMenu
+                darkMode={darkMode}
+                temperatureUnit={temperatureUnit}
+                windSpeedUnit={windSpeedUnit}
+                pressureUnit={pressureUnit}
+                precipitationUnit={precipitationUnit}
+                onDarkModeToggle={() => setDarkMode(!darkMode)}
+                onTemperatureUnitChange={setTemperatureUnit}
+                onWindSpeedUnitChange={setWindSpeedUnit}
+                onPressureUnitChange={setPressureUnit}
+                onPrecipitationUnitChange={setPrecipitationUnit}
+              />
             </MenuButton>
           </div>
         </div>
