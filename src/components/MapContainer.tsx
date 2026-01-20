@@ -11,6 +11,7 @@ interface MapContainerProps {
 
 export interface MapRef {
   flyToStation: (station: Station) => void;
+  flyTo: (lng: number, lat: number, zoom?: number) => void;
   resize: () => void;
 }
 
@@ -127,15 +128,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       source: 'stations',
       filter: ['has', 'point_count'],
       paint: {
-        'circle-color': [
-          'step',
-          ['get', 'point_count'],
-          '#51bbd6',
-          10,
-          '#f1f075',
-          30,
-          '#f28cb1'
-        ],
+        'circle-color': '#a4b7aa',
         'circle-radius': [
           'step',
           ['get', 'point_count'],
@@ -245,6 +238,15 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         map.current.flyTo({
           center: [station.longitude, station.latitude],
           zoom: 10,
+          duration: 2000
+        });
+      }
+    },
+    flyTo: (lng: number, lat: number, zoom: number = 10) => {
+      if (map.current) {
+        map.current.flyTo({
+          center: [lng, lat],
+          zoom,
           duration: 2000
         });
       }

@@ -85,6 +85,13 @@ export default function WeatherStationsMap() {
     }
   };
 
+  const handleLogoClick = () => {
+    setSelectedStation(null);
+    if (mapRef.current?.flyTo) {
+      mapRef.current.flyTo(-122.14, 37.44, 12);
+    }
+  };
+
   const handleStationClick = async (station: Station) => {
     setSelectedStation(station);
     if (mapRef.current?.flyToStation) {
@@ -126,6 +133,7 @@ export default function WeatherStationsMap() {
           selectedStation={selectedStation}
           onSearchChange={setSearchQuery}
           onStationClick={handleStationClick}
+          onLogoClick={handleLogoClick}
         />
       </div>
 

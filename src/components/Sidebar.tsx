@@ -7,6 +7,7 @@ interface SidebarProps {
   selectedStation: Station | null;
   onSearchChange: (query: string) => void;
   onStationClick: (station: Station) => void;
+  onLogoClick: () => void;
 }
 
 export default function Sidebar({
@@ -15,7 +16,8 @@ export default function Sidebar({
   searchQuery,
   selectedStation,
   onSearchChange,
-  onStationClick
+  onStationClick,
+  onLogoClick
 }: SidebarProps) {
   const filteredStations = stations.filter(station =>
     station.station_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -25,7 +27,7 @@ export default function Sidebar({
   return (
     <div className="w-[400px] bg-primary overflow-y-auto border-r border-gray-200 h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)]">
       <div className="p-5">
-        <div className="flex items-center gap-2.5 mb-5">
+        <div className="flex items-center gap-2.5 mb-5 cursor-pointer" onClick={onLogoClick}>
           <div className="w-12 h-auto flex-shrink-0">
             <img src="/logo.svg" alt="WindBorne Systems" className="w-full h-full object-contain" />
           </div>
