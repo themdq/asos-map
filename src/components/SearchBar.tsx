@@ -28,7 +28,7 @@ export default function SearchBar({
             ? 'bg-gray-700 border-gray-600 text-white placeholder:text-gray-400'
             : 'bg-primary border-gray-300 text-graphit placeholder:text-graphit'
           }
-          border focus:ring-2 focus:ring-blue-500
+          border focus:ring-2 focus:ring-secondary-foreground
         `}
       />
     </div>
