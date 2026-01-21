@@ -515,7 +515,7 @@ export default function WeatherCard({
             max={weatherData.length - 1}
             value={currentIndex}
             onChange={(e) => setSelectedIndex(Number(e.target.value))}
-            className="w-full h-1.5 bg-border rounded-lg appearance-none cursor-pointer accent-secondary-foreground"
+            className="w-full"
           />
         </div>
       </div>
