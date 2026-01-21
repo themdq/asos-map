@@ -8,7 +8,7 @@ Interactive map experience for exploring ASOS weather stations and historical ob
 - Weather card with time-series slider and unit toggles.
 - Desktop-first UI with mobile-friendly gestures.
 
-More details: see `DOCS.md`.
+More details: see [DOCS.md](https://github.com/themdq/asos-map/blob/master/DOCS.md).
 
 ## Tech Stack
 - Astro + React
