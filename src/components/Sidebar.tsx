@@ -15,6 +15,7 @@ interface SidebarProps {
   precipitationUnit?: 'mm' | 'in';
   sortBy?: SortOption;
   userLocation?: { lat: number; lng: number } | null;
+  darkMode?: boolean;
   onSearchChange: (query: string) => void;
   onStationClick: (station: Station | null) => void;
   onToggleFavorite?: (stationId: string) => void;
@@ -45,6 +46,7 @@ export default function Sidebar({
   precipitationUnit = 'mm',
   sortBy = 'name',
   userLocation,
+  darkMode = false,
   onSearchChange,
   onStationClick,
   onToggleFavorite,
@@ -120,7 +122,7 @@ export default function Sidebar({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={onLogoClick}>
             <div className="w-12 h-auto flex-shrink-0">
-              <img src="/logo.svg" alt="WindBorne Systems" className="w-full h-full object-contain" />
+              <img src={darkMode ? "/logo-white.svg" : "/logo.svg"} alt="WindBorne Systems" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
               <h1 className="text-graphit text-xl font-bold m-0 leading-tight">

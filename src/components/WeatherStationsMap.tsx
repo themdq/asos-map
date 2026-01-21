@@ -199,6 +199,7 @@ export default function WeatherStationsMap() {
           precipitationUnit={precipitationUnit}
           sortBy={sortBy}
           userLocation={userLocation}
+          darkMode={darkMode}
           onSearchChange={setSearchQuery}
           onStationClick={handleStationClick}
           onToggleFavorite={handleToggleFavorite}
