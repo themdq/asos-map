@@ -1,13 +1,50 @@
-# Astro with Tailwind
+# ASOS Stations Map
 
+Interactive map experience for exploring ASOS weather stations and historical observations.
+
+## Overview
+- Full-screen Mapbox map with clustering and custom markers.
+- Searchable, sortable station list with favorites.
+- Weather card with time-series slider and unit toggles.
+- Desktop-first UI with mobile-friendly gestures.
+
+More details: see `DOCS.md`.
+
+## Tech Stack
+- Astro + React
+- Tailwind CSS
+- Mapbox GL JS
+- TanStack React Query (with persistence)
+
+## Local Development
 ```sh
-npm create astro@latest -- --template with-tailwindcss
+npm install
+npm run dev
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/with-tailwindcss)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/with-tailwindcss)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/with-tailwindcss/devcontainer.json)
+## Build / Preview
+```sh
+npm run build
+npm run preview
+```
 
-Astro comes with [Tailwind](https://tailwindcss.com) support out of the box. This example showcases how to style your Astro project with Tailwind.
+## Environment
+Create a `.env` file with:
+```
+PUBLIC_MAPBOX_TOKEN=your_token_here
+```
 
-For complete setup instructions, please see our [Tailwind Styling Guide](https://docs.astro.build/en/guides/styling/#tailwind).
+## Data Sources
+- Stations: `https://sfc.windbornesystems.com/stations`
+- Historical: `https://sfc.windbornesystems.com/historical_weather?station={station_id}`
+
+Notes:
+- API is rate-limited (20/min).
+- Responses may be corrupted; client includes repair logic.
+
+## Deployment Notes
+- Kubernetes manifests are in `k8s/`.
+- `k8s/secrets.yaml` is gitignored; use `k8s/secrets.example.yaml` as a template.
+
+## License
+Unspecified.
