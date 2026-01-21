@@ -12,17 +12,18 @@
 - Search supports station name and station ID.
 - Sort options: name, distance (if geolocation available), network, elevation, favorites-only.
 - Infinite scroll in the station list (loads more as you approach the bottom).
+- Clicking the already selected station in the sidebar deselects it and closes the weather card.
 
 ### Favorites
 - Star icon toggles favorites without selecting the station.
 - Favorites filter shows only starred stations.
+- Favorite stations use a distinct marker color on the map to stand out.
 
 ### Weather Card
 - Appears only when a station is selected.
 - Top-right controls: weather icon + close (X) button.
 - Station name and star icon are grouped to avoid overlap for long names.
 - Coordinates are clickable and copy to clipboard with a “copied!” hint.
-- Timeline section is labeled; the slider includes ticked strokes on the track.
 - Timeline slider lets users scrub across historical time points.
 - Color-coded temperature bar based on Celsius bands:
   - Dark blue (< 0°C)
@@ -50,7 +51,6 @@
 - Desktop:
   - Search bar appears in the top-left toolbar.
   - Sidebar shifts the top-left stack to the right when open.
-  - Hover cursor changes on map clusters/points.
 - Mobile:
   - Sidebar is full-width and slides in/out.
   - Swipe-to-close gesture on sidebar (left swipe).
@@ -60,6 +60,9 @@
 
 ### Keyboard
 - ESC closes settings, weather card, and sidebar.
+
+### Visual Language
+- Typography and color palette are inspired by WindBorne’s brand aesthetic.
 
 ---
 
