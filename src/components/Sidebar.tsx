@@ -55,17 +55,16 @@ export default function Sidebar({
     station.station_id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Сортировка (избранные всегда сверху)
-  const sortedStations = [...filteredStations].sort((a, b) => {
-    // Избранные всегда первые
-    const aFav = favoriteStations.has(a.station_id);
-    const bFav = favoriteStations.has(b.station_id);
-    if (aFav && !bFav) return -1;
-    if (!aFav && bFav) return 1;
+  // Фильтрация избранных (если выбрана сортировка favorites)
+  const stationsToSort = sortBy === 'favorites'
+    ? filteredStations.filter(s => favoriteStations.has(s.station_id))
+    : filteredStations;
 
-    // Затем по выбранному критерию
+  // Сортировка
+  const sortedStations = [...stationsToSort].sort((a, b) => {
     switch (sortBy) {
       case 'name':
+      case 'favorites': // избранные сортируем по имени
         return a.station_name.localeCompare(b.station_name);
       case 'distance':
         if (!userLocation) return 0;
@@ -132,7 +131,7 @@ export default function Sidebar({
           <>
             <div className="flex items-center justify-between mb-2.5">
               <p className="text-muted-foreground text-xs">
-                Found: {filteredStations.length} stations
+                Found: {sortedStations.length} stations
               </p>
               <select
                 value={sortBy}
@@ -143,6 +142,7 @@ export default function Sidebar({
                 <option value="distance">By distance</option>
                 <option value="network">By network</option>
                 <option value="elevation">By elevation</option>
+                <option value="favorites">Favorites only</option>
               </select>
             </div>
 

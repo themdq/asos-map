@@ -4,7 +4,7 @@ import type { Station } from '../types/station';
 import { useStationsQuery } from '../hooks/useStationsQuery';
 import { useHistoricalQuery } from '../hooks/useHistoricalQuery';
 
-export type SortOption = 'name' | 'distance' | 'network' | 'elevation';
+export type SortOption = 'name' | 'distance' | 'network' | 'elevation' | 'favorites';
 import Sidebar from './Sidebar';
 import MapContainer, { type MapRef } from './MapContainer';
 import WeatherCard from './WeatherCard';
