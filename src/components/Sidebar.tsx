@@ -147,7 +147,11 @@ export default function Sidebar({
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto p-5 pt-3">
+      <div
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto p-5 pt-3"
+      >
         {loading ? (
           <div className="text-center py-10 text-muted-foreground">
             ⏳ Loading...
@@ -171,11 +175,7 @@ export default function Sidebar({
               </select>
             </div>
 
-            <div
-              ref={scrollContainerRef}
-              onScroll={handleScroll}
-              className="overflow-y-auto"
-            >
+            <div>
               {visibleStations.map((station) => {
                 const isSelected = selectedStation?.station_id === station.station_id;
                 const isFavorite = favoriteStations.has(station.station_id);
