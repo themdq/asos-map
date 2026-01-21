@@ -231,8 +231,8 @@ export default function Sidebar({
                       <span className={`
                         px-2 py-1 rounded-[5px] text-[10px] font-medium transition-colors duration-200
                         ${isSelected
-                          ? 'bg-primary-foreground text-secondary-foreground'
-                          : 'bg-secondary-foreground text-white group-hover:bg-primary-foreground group-hover:text-secondary-foreground'
+                          ? 'bg-primary-foreground text-secondary-foreground dark:text-graphit'
+                          : 'bg-secondary-foreground text-white group-hover:bg-primary-foreground group-hover:text-secondary-foreground dark:group-hover:text-graphit'
                         }
                       `}>
                         {station.station_network.split('_')[0]}
