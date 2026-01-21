@@ -13,7 +13,7 @@ interface WeatherCardProps {
   loading?: boolean;
   temperatureUnit?: 'C' | 'F';
   windSpeedUnit?: 'kts' | 'mph';
-  pressureUnit?: 'mb' | 'hPa';
+  pressureUnit?: 'mb' | 'inHg';
   precipitationUnit?: 'mm' | 'in';
   isFavorite?: boolean;
   onToggleFavorite?: (stationId: string) => void;
@@ -110,7 +110,9 @@ export default function WeatherCard({
     return windSpeedUnit === 'kts' ? speedMs * 1.94384 : speedMs * 2.237;
   };
 
-  const convertPressure = (pressureHPa: number) => pressureHPa;
+  const convertPressure = (pressureMb: number) => {
+    return pressureUnit === 'inHg' ? pressureMb * 0.02953 : pressureMb;
+  };
 
   const convertPrecipitation = (precipMm: number) => {
     return precipitationUnit === 'in' ? precipMm / 25.4 : precipMm;
@@ -476,7 +478,11 @@ export default function WeatherCard({
           />
           <MetricRow
             label="Pressure"
-            value={currentData.pressure ? Math.round(convertPressure(currentData.pressure)) : '—'}
+            value={currentData.pressure
+              ? (pressureUnit === 'inHg'
+                  ? convertPressure(currentData.pressure).toFixed(2)
+                  : Math.round(convertPressure(currentData.pressure)))
+              : '—'}
             unit={pressureUnit}
             percent={normalizePressure(currentData.pressure)}
             gradient={defaultGradient}

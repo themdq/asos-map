@@ -4,12 +4,12 @@ interface SettingsMenuProps {
   darkMode: boolean;
   temperatureUnit: 'C' | 'F';
   windSpeedUnit: 'kts' | 'mph';
-  pressureUnit: 'mb' | 'hPa';
+  pressureUnit: 'mb' | 'inHg';
   precipitationUnit: 'mm' | 'in';
   onDarkModeToggle: () => void;
   onTemperatureUnitChange: (unit: 'C' | 'F') => void;
   onWindSpeedUnitChange: (unit: 'kts' | 'mph') => void;
-  onPressureUnitChange: (unit: 'mb' | 'hPa') => void;
+  onPressureUnitChange: (unit: 'mb' | 'inHg') => void;
   onPrecipitationUnitChange: (unit: 'mm' | 'in') => void;
 }
 
@@ -91,11 +91,11 @@ export default function SettingsMenu({
         <div className="flex gap-1.5">
           {[
             { value: 'mb', label: 'mb' },
-            { value: 'hPa', label: 'hPa' }
+            { value: 'inHg', label: 'inHg' }
           ].map((unit) => (
             <button
               key={unit.value}
-              onClick={() => onPressureUnitChange(unit.value as 'mb' | 'hPa')}
+              onClick={() => onPressureUnitChange(unit.value as 'mb' | 'inHg')}
               className={`${buttonBase} ${pressureUnit === unit.value ? buttonActive : buttonInactive}`}
             >
               {unit.label}

@@ -168,22 +168,29 @@ export default function Sidebar({
                 className="text-xs bg-primary-foreground border border-border rounded px-2 py-1 text-graphit cursor-pointer focus:outline-none focus:ring-1 focus:ring-secondary-foreground"
               >
                 <option value="name">By name</option>
-                <option value="distance">By distance</option>
+                {userLocation && <option value="distance">By distance</option>}
                 <option value="network">By network</option>
                 <option value="elevation">By elevation</option>
                 <option value="favorites">Favorites only</option>
               </select>
             </div>
 
-            <div>
-              {visibleStations.map((station) => {
-                const isSelected = selectedStation?.station_id === station.station_id;
-                const isFavorite = favoriteStations.has(station.station_id);
+            {sortBy === 'favorites' && sortedStations.length === 0 ? (
+              <div className="text-center py-10 text-muted-foreground text-sm">
+                No favorites yet.
+                <br />
+                <span className="text-xs">Tap ★ on a station to add it</span>
+              </div>
+            ) : (
+              <div>
+                {visibleStations.map((station) => {
+                  const isSelected = selectedStation?.station_id === station.station_id;
+                  const isFavorite = favoriteStations.has(station.station_id);
 
-                return (
-                  <div
-                    key={station.station_id}
-                    onClick={() => handleStationClick(isSelected ? null : station)}
+                  return (
+                    <div
+                      key={station.station_id}
+                      onClick={() => handleStationClick(isSelected ? null : station)}
                     className={`
                       group p-[15px] pb-8 rounded-[5px] mb-2 cursor-pointer transition-all duration-200 border relative
                       ${isSelected
@@ -265,12 +272,13 @@ export default function Sidebar({
                   </div>
                 );
               })}
-              {hasMore && (
-                <div className="py-4 text-center text-muted-foreground text-xs">
-                  Showing {visibleCount} of {sortedStations.length} — scroll for more
-                </div>
-              )}
-            </div>
+                {hasMore && (
+                  <div className="py-4 text-center text-muted-foreground text-xs">
+                    Showing {visibleCount} of {sortedStations.length} — scroll for more
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>

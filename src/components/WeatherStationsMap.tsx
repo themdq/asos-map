@@ -27,7 +27,7 @@ export default function WeatherStationsMap() {
   const [darkMode, setDarkMode] = useState(false);
   const [temperatureUnit, setTemperatureUnit] = useState<'C' | 'F'>('F');
   const [windSpeedUnit, setWindSpeedUnit] = useState<'kts' | 'mph'>('kts');
-  const [pressureUnit, setPressureUnit] = useState<'mb' | 'hPa'>('mb');
+  const [pressureUnit, setPressureUnit] = useState<'mb' | 'inHg'>('mb');
   const [precipitationUnit, setPrecipitationUnit] = useState<'mm' | 'in'>('mm');
   const [sortBy, setSortBy] = useState<SortOption>('name');
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -38,7 +38,7 @@ export default function WeatherStationsMap() {
     const savedDarkMode = localStorage.getItem('darkMode');
     const savedTempUnit = localStorage.getItem('temperatureUnit') as 'C' | 'F';
     const savedWindUnit = localStorage.getItem('windSpeedUnit') as 'kts' | 'mph';
-    const savedPressureUnit = localStorage.getItem('pressureUnit') as 'mb' | 'hPa';
+    const savedPressureUnit = localStorage.getItem('pressureUnit') as 'mb' | 'inHg';
     const savedPrecipUnit = localStorage.getItem('precipitationUnit') as 'mm' | 'in';
     const savedFavorites = localStorage.getItem('favoriteStations');
 
@@ -56,8 +56,16 @@ export default function WeatherStationsMap() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => {} // Игнорируем ошибку
+        () => {
+          // Геолокация недоступна — сбрасываем сортировку по расстоянию
+          if (savedSortBy === 'distance') {
+            setSortBy('name');
+          }
+        }
       );
+    } else if (savedSortBy === 'distance') {
+      // Геолокация не поддерживается — сбрасываем сортировку
+      setSortBy('name');
     }
 
     setIsHydrated(true);
