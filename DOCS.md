@@ -54,6 +54,7 @@
 - Clicking outside:
   - Clicking map closes the weather card if a station is selected.
   - Clicking outside the settings menu closes it.
+- Pressing Escape closes settings, weather card, and sidebar.
 - Settings menu (top-right):
   - Single button toggles a fixed-position dropdown.
   - Clicking the settings icon again closes it.
@@ -80,6 +81,11 @@
 - The top bar search is hidden on mobile; search is inside the sidebar header.
 - Map control buttons are positioned above the safe-area inset (`env(safe-area-inset-bottom)`).
 - All panels and buttons use large tap targets and short transitions for perceived responsiveness.
+
+## Sidebar Details
+- Sidebar auto-opens when the user starts typing a search query.
+- If the sidebar was opened by search, it auto-closes when the search is cleared.
+- The “Stations” heading sits above the count/sort row to clarify the list context.
 
 ## Sidebar (Station List)
 - Search by station name or ID.

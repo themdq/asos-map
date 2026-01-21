@@ -150,6 +150,7 @@ export default function Sidebar({
           <div className="text-center py-10 text-muted-foreground">Loading...</div>
         ) : (
           <>
+            <h3 className="text-graphit text-sm font-semibold mb-2">Stations</h3>
             <div className="flex items-center justify-between mb-2.5">
               <p className="text-muted-foreground text-xs">Found: {sortedStations.length} stations</p>
               <select
@@ -164,8 +165,6 @@ export default function Sidebar({
                 <option value="favorites">Favorites only</option>
               </select>
             </div>
-
-            <h3 className="text-graphit text-sm font-semibold mb-2">Stations</h3>
             {sortBy === 'favorites' && sortedStations.length === 0 ? (
               <div className="text-center py-10 text-muted-foreground text-sm">
                 No favorites yet.
