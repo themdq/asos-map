@@ -25,6 +25,7 @@ export default function WeatherStationsMap() {
 
   // Настройки с дефолтными значениями
   const [darkMode, setDarkMode] = useState(false);
+  const [mapMode, setMapMode] = useState<'2d' | '3d'>('2d');
   const [temperatureUnit, setTemperatureUnit] = useState<'C' | 'F'>('F');
   const [windSpeedUnit, setWindSpeedUnit] = useState<'kts' | 'mph'>('kts');
   const [pressureUnit, setPressureUnit] = useState<'mb' | 'inHg'>('mb');
@@ -36,6 +37,7 @@ export default function WeatherStationsMap() {
   // Загружаем настройки из localStorage после монтирования
   useEffect(() => {
     const savedDarkMode = localStorage.getItem('darkMode');
+    const savedMapMode = localStorage.getItem('mapMode') as '2d' | '3d';
     const savedTempUnit = localStorage.getItem('temperatureUnit') as 'C' | 'F';
     const savedWindUnit = localStorage.getItem('windSpeedUnit') as 'kts' | 'mph';
     const savedPressureUnit = localStorage.getItem('pressureUnit') as 'mb' | 'inHg';
@@ -43,6 +45,7 @@ export default function WeatherStationsMap() {
     const savedFavorites = localStorage.getItem('favoriteStations');
 
     if (savedDarkMode !== null) setDarkMode(savedDarkMode === 'true');
+    if (savedMapMode) setMapMode(savedMapMode);
     if (savedTempUnit) setTemperatureUnit(savedTempUnit);
     if (savedWindUnit) setWindSpeedUnit(savedWindUnit);
     if (savedPressureUnit) setPressureUnit(savedPressureUnit);
@@ -84,13 +87,14 @@ export default function WeatherStationsMap() {
   useEffect(() => {
     if (!isHydrated) return;
     localStorage.setItem('darkMode', String(darkMode));
+    localStorage.setItem('mapMode', mapMode);
     localStorage.setItem('temperatureUnit', temperatureUnit);
     localStorage.setItem('windSpeedUnit', windSpeedUnit);
     localStorage.setItem('pressureUnit', pressureUnit);
     localStorage.setItem('precipitationUnit', precipitationUnit);
     localStorage.setItem('sortBy', sortBy);
     localStorage.setItem('favoriteStations', JSON.stringify([...favoriteStations]));
-  }, [isHydrated, darkMode, temperatureUnit, windSpeedUnit, pressureUnit, precipitationUnit, sortBy, favoriteStations]);
+  }, [isHydrated, darkMode, mapMode, temperatureUnit, windSpeedUnit, pressureUnit, precipitationUnit, sortBy, favoriteStations]);
 
   // Открываем sidebar при поисковом запросе
   useEffect(() => {
@@ -269,11 +273,13 @@ export default function WeatherStationsMap() {
             >
               <SettingsMenu
                 darkMode={darkMode}
+                mapMode={mapMode}
                 temperatureUnit={temperatureUnit}
                 windSpeedUnit={windSpeedUnit}
                 pressureUnit={pressureUnit}
                 precipitationUnit={precipitationUnit}
                 onDarkModeToggle={() => setDarkMode(!darkMode)}
+                onMapModeChange={setMapMode}
                 onTemperatureUnitChange={setTemperatureUnit}
                 onWindSpeedUnitChange={setWindSpeedUnit}
                 onPressureUnitChange={setPressureUnit}
@@ -312,6 +318,7 @@ export default function WeatherStationsMap() {
           selectedStation={selectedStation}
           favoriteStations={favoriteStations}
           darkMode={darkMode}
+          mapMode={mapMode}
           mapboxToken={mapboxToken}
           scriptLoaded={scriptLoaded}
           isHydrated={isHydrated}

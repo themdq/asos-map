@@ -2,11 +2,13 @@ import { Sun, Moon } from 'lucide-react';
 
 interface SettingsMenuProps {
   darkMode: boolean;
+  mapMode: '2d' | '3d';
   temperatureUnit: 'C' | 'F';
   windSpeedUnit: 'kts' | 'mph';
   pressureUnit: 'mb' | 'inHg';
   precipitationUnit: 'mm' | 'in';
   onDarkModeToggle: () => void;
+  onMapModeChange: (mode: '2d' | '3d') => void;
   onTemperatureUnitChange: (unit: 'C' | 'F') => void;
   onWindSpeedUnitChange: (unit: 'kts' | 'mph') => void;
   onPressureUnitChange: (unit: 'mb' | 'inHg') => void;
@@ -15,11 +17,13 @@ interface SettingsMenuProps {
 
 export default function SettingsMenu({
   darkMode,
+  mapMode,
   temperatureUnit,
   windSpeedUnit,
   pressureUnit,
   precipitationUnit,
   onDarkModeToggle,
+  onMapModeChange,
   onTemperatureUnitChange,
   onWindSpeedUnitChange,
   onPressureUnitChange,
@@ -47,6 +51,22 @@ export default function SettingsMenu({
           >
             <Moon className="w-4 h-4 mx-auto" />
           </button>
+        </div>
+      </div>
+
+      {/* Map Mode */}
+      <div className="py-2 border-b border-border">
+        <div className="text-xs mb-1.5 text-muted-foreground">Map</div>
+        <div className="flex gap-1.5">
+          {(['2d', '3d'] as const).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => onMapModeChange(mode)}
+              className={`${buttonBase} ${mapMode === mode ? buttonActive : buttonInactive}`}
+            >
+              {mode.toUpperCase()}
+            </button>
+          ))}
         </div>
       </div>
 

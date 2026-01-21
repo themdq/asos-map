@@ -7,6 +7,7 @@ interface MapContainerProps {
   selectedStation: Station | null;
   favoriteStations: Set<string>;
   darkMode?: boolean;
+  mapMode?: '2d' | '3d';
   mapboxToken: string;
   scriptLoaded: boolean;
   isHydrated?: boolean;
@@ -27,6 +28,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   selectedStation,
   favoriteStations,
   darkMode = false,
+  mapMode = '2d',
   mapboxToken,
   scriptLoaded,
   isHydrated = false,
@@ -64,7 +66,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         style: initialStyle,
         center: [-122.2, 37.43],
         zoom: 10,
-        projection: 'mercator',
+        projection: mapMode === '3d' ? 'globe' : 'mercator',
       });
 
       map.current.on('load', () => {
@@ -195,6 +197,13 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       setIsStyleChanging(false);
     };
   }, [darkMode]);
+
+  // Переключение режима карты 2D/3D (проекция)
+  useEffect(() => {
+    if (!map.current || !mapLoadedRef.current) return;
+
+    map.current.setProjection(mapMode === '3d' ? 'globe' : 'mercator');
+  }, [mapMode]);
 
   // Обновляем ref для favoriteStations
   useEffect(() => {
