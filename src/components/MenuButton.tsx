@@ -19,49 +19,39 @@ export default function MenuButton({
     panel_left: <PanelLeft />
   };
 
-  // Для кнопки settings показываем анимированный переход по диагонали
+  // Для кнопки settings — кнопка + выпадающее меню поверх контента
   if (icon === 'settings') {
     return (
-      <div
-        className="overflow-hidden border border-border shadow-lg transition-all duration-300 ease-out rounded-[5px] origin-top-right bg-primary"
-        style={{
-          width: isExpanded ? '180px' : '44px',
-          height: isExpanded ? 'auto' : '44px'
-        }}
-      >
-        {/* Заголовок с иконкой settings */}
+      <>
+        {/* Кнопка */}
         <button
           onClick={onClick}
           className={`
-            flex items-center w-full cursor-pointer h-[44px]
-            transition-all duration-300 ease-out
-            text-graphit hover:bg-secondary-foreground group
-            ${isExpanded ? 'justify-between px-4' : 'justify-center px-3'}
+            flex items-center justify-center rounded-[5px] px-3 py-2.5 border shadow-md transition-all duration-200 cursor-pointer
+            ${isExpanded
+              ? 'bg-secondary-foreground text-white border-secondary-foreground'
+              : 'bg-primary text-graphit border-border hover:bg-secondary-foreground hover:text-white'
+            }
           `}
         >
-          <span
-            className={`
-              text-graphit font-semibold whitespace-nowrap
-              transition-opacity duration-200 group-hover:text-white
-              ${isExpanded ? 'opacity-100' : 'opacity-0 absolute'}
-            `}
-          >
-            Settings
-          </span>
-          <Settings className="flex-shrink-0 group-hover:text-white" />
+          <Settings />
         </button>
 
-        {/* Контент меню */}
-        <div
-          className={`
-            px-4 overflow-hidden
-            transition-all duration-300 ease-out
-            ${isExpanded ? 'pb-4 opacity-100' : 'pb-0 opacity-0 h-0'}
-          `}
-        >
-          {children}
-        </div>
-      </div>
+        {/* Выпадающее меню поверх всего */}
+        {isExpanded && (
+          <div className="fixed top-4 right-4 z-50 w-[200px] bg-primary border border-border rounded-[5px] shadow-lg">
+            <div className="flex items-center justify-between px-4 h-[44px] border-b border-border">
+              <span className="text-graphit font-semibold">Settings</span>
+              <button onClick={onClick} className="text-muted-foreground hover:text-graphit cursor-pointer">
+                <Settings className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="px-4 pb-4">
+              {children}
+            </div>
+          </div>
+        )}
+      </>
     );
   }
 
