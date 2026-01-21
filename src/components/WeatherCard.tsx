@@ -177,21 +177,24 @@ export default function WeatherCard({
     return (p / maxPrecip) * 100;
   };
 
-  // Градиент для температуры: холодные цвета для низких, тёплые для высоких
+  // Градиент для температуры: синий → голубой → жёлтый → оранжевый → красный
   const getTemperatureGradient = (tempF: number) => {
     const tempC = toCelsius(tempF);
-    if (tempC < 5) {
-      // Очень холодно — сине-голубой
-      return 'linear-gradient(90deg, hsla(200, 45%, 65%, 1) 0%, hsla(210, 50%, 55%, 1) 100%)';
-    } else if (tempC < 15) {
-      // Прохладно — голубовато-серый
-      return 'linear-gradient(90deg, hsla(180, 30%, 70%, 1) 0%, hsla(195, 35%, 60%, 1) 100%)';
-    } else if (tempC < 25) {
-      // Тепло — жёлто-оранжевый
-      return 'linear-gradient(90deg, hsla(43, 60%, 67%, 1) 0%, hsla(28, 49%, 56%, 1) 100%)';
+    if (tempC < 0) {
+      // Очень холодно — синий
+      return 'linear-gradient(90deg, #1e40af 0%, #3b82f6 100%)';
+    } else if (tempC < 10) {
+      // Холодно — голубой
+      return 'linear-gradient(90deg, #0891b2 0%, #22d3ee 100%)';
+    } else if (tempC < 20) {
+      // Прохладно/умеренно — жёлтый
+      return 'linear-gradient(90deg, #eab308 0%, #fde047 100%)';
+    } else if (tempC < 30) {
+      // Тепло — оранжевый
+      return 'linear-gradient(90deg, #ea580c 0%, #fb923c 100%)';
     } else {
-      // Жарко — оранжево-красный
-      return 'linear-gradient(90deg, hsla(28, 55%, 58%, 1) 0%, hsla(15, 50%, 50%, 1) 100%)';
+      // Жарко — красный
+      return 'linear-gradient(90deg, #dc2626 0%, #f87171 100%)';
     }
   };
 
