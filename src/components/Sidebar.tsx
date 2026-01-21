@@ -1,7 +1,10 @@
+import { useState, useRef, useEffect, useCallback } from 'react';
 import type { Station } from '../types/station';
 import type { SortOption } from './WeatherStationsMap';
 import MenuButton from './MenuButton';
 import SearchBar from './SearchBar';
+
+const ITEMS_PER_PAGE = 50;
 
 interface SidebarProps {
   stations: Station[];
@@ -49,6 +52,15 @@ export default function Sidebar({
   onLogoClick,
   onClose
 }: SidebarProps) {
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Сброс при изменении фильтров/сортировки
+  useEffect(() => {
+    setVisibleCount(ITEMS_PER_PAGE);
+    scrollContainerRef.current?.scrollTo(0, 0);
+  }, [searchQuery, sortBy]);
+
   // Фильтрация
   const filteredStations = stations.filter(station =>
     station.station_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -79,6 +91,19 @@ export default function Sidebar({
         return 0;
     }
   });
+
+  // Видимые станции (с лимитом)
+  const visibleStations = sortedStations.slice(0, visibleCount);
+  const hasMore = visibleCount < sortedStations.length;
+
+  // Подгрузка при скролле
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    // Подгружаем когда до конца осталось 200px
+    if (scrollHeight - scrollTop - clientHeight < 200 && hasMore) {
+      setVisibleCount(prev => Math.min(prev + ITEMS_PER_PAGE, sortedStations.length));
+    }
+  }, [hasMore, sortedStations.length]);
 
   const handleStationClick = (station: Station | null) => {
     onStationClick(station);
@@ -146,8 +171,12 @@ export default function Sidebar({
               </select>
             </div>
 
-            <div className=" overflow-y-auto">
-              {sortedStations.map((station) => {
+            <div
+              ref={scrollContainerRef}
+              onScroll={handleScroll}
+              className="overflow-y-auto"
+            >
+              {visibleStations.map((station) => {
                 const isSelected = selectedStation?.station_id === station.station_id;
                 const isFavorite = favoriteStations.has(station.station_id);
 
@@ -236,6 +265,11 @@ export default function Sidebar({
                   </div>
                 );
               })}
+              {hasMore && (
+                <div className="py-4 text-center text-muted-foreground text-xs">
+                  Showing {visibleCount} of {sortedStations.length} — scroll for more
+                </div>
+              )}
             </div>
           </>
         )}
