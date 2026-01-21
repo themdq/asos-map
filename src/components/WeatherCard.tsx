@@ -86,7 +86,7 @@ export default function WeatherCard({
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const currentIndex = selectedIndex ?? weatherData.length - 1;
+  const currentIndex = Math.min(selectedIndex ?? weatherData.length - 1, weatherData.length - 1);
 
   const copyCoordinates = async () => {
     await navigator.clipboard.writeText(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
@@ -98,18 +98,18 @@ export default function WeatherCard({
   const calculations = useMemo(() => {
     if (weatherData.length === 0) return null;
 
-    const temperatures = weatherData.map((d) => d.temperature);
-    const minTempRaw = Math.min(...temperatures);
-    const maxTempRaw = Math.max(...temperatures);
+    const temperatures = weatherData.map((d) => d.temperature ?? 0).filter((t) => t !== 0);
+    const minTempRaw = temperatures.length > 0 ? Math.min(...temperatures) : 0;
+    const maxTempRaw = temperatures.length > 0 ? Math.max(...temperatures) : 0;
 
-    const winds = weatherData.map((d) => convertWindSpeed(calcWind(d.wind_x, d.wind_y).speedMs, windSpeedUnit));
-    const maxWind = Math.max(...winds);
+    const winds = weatherData.map((d) => convertWindSpeed(calcWind(d.wind_x ?? 0, d.wind_y ?? 0).speedMs, windSpeedUnit));
+    const maxWind = Math.max(...winds, 0);
 
-    const pressures = weatherData.filter((d) => d.pressure !== null).map((d) => d.pressure as number);
+    const pressures = weatherData.filter((d) => d.pressure != null).map((d) => d.pressure as number);
     const minPressure = pressures.length > 0 ? Math.min(...pressures) : 0;
     const maxPressure = pressures.length > 0 ? Math.max(...pressures) : 1;
 
-    const precips = weatherData.map((d) => convertPrecipitation(d.precip, precipitationUnit));
+    const precips = weatherData.map((d) => convertPrecipitation(d.precip ?? 0, precipitationUnit));
     const maxPrecip = Math.max(...precips, 0.1);
 
     return { minTempRaw, maxTempRaw, maxWind, minPressure, maxPressure, maxPrecip };
@@ -152,14 +152,16 @@ export default function WeatherCard({
   }
 
   const currentData = weatherData[currentIndex];
+  if (!currentData) return null;
+
   const { minTempRaw, maxTempRaw, maxWind, minPressure, maxPressure, maxPrecip } = calculations;
 
-  // Current values
-  const wind = calcWind(currentData.wind_x, currentData.wind_y);
+  // Current values (with null safety)
+  const wind = calcWind(currentData.wind_x ?? 0, currentData.wind_y ?? 0);
   const windSpeed = convertWindSpeed(wind.speedMs, windSpeedUnit);
-  const currentTemp = convertTemperature(currentData.temperature, temperatureUnit);
-  const currentHumidity = calcHumidity(currentData.temperature, currentData.dewpoint);
-  const currentPrecip = convertPrecipitation(currentData.precip, precipitationUnit);
+  const currentTemp = convertTemperature(currentData.temperature ?? 0, temperatureUnit);
+  const currentHumidity = calcHumidity(currentData.temperature ?? 0, currentData.dewpoint ?? 0);
+  const currentPrecip = convertPrecipitation(currentData.precip ?? 0, precipitationUnit);
 
   // Normalization helpers
   const normalizeTemp = (tempF: number) => {
@@ -177,10 +179,10 @@ export default function WeatherCard({
 
   // Weather condition
   const getWeatherCondition = (): WeatherCondition => {
-    const tempC = toCelsius(currentData.temperature);
-    const dewpointDiff = Math.abs(tempC - toCelsius(currentData.dewpoint));
+    const tempC = toCelsius(currentData.temperature ?? 0);
+    const dewpointDiff = Math.abs(tempC - toCelsius(currentData.dewpoint ?? 0));
 
-    if (currentData.precip > 0.1) return tempC <= 0 ? 'snow' : 'rain';
+    if ((currentData.precip ?? 0) > 0.1) return tempC <= 0 ? 'snow' : 'rain';
     if (dewpointDiff < 2.5 && currentHumidity > 90) return 'fog';
     if (wind.speedMs > 10) return 'windy';
     if (currentHumidity > 80) return 'cloudy';
@@ -241,8 +243,8 @@ export default function WeatherCard({
             label="Temperature"
             value={Math.round(currentTemp)}
             unit={`°${temperatureUnit}`}
-            percent={normalizeTemp(currentData.temperature)}
-            gradient={getTemperatureGradient(toCelsius(currentData.temperature))}
+            percent={normalizeTemp(currentData.temperature ?? 0)}
+            gradient={getTemperatureGradient(toCelsius(currentData.temperature ?? 0))}
             extra={`${Math.round(convertTemperature(maxTempRaw, temperatureUnit))}° / ${Math.round(convertTemperature(minTempRaw, temperatureUnit))}°`}
           />
           <MetricRow
@@ -251,7 +253,7 @@ export default function WeatherCard({
             unit="%"
             percent={currentHumidity}
             gradient={defaultGradient}
-            extra={`dew ${Math.round(convertTemperature(currentData.dewpoint, temperatureUnit))}°`}
+            extra={`dew ${Math.round(convertTemperature(currentData.dewpoint ?? 0, temperatureUnit))}°`}
           />
           <MetricRow
             label="Wind"
