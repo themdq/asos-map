@@ -4,53 +4,69 @@
 @custom-variant dark (&:is(.dark *));
 
 /* PPNeue Montreal Font */
+/* Thin */
 @font-face {
   font-family: 'PPNeue Montreal';
-  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Thin.otf') format('opentype');
+  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Thin.woff2') format('woff2');
   font-weight: 100;
   font-style: normal;
   font-display: swap;
 }
 
+/* Light */
 @font-face {
   font-family: 'PPNeue Montreal';
-  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Book.otf') format('opentype');
+  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Book */
+@font-face {
+  font-family: 'PPNeue Montreal';
+  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Book.woff2') format('woff2');
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Regular */
+@font-face {
+  font-family: 'PPNeue Montreal';
+  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
+/* Medium */
 @font-face {
   font-family: 'PPNeue Montreal';
-  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Medium.otf') format('opentype');
+  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
+/* Semi-Bold */
 @font-face {
   font-family: 'PPNeue Montreal';
-  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Bold.otf') format('opentype');
+  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Bold */
+@font-face {
+  font-family: 'PPNeue Montreal';
+  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
-@font-face {
-  font-family: 'PPNeue Montreal';
-  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-Italic.otf') format('opentype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PPNeue Montreal';
-  src: url('/fonts/PPNeue-Montreal/PPNeueMontreal-SemiBolditalic.otf') format('opentype');
-  font-weight: 600;
-  font-style: italic;
-  font-display: swap;
-}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -168,6 +184,11 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+  }
+  :root {
+    --font-sans: 'PPNeue Montreal', system-ui, -apple-system,
+      BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, Cantarell,
+      'Helvetica Neue', sans-serif;
   }
   html, body {
     @apply bg-primary text-foreground;
