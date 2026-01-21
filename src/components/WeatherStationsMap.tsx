@@ -160,7 +160,7 @@ export default function WeatherStationsMap() {
   return (
     <div
       className={`
-        relative h-screen w-full font-sans transition-colors duration-300 bg-primary
+        relative h-screen w-full font-sans bg-primary
         ${darkMode ? 'dark' : ''}
       `}
     >
