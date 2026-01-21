@@ -23,6 +23,7 @@ RUN echo 'server { \
     listen 80; \
     root /usr/share/nginx/html; \
     index index.html; \
+    include /etc/nginx/mime.types; \
     \
     location / { \
         try_files $uri $uri/ /index.html; \
@@ -32,17 +33,16 @@ RUN echo 'server { \
         try_files $uri =404; \
         add_header Access-Control-Allow-Origin *; \
         add_header Cache-Control "public, max-age=31536000"; \
+        types { \
+            font/otf otf; \
+            font/ttf ttf; \
+            font/woff woff; \
+            font/woff2 woff2; \
+        } \
     } \
     \
     gzip on; \
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml font/otf font/ttf font/woff font/woff2; \
-    \
-    types { \
-        font/otf otf; \
-        font/ttf ttf; \
-        font/woff woff; \
-        font/woff2 woff2; \
-    } \
 }' > /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
