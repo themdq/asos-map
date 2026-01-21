@@ -10,9 +10,23 @@ export async function fetchHistoricalWeather(stationId: string): Promise<Histori
     }
     let text = await response.text();
 
-    // Workaround: сервер иногда возвращает обрезанный JSON без закрывающей скобки
-    if (!text.trim().endsWith('}')) {
-      text = text + '}';
+    // Workaround: сервер иногда возвращает некорректный JSON
+    // Находим начало JSON объекта
+    const jsonStart = text.indexOf('{');
+    if (jsonStart > 0) {
+      text = text.substring(jsonStart);
+    }
+
+    // Проверяем закрывающую скобку
+    const trimmed = text.trim();
+    if (!trimmed.endsWith('}')) {
+      // Пытаемся найти последнюю полную структуру
+      const lastBrace = text.lastIndexOf('}');
+      if (lastBrace > 0) {
+        text = text.substring(0, lastBrace + 1);
+      } else {
+        text = text + '}';
+      }
     }
 
     const data = JSON.parse(text);
