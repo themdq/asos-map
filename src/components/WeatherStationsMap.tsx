@@ -63,6 +63,15 @@ export default function WeatherStationsMap() {
     setIsHydrated(true);
   }, []);
 
+  // Синхронизируем класс dark на html элементе
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
   // Сохраняем настройки в localStorage (только после гидратации)
   useEffect(() => {
     if (!isHydrated) return;
