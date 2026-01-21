@@ -220,26 +220,33 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     const setupLayers = () => {
       if (!imagesLoadedRef.current || !map.current) return;
 
-      // Преобразуем станции в GeoJSON формат
+      // Преобразуем станции в GeoJSON формат (фильтруем станции с невалидными координатами)
       const geojson = {
         type: 'FeatureCollection',
-        features: stations.map((station) => ({
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [station.longitude, station.latitude]
-          },
-          properties: {
-            station_id: station.station_id,
-            station_name: station.station_name,
-            station_network: station.station_network,
-            elevation: station.elevation,
-            timezone: station.timezone,
-            latitude: station.latitude,
-            longitude: station.longitude,
-            is_favorite: favoriteStationsRef.current.has(station.station_id)
-          }
-        }))
+        features: stations
+          .filter((station) =>
+            station.latitude != null &&
+            station.longitude != null &&
+            !isNaN(station.latitude) &&
+            !isNaN(station.longitude)
+          )
+          .map((station) => ({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [station.longitude, station.latitude]
+            },
+            properties: {
+              station_id: station.station_id,
+              station_name: station.station_name,
+              station_network: station.station_network,
+              elevation: station.elevation,
+              timezone: station.timezone,
+              latitude: station.latitude,
+              longitude: station.longitude,
+              is_favorite: favoriteStationsRef.current.has(station.station_id)
+            }
+          }))
       };
 
     // Удаляем существующие слои и источники
