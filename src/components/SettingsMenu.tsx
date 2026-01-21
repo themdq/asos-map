@@ -1,4 +1,5 @@
 import { Sun, Moon } from 'lucide-react';
+import { ToggleGroup } from './ToggleGroup';
 
 interface SettingsMenuProps {
   darkMode: boolean;
@@ -27,121 +28,70 @@ export default function SettingsMenu({
   onTemperatureUnitChange,
   onWindSpeedUnitChange,
   onPressureUnitChange,
-  onPrecipitationUnitChange
+  onPrecipitationUnitChange,
 }: SettingsMenuProps) {
-  const buttonBase = "flex-1 py-1.5 px-2 rounded border-none cursor-pointer text-xs font-medium transition-all duration-200";
-  const buttonActive = 'bg-secondary-foreground text-white';
-  const buttonInactive = 'bg-primary text-muted-foreground';
-
   return (
     <div className="w-full">
-      {/* Theme */}
-      <div className="py-2 border-b border-border">
-        <div className="text-xs mb-1.5 text-muted-foreground">Theme</div>
-        <div className="flex gap-1.5">
-          <button
-            onClick={() => darkMode && onDarkModeToggle()}
-            className={`${buttonBase} ${!darkMode ? buttonActive : buttonInactive}`}
-          >
-            <Sun className="w-4 h-4 mx-auto" />
-          </button>
-          <button
-            onClick={() => !darkMode && onDarkModeToggle()}
-            className={`${buttonBase} ${darkMode ? buttonActive : buttonInactive}`}
-          >
-            <Moon className="w-4 h-4 mx-auto" />
-          </button>
-        </div>
-      </div>
+      <ToggleGroup
+        label="Theme"
+        options={[
+          { value: 'light', label: <Sun className="w-4 h-4 mx-auto" /> },
+          { value: 'dark', label: <Moon className="w-4 h-4 mx-auto" /> },
+        ]}
+        value={darkMode ? 'dark' : 'light'}
+        onChange={(v) => v === 'dark' !== darkMode && onDarkModeToggle()}
+      />
 
-      {/* Map Mode */}
-      <div className="py-2 border-b border-border">
-        <div className="text-xs mb-1.5 text-muted-foreground">Map</div>
-        <div className="flex gap-1.5">
-          {(['2d', '3d'] as const).map((mode) => (
-            <button
-              key={mode}
-              onClick={() => onMapModeChange(mode)}
-              className={`${buttonBase} ${mapMode === mode ? buttonActive : buttonInactive}`}
-            >
-              {mode.toUpperCase()}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ToggleGroup
+        label="Map"
+        options={[
+          { value: '2d', label: '2D' },
+          { value: '3d', label: '3D' },
+        ]}
+        value={mapMode}
+        onChange={onMapModeChange}
+      />
 
-      {/* Temperature */}
-      <div className="py-2 border-b border-border">
-        <div className="text-xs mb-1.5 text-muted-foreground">Temperature</div>
-        <div className="flex gap-1.5">
-          {(['C', 'F'] as const).map((unit) => (
-            <button
-              key={unit}
-              onClick={() => onTemperatureUnitChange(unit)}
-              className={`${buttonBase} ${temperatureUnit === unit ? buttonActive : buttonInactive}`}
-            >
-              °{unit}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ToggleGroup
+        label="Temperature"
+        options={[
+          { value: 'C', label: '°C' },
+          { value: 'F', label: '°F' },
+        ]}
+        value={temperatureUnit}
+        onChange={onTemperatureUnitChange}
+      />
 
-      {/* Wind Speed */}
-      <div className="py-2 border-b border-border">
-        <div className="text-xs mb-1.5 text-muted-foreground">Wind</div>
-        <div className="flex gap-1.5">
-          {[
-            { value: 'kts', label: 'kts' },
-            { value: 'mph', label: 'mph' }
-          ].map((unit) => (
-            <button
-              key={unit.value}
-              onClick={() => onWindSpeedUnitChange(unit.value as 'kts' | 'mph')}
-              className={`${buttonBase} ${windSpeedUnit === unit.value ? buttonActive : buttonInactive}`}
-            >
-              {unit.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ToggleGroup
+        label="Wind"
+        options={[
+          { value: 'kts', label: 'kts' },
+          { value: 'mph', label: 'mph' },
+        ]}
+        value={windSpeedUnit}
+        onChange={onWindSpeedUnitChange}
+      />
 
-      {/* Pressure */}
-      <div className="py-2 border-b border-border">
-        <div className="text-xs mb-1.5 text-muted-foreground">Pressure</div>
-        <div className="flex gap-1.5">
-          {[
-            { value: 'mb', label: 'mb' },
-            { value: 'inHg', label: 'inHg' }
-          ].map((unit) => (
-            <button
-              key={unit.value}
-              onClick={() => onPressureUnitChange(unit.value as 'mb' | 'inHg')}
-              className={`${buttonBase} ${pressureUnit === unit.value ? buttonActive : buttonInactive}`}
-            >
-              {unit.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ToggleGroup
+        label="Pressure"
+        options={[
+          { value: 'mb', label: 'mb' },
+          { value: 'inHg', label: 'inHg' },
+        ]}
+        value={pressureUnit}
+        onChange={onPressureUnitChange}
+      />
 
-      {/* Precipitation */}
-      <div className="py-2">
-        <div className="text-xs mb-1.5 text-muted-foreground">Precip</div>
-        <div className="flex gap-1.5">
-          {[
-            { value: 'mm', label: 'mm' },
-            { value: 'in', label: 'in' }
-          ].map((unit) => (
-            <button
-              key={unit.value}
-              onClick={() => onPrecipitationUnitChange(unit.value as 'mm' | 'in')}
-              className={`${buttonBase} ${precipitationUnit === unit.value ? buttonActive : buttonInactive}`}
-            >
-              {unit.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ToggleGroup
+        label="Precip"
+        options={[
+          { value: 'mm', label: 'mm' },
+          { value: 'in', label: 'in' },
+        ]}
+        value={precipitationUnit}
+        onChange={onPrecipitationUnitChange}
+        showBorder={false}
+      />
     </div>
   );
 }
