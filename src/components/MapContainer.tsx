@@ -40,6 +40,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   const clusterMarkersRef = useRef<Map<number, any>>(new Map());
   const onStationSelectRef = useRef(onStationSelect);
   const eventHandlersAddedRef = useRef(false);
+  const updateClusterMarkersTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Инициализация карты
   useEffect(() => {
@@ -302,10 +303,23 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       });
     };
 
-    // Обновляем маркеры при изменении карты
-    map.current.on('render', () => {
-      if (map.current.isSourceLoaded('stations')) {
-        updateClusterMarkers();
+    // Debounced обновление маркеров кластеров
+    const debouncedUpdateClusterMarkers = () => {
+      if (updateClusterMarkersTimeoutRef.current) {
+        clearTimeout(updateClusterMarkersTimeoutRef.current);
+      }
+      updateClusterMarkersTimeoutRef.current = setTimeout(() => {
+        if (map.current?.isSourceLoaded('stations')) {
+          updateClusterMarkers();
+        }
+      }, 50);
+    };
+
+    // Обновляем маркеры при изменении карты (используем moveend и sourcedata вместо render)
+    map.current.on('moveend', debouncedUpdateClusterMarkers);
+    map.current.on('sourcedata', (e: any) => {
+      if (e.sourceId === 'stations') {
+        debouncedUpdateClusterMarkers();
       }
     });
 
@@ -420,6 +434,9 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
 
       eventHandlersAddedRef.current = true;
     }
+
+    // Начальное обновление маркеров
+    debouncedUpdateClusterMarkers();
     }; // конец setupLayers
 
     // Если изображения уже загружены, настраиваем слои
@@ -433,6 +450,9 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
 
     return () => {
       map.current?.off('images-loaded', handleImagesLoaded);
+      if (updateClusterMarkersTimeoutRef.current) {
+        clearTimeout(updateClusterMarkersTimeoutRef.current);
+      }
     };
   }, [stations, favoriteStations, darkMode]);
 
