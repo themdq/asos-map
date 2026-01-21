@@ -305,6 +305,7 @@ export default function WeatherStationsMap() {
           darkMode={darkMode}
           mapboxToken={mapboxToken}
           scriptLoaded={scriptLoaded}
+          isHydrated={isHydrated}
           onStationSelect={handleStationClick}
         />
       </div>

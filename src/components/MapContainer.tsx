@@ -9,6 +9,7 @@ interface MapContainerProps {
   darkMode?: boolean;
   mapboxToken: string;
   scriptLoaded: boolean;
+  isHydrated?: boolean;
   onStationSelect: (station: Station) => void;
 }
 
@@ -28,6 +29,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   darkMode = false,
   mapboxToken,
   scriptLoaded,
+  isHydrated = false,
   onStationSelect
 }, ref) => {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -43,19 +45,23 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   const updateClusterMarkersTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isStyleChanging, setIsStyleChanging] = useState(false);
 
-  // Инициализация карты
+  // Инициализация карты (ждём isHydrated чтобы darkMode был загружен из localStorage)
   useEffect(() => {
-    if (!scriptLoaded || !mapboxToken || map.current || !mapContainer.current) return;
+    if (!scriptLoaded || !mapboxToken || !isHydrated || map.current || !mapContainer.current) return;
 
     const mapboxgl = (window as any).mapboxgl;
     if (!mapboxgl) return;
 
     mapboxgl.accessToken = mapboxToken;
 
+    const initialStyle = darkMode
+      ? 'mapbox://styles/mapbox/dark-v11'
+      : 'mapbox://styles/mapbox/standard';
+
     try {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/standard',
+        style: initialStyle,
         center: [-122.2, 37.43],
         zoom: 10,
         projection: 'mercator',
@@ -108,7 +114,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         map.current = null;
       }
     };
-  }, [scriptLoaded, mapboxToken]);
+  }, [scriptLoaded, mapboxToken, isHydrated, darkMode]);
 
   // Обновляем ref для onStationSelect
   useEffect(() => {
@@ -123,6 +129,9 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       ? 'mapbox://styles/mapbox/dark-v11'
       : 'mapbox://styles/mapbox/standard';
 
+    // Флаг для отмены операции если компонент размонтирован или тема снова изменилась
+    let cancelled = false;
+
     // Показываем overlay для плавного перехода
     setIsStyleChanging(true);
 
@@ -135,7 +144,9 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     map.current.setStyle(newStyle);
 
     // После смены стиля нужно заново добавить изображения маркеров
-    map.current.once('style.load', () => {
+    const handleStyleLoad = () => {
+      if (cancelled || !map.current) return;
+
       const markers = [
         { name: 'custom-marker', src: '/marker.svg' },
         { name: 'selected-marker', src: '/marker-selected.svg' },
@@ -143,23 +154,44 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       ];
 
       let loaded = 0;
+      const totalMarkers = markers.length;
+
       markers.forEach(({ name, src }) => {
         const img = new Image();
-        img.onload = () => {
-          if (map.current && !map.current.hasImage(name)) {
-            map.current.addImage(name, img, { sdf: false });
+
+        const handleLoad = () => {
+          if (cancelled || !map.current) return;
+
+          try {
+            if (!map.current.hasImage(name)) {
+              map.current.addImage(name, img, { sdf: false });
+            }
+          } catch (e) {
+            // Игнорируем ошибки если карта в процессе смены стиля
           }
+
           loaded++;
-          if (loaded === markers.length) {
+          if (loaded === totalMarkers && !cancelled) {
             imagesLoadedRef.current = true;
             map.current?.fire('images-loaded');
-            // Скрываем overlay после загрузки
-            setTimeout(() => setIsStyleChanging(false), 100);
+            setTimeout(() => {
+              if (!cancelled) setIsStyleChanging(false);
+            }, 100);
           }
         };
+
+        img.onload = handleLoad;
+        img.onerror = handleLoad; // Считаем загруженным даже при ошибке
         img.src = src;
       });
-    });
+    };
+
+    map.current.once('style.load', handleStyleLoad);
+
+    return () => {
+      cancelled = true;
+      setIsStyleChanging(false);
+    };
   }, [darkMode]);
 
   // Обновляем ref для favoriteStations
