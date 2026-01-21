@@ -35,11 +35,12 @@ interface WeatherCardProps {
 
 // Temperature gradient based on Celsius value
 const getTemperatureGradient = (tempC: number): string => {
-  if (tempC < 0) return 'linear-gradient(90deg, #1e40af 0%, #3b82f6 100%)';
-  if (tempC < 10) return 'linear-gradient(90deg, #0891b2 0%, #22d3ee 100%)';
-  if (tempC < 20) return 'linear-gradient(90deg, #eab308 0%, #fde047 100%)';
-  if (tempC < 30) return 'linear-gradient(90deg, #ea580c 0%, #fb923c 100%)';
-  return 'linear-gradient(90deg, #dc2626 0%, #f87171 100%)';
+  if (tempC < 0) return 'linear-gradient(90deg, #0b3d91 0%, #1c62d4 100%)'; // dark blue
+  if (tempC < 15) return 'linear-gradient(90deg, #4aa3ff 0%, #82c6ff 100%)'; // light blue
+  if (tempC < 20) return 'linear-gradient(90deg, #2fbf71 0%, #8fe3a1 100%)'; // green
+  if (tempC < 25) return 'linear-gradient(90deg, #f6d447 0%, #ffe27a 100%)'; // yellow
+  if (tempC < 30) return 'linear-gradient(90deg, #f39a3b 0%, #ffc276 100%)'; // orange
+  return 'linear-gradient(90deg, #e04545 0%, #ff7a7a 100%)'; // red
 };
 
 const defaultGradient = 'linear-gradient(90deg, hsla(74, 29%, 74%, 1) 0%, hsla(51, 57%, 70%, 1) 100%)';
