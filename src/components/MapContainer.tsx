@@ -72,9 +72,10 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       });
 
       const loadMarkerImages = () => {
+        const selectedMarkerSrc = darkMode ? '/marker-selected-dark.svg' : '/marker-selected.svg';
         const markers = [
           { name: 'custom-marker', src: '/marker.svg' },
-          { name: 'selected-marker', src: '/marker-selected.svg' },
+          { name: 'selected-marker', src: selectedMarkerSrc },
           { name: 'favorite-marker', src: '/marker-favorite.svg' },
         ];
 
@@ -147,9 +148,10 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     const handleStyleLoad = () => {
       if (cancelled || !map.current) return;
 
+      const selectedMarkerSrc = darkMode ? '/marker-selected-dark.svg' : '/marker-selected.svg';
       const markers = [
         { name: 'custom-marker', src: '/marker.svg' },
-        { name: 'selected-marker', src: '/marker-selected.svg' },
+        { name: 'selected-marker', src: selectedMarkerSrc },
         { name: 'favorite-marker', src: '/marker-favorite.svg' },
       ];
 
@@ -263,6 +265,10 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       clusterRadius: 50
     });
 
+    // Цвета в зависимости от темы
+    const clusterColor = darkMode ? '#7297B4' : '#A4B7AA';
+    const clusterTextColor = darkMode ? '#1A202C' : '#363636';
+
     // Слой для кластеров
     map.current.addLayer({
       id: 'clusters',
@@ -270,7 +276,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       source: 'stations',
       filter: ['has', 'point_count'],
       paint: {
-        'circle-color': '#A4B7AA',
+        'circle-color': clusterColor,
         'circle-radius': [
           'step',
           ['get', 'point_count'],
@@ -311,7 +317,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
             font-family: 'PPNeue Montreal', sans-serif;
             font-size: 12px;
             font-weight: 500;
-            color: #363636;
+            color: ${clusterTextColor};
             pointer-events: none;
             text-align: center;
           `;
