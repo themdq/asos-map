@@ -35,20 +35,20 @@ export default function MenuButton({
           className={`
             flex items-center w-full cursor-pointer h-[44px]
             transition-all duration-300 ease-out
-            text-graphit hover:bg-secondary-foreground hover:text-white
+            text-graphit hover:bg-secondary-foreground group
             ${isExpanded ? 'justify-between px-4' : 'justify-center px-3'}
           `}
         >
           <span
             className={`
               text-graphit font-semibold whitespace-nowrap
-              transition-opacity duration-200
+              transition-opacity duration-200 group-hover:text-white
               ${isExpanded ? 'opacity-100' : 'opacity-0 absolute'}
             `}
           >
             Settings
           </span>
-          <Settings className="flex-shrink-0" />
+          <Settings className="flex-shrink-0 group-hover:text-white" />
         </button>
 
         {/* Контент меню */}
