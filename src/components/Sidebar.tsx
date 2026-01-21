@@ -116,7 +116,7 @@ export default function Sidebar({
   return (
     <div className="w-full md:w-[400px] bg-primary border-r border-border h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)] flex flex-col">
       {/* Fixed header */}
-      <div className="p-5 pb-3 bg-primary border-b border-border">
+      <div className="p-5 pb-3 bg-primary ">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={onLogoClick}>
             <div className="w-12 h-auto flex-shrink-0">
