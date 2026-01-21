@@ -84,7 +84,6 @@
 
 ## Sidebar Details
 - Sidebar auto-opens when the user starts typing a search query.
-- If the sidebar was opened by search, it auto-closes when the search is cleared.
 - The “Stations” heading sits above the count/sort row to clarify the list context.
 
 ## Sidebar (Station List)

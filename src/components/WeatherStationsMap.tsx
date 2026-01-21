@@ -43,20 +43,13 @@ export default function WeatherStationsMap() {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [sidebarOpenedBySearch, setSidebarOpenedBySearch] = useState(false);
 
   // Open sidebar on search
   useEffect(() => {
     if (searchQuery.length > 0) {
       setSidebarOpen(true);
-      setSidebarOpenedBySearch(true);
-      return;
     }
-    if (sidebarOpenedBySearch) {
-      setSidebarOpen(false);
-      setSidebarOpenedBySearch(false);
-    }
-  }, [searchQuery, sidebarOpenedBySearch]);
+  }, [searchQuery]);
 
   // Data queries
   const { data: stations = [], isLoading: loading } = useStationsQuery();
@@ -90,7 +83,6 @@ export default function WeatherStationsMap() {
       setSettingsOpen(false);
       setSelectedStation(null);
       setSidebarOpen(false);
-      setSidebarOpenedBySearch(false);
     };
 
     document.addEventListener('keydown', handleKeyDown);
@@ -158,10 +150,7 @@ export default function WeatherStationsMap() {
           onToggleFavorite={toggleFavorite}
           onSortChange={setSortBy}
           onLogoClick={handleLogoClick}
-          onClose={() => {
-            setSidebarOpen(false);
-            setSidebarOpenedBySearch(false);
-          }}
+          onClose={() => setSidebarOpen(false)}
         />
       </div>
 
@@ -179,10 +168,7 @@ export default function WeatherStationsMap() {
           >
             <div className="flex gap-2 items-center w-full">
               <MenuButton
-                onClick={() => {
-                  setSidebarOpen(!sidebarOpen);
-                  setSidebarOpenedBySearch(false);
-                }}
+                onClick={() => setSidebarOpen(!sidebarOpen)}
                 icon="panel_left"
                 isExpanded={sidebarOpen}
               />
