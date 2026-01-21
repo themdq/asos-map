@@ -277,6 +277,30 @@ input[type="range"]::-moz-range-track {
   border-radius: 3px;
 }
 
+input[type="range"].timeline-slider::-webkit-slider-runnable-track {
+  background:
+    repeating-linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(100% / 12 - 1px),
+      color-mix(in oklab, var(--muted-foreground) 40%, transparent) calc(100% / 12 - 1px),
+      color-mix(in oklab, var(--muted-foreground) 40%, transparent) calc(100% / 12)
+    ),
+    var(--border);
+}
+
+input[type="range"].timeline-slider::-moz-range-track {
+  background:
+    repeating-linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc(100% / 12 - 1px),
+      color-mix(in oklab, var(--muted-foreground) 40%, transparent) calc(100% / 12 - 1px),
+      color-mix(in oklab, var(--muted-foreground) 40%, transparent) calc(100% / 12)
+    ),
+    var(--border);
+}
+
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;

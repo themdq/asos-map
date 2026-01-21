@@ -314,6 +314,7 @@ export default function WeatherCard({
 
         {/* Timeline */}
         <div className="pt-3">
+          <div className="text-muted-foreground text-xs uppercase tracking-wide mb-1">Timeline</div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-muted-foreground text-[10px]">{formatDate(weatherData[0].timestamp)}</span>
             <span className="text-muted-foreground text-[10px] font-medium">{weatherData.length} time points</span>
@@ -325,7 +326,7 @@ export default function WeatherCard({
             max={weatherData.length - 1}
             value={currentIndex}
             onChange={(e) => setSelectedIndex(Number(e.target.value))}
-            className="w-full"
+            className="w-full timeline-slider"
           />
         </div>
       </div>
