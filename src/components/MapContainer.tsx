@@ -1,4 +1,4 @@
-import { useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
+import { useRef, useEffect, useImperativeHandle, forwardRef, useState } from 'react';
 import type { Station } from '../types/station';
 import LoadingOverlay from './LoadingOverlay';
 
@@ -41,6 +41,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   const onStationSelectRef = useRef(onStationSelect);
   const eventHandlersAddedRef = useRef(false);
   const updateClusterMarkersTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isStyleChanging, setIsStyleChanging] = useState(false);
 
   // Инициализация карты
   useEffect(() => {
@@ -122,6 +123,9 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       ? 'mapbox://styles/mapbox/dark-v11'
       : 'mapbox://styles/mapbox/standard';
 
+    // Показываем overlay для плавного перехода
+    setIsStyleChanging(true);
+
     // Сбрасываем флаги и очищаем маркеры кластеров
     imagesLoadedRef.current = false;
     eventHandlersAddedRef.current = false;
@@ -149,6 +153,8 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
           if (loaded === markers.length) {
             imagesLoadedRef.current = true;
             map.current?.fire('images-loaded');
+            // Скрываем overlay после загрузки
+            setTimeout(() => setIsStyleChanging(false), 100);
           }
         };
         img.src = src;
@@ -555,6 +561,12 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     <div className="w-full h-full relative" data-map>
       {!scriptLoaded && <LoadingOverlay />}
       <div ref={mapContainer} className="w-full h-full" />
+      {/* Overlay для плавного переключения темы */}
+      <div
+        className={`absolute inset-0 bg-primary pointer-events-none transition-opacity duration-300 ${
+          isStyleChanging ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
     </div>
   );
 });
