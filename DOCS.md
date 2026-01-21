@@ -61,6 +61,7 @@
   - Only appears when a station is selected.
   - Coordinates are clickable and copy to clipboard with a “copied!” hint.
   - Timeline slider changes the timepoint shown.
+  - Top-right controls include a weather icon and a close (X) button to dismiss the card.
 - Station list:
   - Infinite scroll loads more items as you approach the bottom.
   - Favorite star toggles without selecting the station (event propagation is stopped).

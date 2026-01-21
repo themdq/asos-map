@@ -165,6 +165,7 @@ export default function Sidebar({
               </select>
             </div>
 
+            <h3 className="text-graphit text-sm font-semibold mb-2">Stations</h3>
             {sortBy === 'favorites' && sortedStations.length === 0 ? (
               <div className="text-center py-10 text-muted-foreground text-sm">
                 No favorites yet.
