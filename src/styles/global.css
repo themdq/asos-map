@@ -237,6 +237,11 @@ input[type="range"] {
   appearance: none;
   background: transparent;
   cursor: pointer;
+  outline: none;
+}
+
+input[type="range"]:focus {
+  outline: none;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
