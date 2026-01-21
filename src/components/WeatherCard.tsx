@@ -30,6 +30,7 @@ interface WeatherCardProps {
   precipitationUnit?: 'mm' | 'in';
   isFavorite?: boolean;
   onToggleFavorite?: (stationId: string) => void;
+  onClose?: () => void;
 }
 
 // Temperature gradient based on Celsius value
@@ -82,6 +83,7 @@ export default function WeatherCard({
   precipitationUnit = 'mm',
   isFavorite = false,
   onToggleFavorite,
+  onClose,
 }: WeatherCardProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
@@ -130,7 +132,19 @@ export default function WeatherCard({
   if (weatherData.length === 0 || !calculations) {
     return (
       <div className="w-full">
-        <div className="bg-primary border border-border rounded-[5px] p-4 shadow-lg">
+        <div className="bg-primary border border-border rounded-[5px] p-4 shadow-lg relative">
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="absolute top-3 right-3 text-muted-foreground hover:text-secondary-foreground transition-colors"
+              aria-label="Close weather card"
+              title="Close"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          )}
           <h2 className="text-base font-semibold text-graphit leading-tight mb-1">{stationName}</h2>
           <div className="text-muted-foreground text-xs space-y-0.5 mb-3">
             <div className="flex items-center gap-1">
@@ -193,9 +207,21 @@ export default function WeatherCard({
   return (
     <div className="w-full">
       <div className="bg-primary border border-border rounded-[5px] shadow-lg text-graphit p-4 relative">
-        {/* Weather Icon */}
-        <div className="absolute top-3 right-3">
+        {/* Weather Icon + Close */}
+        <div className="absolute top-3 right-3 flex items-center gap-2">
           <WeatherIcon condition={getWeatherCondition()} />
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="text-muted-foreground hover:text-secondary-foreground transition-colors"
+              aria-label="Close weather card"
+              title="Close"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* Header */}

@@ -182,6 +182,7 @@ export default function WeatherStationsMap() {
                   precipitationUnit={precipitationUnit}
                   isFavorite={favoriteStations.has(selectedStation.station_id)}
                   onToggleFavorite={toggleFavorite}
+                  onClose={() => setSelectedStation(null)}
                 />
               </div>
             )}
