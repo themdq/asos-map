@@ -57,6 +57,46 @@ export default function Sidebar({
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  // Swipe-to-close state
+  const [swipeX, setSwipeX] = useState(0);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const isSwipingRef = useRef(false);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY
+    };
+    isSwipingRef.current = false;
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!touchStartRef.current) return;
+
+    const deltaX = e.touches[0].clientX - touchStartRef.current.x;
+    const deltaY = e.touches[0].clientY - touchStartRef.current.y;
+
+    // Определяем направление свайпа (только если горизонтальный > вертикального)
+    if (!isSwipingRef.current && Math.abs(deltaX) > 10) {
+      isSwipingRef.current = Math.abs(deltaX) > Math.abs(deltaY);
+    }
+
+    // Только свайп влево и только на мобильных
+    if (isSwipingRef.current && deltaX < 0 && window.innerWidth < 768) {
+      setSwipeX(deltaX);
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    // Если свайп достаточно длинный — закрываем
+    if (swipeX < -100 && onClose) {
+      onClose();
+    }
+    setSwipeX(0);
+    touchStartRef.current = null;
+    isSwipingRef.current = false;
+  }, [swipeX, onClose]);
+
   // Сброс при изменении фильтров/сортировки
   useEffect(() => {
     setVisibleCount(ITEMS_PER_PAGE);
@@ -116,7 +156,16 @@ export default function Sidebar({
   };
 
   return (
-    <div className="w-full md:w-[400px] bg-primary border-r border-border h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)] flex flex-col">
+    <div
+      className="w-full md:w-[400px] bg-primary border-r border-border h-full shadow-[2px_0_8px_rgba(0,0,0,0.1)] flex flex-col"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      style={{
+        transform: swipeX < 0 ? `translateX(${swipeX}px)` : undefined,
+        transition: swipeX === 0 ? 'transform 0.2s ease-out' : 'none'
+      }}
+    >
       {/* Fixed header */}
       <div className="p-5 pb-3 bg-primary ">
         <div className="flex items-center justify-between">
