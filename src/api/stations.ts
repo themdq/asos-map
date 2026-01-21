@@ -4,8 +4,23 @@ const API_BASE_URL = 'https://sfc.windbornesystems.com';
 
 export async function fetchStations(): Promise<Station[]> {
   try {
-      const response = await fetch(`${API_BASE_URL}/stations`);
-      const data = await response.json();
+    const response = await fetch(`${API_BASE_URL}/stations`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    let text = await response.text();
+
+    // Workaround: сервер иногда возвращает обрезанный JSON без закрывающей скобки
+    const trimmed = text.trim();
+    if (!trimmed.endsWith(']')) {
+      // Попробуем найти последний полный объект и закрыть массив
+      const lastCompleteObject = text.lastIndexOf('}');
+      if (lastCompleteObject > 0) {
+        text = text.substring(0, lastCompleteObject + 1) + ']';
+      }
+    }
+
+    const data = JSON.parse(text);
     return data;
   } catch (error) {
     console.error('Error fetching stations:', error);
