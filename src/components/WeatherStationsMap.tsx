@@ -213,7 +213,7 @@ export default function WeatherStationsMap() {
         </div>
 
         {/* Map Controls */}
-        <div className="absolute bottom-20 md:bottom-4 right-4 z-20 flex flex-col gap-2 pointer-events-auto">
+        <div className="absolute right-4 z-20 flex flex-col gap-2 pointer-events-auto bottom-[calc(5rem+env(safe-area-inset-bottom))] md:bottom-4">
           <button
             onClick={() => mapRef.current?.zoomIn()}
             className="flex items-center justify-center rounded-[5px] p-2.5 bg-primary border border-border shadow-md transition-all duration-200 cursor-pointer text-graphit hover:bg-secondary-foreground hover:text-white"
