@@ -10,10 +10,10 @@ export async function fetchStations(): Promise<Station[]> {
     }
     let text = await response.text();
 
-    // Workaround: сервер иногда возвращает обрезанный JSON без закрывающей скобки
+    // Workaround: server sometimes returns truncated JSON without a closing brace
     const trimmed = text.trim();
     if (!trimmed.endsWith(']')) {
-      // Попробуем найти последний полный объект и закрыть массив
+      // Try to find the last complete object and close the array
       const lastCompleteObject = text.lastIndexOf('}');
       if (lastCompleteObject > 0) {
         text = text.substring(0, lastCompleteObject + 1) + ']';

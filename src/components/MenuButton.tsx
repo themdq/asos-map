@@ -19,11 +19,11 @@ export default function MenuButton({
     panel_left: <PanelLeft />
   };
 
-  // Для кнопки settings — кнопка + выпадающее меню поверх контента
+  // Settings button: trigger + dropdown overlaying content
   if (icon === 'settings') {
     return (
       <>
-        {/* Кнопка */}
+        {/* Button */}
         <button
           onClick={onClick}
           className={`
@@ -37,7 +37,7 @@ export default function MenuButton({
           <Settings />
         </button>
 
-        {/* Выпадающее меню поверх всего */}
+        {/* Dropdown menu over content */}
         {isExpanded && (
           <div className="fixed top-4 right-4 z-50 w-[200px] bg-primary border border-border rounded-[5px] shadow-lg">
             <div className="flex items-center justify-between px-4 h-[44px] border-b border-border">
@@ -55,7 +55,7 @@ export default function MenuButton({
     );
   }
 
-  // Обычная кнопка
+  // Regular button
   return (
     <button
       onClick={onClick}

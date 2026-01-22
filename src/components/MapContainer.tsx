@@ -49,7 +49,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
   const [imagesReady, setImagesReady] = useState(false);
   const styleChangingRef = useRef(false);
 
-  // Инициализация карты (ждём isHydrated чтобы darkMode был загружен из localStorage)
+  // Initialize map (wait for isHydrated so darkMode is loaded from localStorage)
   useEffect(() => {
     if (!scriptLoaded || !mapboxToken || !isHydrated || map.current || !mapContainer.current) return;
 
@@ -94,7 +94,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
               try {
                 map.current.addImage(name, img, { sdf: false });
               } catch (e) {
-                // Игнорируем если изображение уже добавлено
+                // Skip if the image has already been added
               }
             }
             loaded++;
@@ -102,24 +102,24 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
               mapLoadedRef.current = true;
               imagesLoadedRef.current = true;
               setImagesReady(true);
-              // Триггерим обновление слоёв
+              // Trigger layer refresh
               map.current?.fire('images-loaded');
             }
           };
 
           img.onload = handleLoad;
-          img.onerror = handleLoad; // Считаем загруженным даже при ошибке
+          img.onerror = handleLoad; // Treat as loaded even on error
           img.src = src;
         });
       };
 
-      // Контролы убраны - используем кастомные кнопки
+      // Default controls removed; use custom buttons
     } catch (error) {
       console.error('Map initialization error:', error);
     }
 
     return () => {
-      // Очищаем HTML маркеры
+      // Clear HTML markers
       clusterMarkersRef.current.forEach((value) => {
         value.marker.remove();
       });
@@ -133,12 +133,12 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     };
   }, [scriptLoaded, mapboxToken, isHydrated, darkMode]);
 
-  // Обновляем ref для onStationSelect
+  // Update ref for onStationSelect
   useEffect(() => {
     onStationSelectRef.current = onStationSelect;
   }, [onStationSelect]);
 
-  // Переключение стиля карты при смене темы
+  // Switch map style on theme change
   useEffect(() => {
     if (!map.current || !mapLoadedRef.current) return;
 
@@ -146,15 +146,15 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       ? 'mapbox://styles/mapbox/dark-v11'
       : 'mapbox://styles/mapbox/standard';
 
-    // Флаг для отмены операции если компонент размонтирован или тема снова изменилась
+    // Cancel flag if component unmounts or theme changes again
     let cancelled = false;
 
-    // Показываем overlay для плавного перехода
+    // Show overlay for a smooth transition
     styleChangingRef.current = true;
     setIsStyleChanging(true);
     setImagesReady(false);
 
-    // Сбрасываем флаги и очищаем маркеры кластеров
+    // Reset flags and clear cluster markers
     imagesLoadedRef.current = false;
     eventHandlersAddedRef.current = false;
     clusterMarkersRef.current.forEach((value) => value.marker.remove());
@@ -162,7 +162,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
 
     map.current.setStyle(newStyle);
 
-    // После смены стиля нужно заново добавить изображения маркеров
+    // Re-add marker images after style change
     const handleStyleLoad = () => {
       if (cancelled || !map.current) return;
 
@@ -187,7 +187,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
               map.current.addImage(name, img, { sdf: false });
             }
           } catch (e) {
-            // Игнорируем ошибки если карта в процессе смены стиля
+            // Ignore errors if the map is mid-style change
           }
 
           loaded++;
@@ -203,7 +203,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         };
 
         img.onload = handleLoad;
-        img.onerror = handleLoad; // Считаем загруженным даже при ошибке
+        img.onerror = handleLoad; // Treat as loaded even on error
         img.src = src;
       });
     };
@@ -216,19 +216,19 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     };
   }, [darkMode]);
 
-  // Переключение режима карты 2D/3D (проекция)
+  // Toggle 2D/3D map projection
   useEffect(() => {
     if (!map.current || !mapLoadedRef.current) return;
 
     map.current.setProjection(mapMode === '3d' ? 'globe' : 'mercator');
   }, [mapMode]);
 
-  // Обновляем ref для favoriteStations
+  // Update ref for favoriteStations
   useEffect(() => {
     favoriteStationsRef.current = favoriteStations;
   }, [favoriteStations]);
 
-  // Добавление кластеризации
+  // Add clustering
   useEffect(() => {
     if (!map.current || stations.length === 0) return;
 
@@ -236,10 +236,10 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     if (!mapboxgl) return;
 
     const setupLayers = () => {
-      // Не настраиваем слои во время смены стиля
+      // Do not configure layers during style change
       if (!map.current || styleChangingRef.current) return;
 
-      // Преобразуем станции в GeoJSON формат (фильтруем станции с невалидными координатами)
+      // Convert stations to GeoJSON (filter invalid coordinates)
       const geojson = {
         type: 'FeatureCollection',
         features: stations
@@ -268,7 +268,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
           }))
       };
 
-    // Удаляем существующие слои и источники (с try-catch для безопасности)
+    // Remove existing layers and sources (try/catch for safety)
     try {
       if (map.current.getLayer('selected-point')) {
         map.current.removeLayer('selected-point');
@@ -277,9 +277,9 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         map.current.removeSource('selected-station');
       }
     } catch (e) {
-      // Слои могут не существовать после смены стиля
+      // Layers may not exist after style change
     }
-    // Очищаем HTML маркеры кластеров
+    // Clear HTML cluster markers
     clusterMarkersRef.current.forEach((value) => {
       value.marker.remove();
     });
@@ -296,14 +296,14 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         map.current.removeSource('stations');
       }
     } catch (e) {
-      // Слои могут не существовать после смены стиля
+      // Layers may not exist after style change
     }
 
-    // Цвета в зависимости от темы
+    // Theme-dependent colors
     const clusterColor = darkMode ? '#7297B4' : '#A4B7AA';
     const clusterTextColor = darkMode ? '#1A202C' : '#363636';
 
-    // Функция для обновления HTML маркеров с числами кластеров
+    // Update HTML markers with cluster counts
     const updateClusterMarkers = () => {
       if (!map.current) return;
 
@@ -313,7 +313,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
           filter: ['has', 'point_count']
         });
 
-        // Отслеживаем какие кластеры видны сейчас
+        // Track which clusters are currently visible
         const currentClusterIds = new Set<number>();
 
         features.forEach((feature: any) => {
@@ -324,7 +324,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
           currentClusterIds.add(clusterId);
 
           if (!clusterMarkersRef.current.has(clusterId)) {
-            // Создаём HTML элемент для маркера
+            // Create HTML element for the marker
             const el = document.createElement('div');
             el.className = 'cluster-count-marker';
             el.textContent = pointCount;
@@ -346,14 +346,14 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
 
             clusterMarkersRef.current.set(clusterId, { marker, el });
           } else {
-            // Обновляем позицию и текст существующего маркера
+            // Update position and text for existing marker
             const { marker, el } = clusterMarkersRef.current.get(clusterId);
             marker.setLngLat(coordinates);
             el.textContent = pointCount;
           }
         });
 
-        // Удаляем маркеры для кластеров, которых больше нет
+        // Remove markers for clusters that no longer exist
         clusterMarkersRef.current.forEach((value, clusterId) => {
           if (!currentClusterIds.has(clusterId)) {
             value.marker.remove();
@@ -361,11 +361,11 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
           }
         });
       } catch (e) {
-        // Источник может не существовать
+        // Source may not exist
       }
     };
 
-    // Debounced обновление маркеров кластеров
+    // Debounced cluster marker updates
     const debouncedUpdateClusterMarkers = () => {
       if (updateClusterMarkersTimeoutRef.current) {
         clearTimeout(updateClusterMarkersTimeoutRef.current);
@@ -377,7 +377,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       }, 50);
     };
 
-    // Добавляем источник данных с кластеризацией
+    // Add clustered data source
     try {
       map.current.addSource('stations', {
         type: 'geojson',
@@ -387,7 +387,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         clusterRadius: 50
       });
 
-      // Слой для кластеров
+      // Layer for clusters
       map.current.addLayer({
         id: 'clusters',
         type: 'circle',
@@ -407,7 +407,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         }
       });
 
-      // Обновляем маркеры при изменении карты
+      // Update markers on map changes
       map.current.on('moveend', debouncedUpdateClusterMarkers);
       map.current.on('sourcedata', (e: any) => {
         if (e.sourceId === 'stations') {
@@ -415,7 +415,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         }
       });
 
-      // Слой для отдельных точек
+      // Layer for individual points
       map.current.addLayer({
         id: 'unclustered-point',
         type: 'symbol',
@@ -434,7 +434,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         }
       });
 
-      // Добавляем источник и слой для выбранной станции
+      // Add source and layer for selected station
       const currentSelected = selectedStationRef.current;
       map.current.addSource('selected-station', {
         type: 'geojson',
@@ -467,7 +467,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       return;
     }
 
-    // Создаем popup для отображения информации
+    // Create popup to show information
     if (!popupRef.current) {
       popupRef.current = new mapboxgl.Popup({
         closeButton: false,
@@ -476,9 +476,9 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       });
     }
 
-    // Добавляем обработчики событий только один раз
+    // Add event handlers only once
     if (!eventHandlersAddedRef.current) {
-      // Обработчик клика на кластер
+      // Cluster click handler
       map.current.on('click', 'clusters', (e: any) => {
         const features = map.current.queryRenderedFeatures(e.point, {
           layers: ['clusters']
@@ -496,7 +496,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         );
       });
 
-      // Обработчик клика на отдельную точку
+      // Point click handler
       map.current.on('click', 'unclustered-point', (e: any) => {
         const properties = e.features[0].properties;
         const station: Station = {
@@ -511,7 +511,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
         onStationSelectRef.current(station);
       });
 
-      // Меняем курсор при наведении
+      // Change cursor on hover
       map.current.on('mouseenter', 'clusters', () => {
         map.current.getCanvas().style.cursor = 'pointer';
       });
@@ -528,11 +528,11 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       eventHandlersAddedRef.current = true;
     }
 
-    // Начальное обновление маркеров
+    // Initial marker update
     debouncedUpdateClusterMarkers();
-    }; // конец setupLayers
+    }; // end setupLayers
 
-    // Настраиваем слои когда изображения готовы
+    // Configure layers when images are ready
     if (imagesReady) {
       setupLayers();
     }
@@ -544,7 +544,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     };
   }, [stations, favoriteStations, imagesReady]);
 
-  // Обновляем слой выбранной станции
+  // Update selected station layer
   useEffect(() => {
     selectedStationRef.current = selectedStation;
 
@@ -575,7 +575,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
       return true;
     };
 
-    // Пробуем обновить сразу, если source ещё не создан - ждём
+    // Try to update immediately; wait if source not created yet
     if (!updateSelectedStation()) {
       const interval = setInterval(() => {
         if (updateSelectedStation()) {
@@ -586,7 +586,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     }
   }, [selectedStation]);
 
-  // Предоставляем методы родительскому компоненту через ref
+  // Expose methods to parent via ref
   useImperativeHandle(ref, () => ({
     flyToStation: (station: Station) => {
       if (map.current) {
@@ -643,7 +643,7 @@ const MapContainer = forwardRef<MapRef, MapContainerProps>(({
     <div className="w-full h-full relative" data-map>
       {!scriptLoaded && <LoadingOverlay />}
       <div ref={mapContainer} className="w-full h-full" />
-      {/* Overlay для плавного переключения темы */}
+      {/* Overlay for smooth theme transition */}
       <div
         className={`absolute inset-0 bg-primary pointer-events-none transition-opacity duration-300 ${
           isStyleChanging ? 'opacity-100' : 'opacity-0'

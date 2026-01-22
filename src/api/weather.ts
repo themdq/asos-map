@@ -10,17 +10,17 @@ export async function fetchHistoricalWeather(stationId: string): Promise<Histori
     }
     let text = await response.text();
 
-    // Workaround: сервер иногда возвращает некорректный JSON
-    // Находим начало JSON объекта
+    // Workaround: server sometimes returns invalid JSON
+    // Find the start of the JSON object
     const jsonStart = text.indexOf('{');
     if (jsonStart > 0) {
       text = text.substring(jsonStart);
     }
 
-    // Проверяем закрывающую скобку
+    // Check for closing brace
     const trimmed = text.trim();
     if (!trimmed.endsWith('}')) {
-      // Пытаемся найти последнюю полную структуру
+      // Try to find the last complete structure
       const lastBrace = text.lastIndexOf('}');
       if (lastBrace > 0) {
         text = text.substring(0, lastBrace + 1);

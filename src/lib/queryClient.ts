@@ -5,15 +5,15 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 min — данные считаются свежими
-      gcTime: 1000 * 60 * 60 * 24, // 24 часа — хранить в памяти/storage
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 60 * 24,
       retry: 2,
       refetchOnWindowFocus: false,
     }
   }
 });
 
-// Persister для localStorage
+// Persister for localStorage
 export const persister = createAsyncStoragePersister({
   storage: typeof window !== 'undefined' ? window.localStorage : undefined,
   key: 'asos-map-cache',
